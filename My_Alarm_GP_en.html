@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy — My Alarm: Alarm Clock & Task</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        brand: ['"Syncopate"', 'sans-serif'],
+                    },
+                    animation: {
+                        'aurora-spin': 'aurora 18s linear infinite',
+                        'aurora-reverse': 'auroraRev 22s linear infinite',
+                    },
+                    keyframes: {
+                        aurora: {
+                            '0%': { transform: 'rotate(0deg) scale(1) translateY(0px)' },
+                            '50%': { transform: 'rotate(180deg) scale(1.15) translateY(-30px)' },
+                            '100%': { transform: 'rotate(360deg) scale(1) translateY(0px)' }
+                        },
+                        auroraRev: {
+                            '0%': { transform: 'rotate(360deg) scale(1.1) translateY(0px)' },
+                            '50%': { transform: 'rotate(180deg) scale(0.9) translateY(40px)' },
+                            '100%': { transform: 'rotate(0deg) scale(1.1) translateY(0px)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Derinlik katan ince ızgara deseni */
+        .bg-grid {
+            background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 0);
+            background-size: 28px 28px;
+        }
+    </style>
+</head>
+<body class="bg-zinc-950 text-zinc-100 font-sans antialiased selection:bg-cyan-500 selection:text-white min-h-screen flex flex-col justify-between relative overflow-x-hidden">
+
+    <!-- Dinamik & Hareketli Arka Plan Katmanı -->
+    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <!-- Izgara Deseni -->
+        <div class="absolute inset-0 bg-grid opacity-60"></div>
+        
+        <!-- Yüzen Aurora Işık Efektleri -->
+        <div class="absolute -top-40 -left-20 w-[550px] h-[550px] bg-gradient-to-br from-cyan-500/20 via-teal-500/10 to-transparent rounded-full blur-[110px] animate-aurora-spin"></div>
+        <div class="absolute top-1/3 -right-32 w-[600px] h-[600px] bg-gradient-to-bl from-indigo-500/15 via-teal-400/15 to-transparent rounded-full blur-[130px] animate-aurora-reverse"></div>
+        <div class="absolute -bottom-32 left-1/4 w-[500px] h-[500px] bg-gradient-to-tr from-cyan-600/15 via-emerald-500/10 to-transparent rounded-full blur-[120px] animate-aurora-spin"></div>
+
+        <!-- Etkileşimli Canvas Parçacık Ağı -->
+        <canvas id="bg-canvas" class="absolute inset-0 w-full h-full opacity-65"></canvas>
+    </div>
+
+    <!-- Header / Brand & Navigation -->
+    <header class="w-full max-w-4xl mx-auto px-6 py-10 flex items-center justify-between relative z-10">
+        <!-- Geliştirici Profili Yönlendirmesi -->
+        <a href="https://galahatdev-debug.github.io" 
+           class="flex items-center space-x-4 group cursor-pointer" 
+           title="Galahat Dev Portfolio">
+            <div class="w-12 h-12 rounded-2xl overflow-hidden shadow-lg shadow-cyan-950/40 group-hover:scale-105 group-hover:border-cyan-500/40 transition-all duration-300 border border-zinc-800/80 bg-zinc-900/80 backdrop-blur-md p-1">
+                <img src="512_Galahat.png" 
+                     alt="Galahat Dev Logo" 
+                     class="w-full h-full object-contain rounded-xl">
+            </div>
+            <div class="flex items-baseline space-x-1.5">
+                <span class="font-brand font-normal text-lg sm:text-xl tracking-[0.22em] text-zinc-100 group-hover:text-cyan-300 transition-colors uppercase">
+                    Galahat
+                </span>
+                <span class="font-brand font-bold text-xs sm:text-sm tracking-[0.18em] text-zinc-400 group-hover:text-cyan-400 transition-colors uppercase">
+                    Dev
+                </span>
+            </div>
+        </a>
+
+        <a href="https://galahatdev-debug.github.io" class="inline-flex items-center space-x-2 text-xs font-semibold text-zinc-400 hover:text-cyan-300 transition-colors group bg-zinc-900/70 border border-zinc-800/80 backdrop-blur-md px-3.5 py-1.5 rounded-full shadow-sm">
+            <svg class="w-4 h-4 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+            </svg>
+            <span>Home</span>
+        </a>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="w-full max-w-4xl mx-auto px-6 py-6 flex-grow relative z-10">
+        
+        <!-- App Identity Card & Header -->
+        <div class="mb-10 border-b border-zinc-900 pb-8">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-6">
+                <!-- App Info -->
+                <div class="flex items-center space-x-4">
+                    <div class="relative w-16 h-16 rounded-2xl bg-zinc-800 border border-zinc-700/60 flex items-center justify-center overflow-hidden shadow-md flex-shrink-0">
+                        <div class="absolute -inset-1 bg-gradient-to-tr from-teal-500 via-cyan-400 to-amber-200 rounded-2xl blur-sm opacity-40"></div>
+                        <img src="512_2.png" alt="My Alarm App Icon" class="relative w-full h-full object-cover rounded-2xl">
+                    </div>
+                    <div>
+                        <div class="inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-cyan-500/10 text-cyan-300 border border-cyan-500/20 mb-1 backdrop-blur-sm">
+                            <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
+                            <span>Official App Policy</span>
+                        </div>
+                        <h2 class="text-xl sm:text-2xl font-bold tracking-tight text-zinc-100">
+                            My Alarm: Alarm Clock & Task
+                        </h2>
+                    </div>
+                </div>
+
+                <!-- Google Play Link -->
+                <a href="https://play.google.com/store/apps/details?id=com.galahatdev.myalarm" 
+                   target="_blank" 
+                   rel="noopener noreferrer"
+                   class="inline-flex items-center space-x-2 text-xs font-semibold text-cyan-400 hover:text-cyan-300 bg-zinc-900/80 hover:bg-zinc-800/80 border border-zinc-800 hover:border-cyan-500/30 px-4 py-2.5 rounded-xl transition-all self-start sm:self-auto shadow-sm backdrop-blur-md">
+                    <span>View on Google Play</span>
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                    </svg>
+                </a>
+            </div>
+
+            <h1 class="text-2xl sm:text-3xl font-bold tracking-tight mb-2 bg-gradient-to-r from-zinc-100 via-zinc-300 to-zinc-500 bg-clip-text text-transparent">
+                Privacy Policy & Data Security Statement
+            </h1>
+            <p class="text-xs sm:text-sm text-zinc-500 font-mono">
+                Effective and Last Updated: <span class="text-cyan-400/80">July 2, 2026</span>
+            </p>
+        </div>
+
+        <!-- Document Body Card -->
+        <article class="bg-zinc-900/40 backdrop-blur-md border border-zinc-800/80 rounded-3xl p-6 sm:p-10 space-y-10 text-zinc-300 leading-relaxed text-sm sm:text-base font-light shadow-2xl shadow-cyan-950/20">
+            
+            <!-- Introduction Section -->
+            <section class="border-b border-zinc-800/60 pb-8">
+                <p class="text-zinc-300 leading-relaxed text-justify">
+                    This Privacy Policy and Data Security Statement ("Privacy Policy") applies to the mobile application <span class="text-cyan-300 font-medium">My Alarm: Alarm Clock & Task</span> (published locally as <span class="text-cyan-300 font-medium">Alarmım</span>, including all localized global store releases and translated titles, collectively referred to as the "Application"), designed, developed, operated, and exclusively owned by the independent software developer <span class="text-cyan-300 font-medium">GalahatDev</span> ("Developer"). At GalahatDev, we hold user privacy as a sacred principle and believe that the protection of personal data is a fundamental right in the digital landscape. This document becomes legally binding the moment you download, install, run in the foreground or background, or passively execute the Application via the Google Play Store or any authorized distribution platform. This policy is formulated under the strict principles of the <span class="text-indigo-300 font-medium">GDPR</span> (General Data Protection Regulation), <span class="text-indigo-300 font-medium">CCPA</span> (California Consumer Privacy Act), and <span class="text-indigo-300 font-medium">KVKK</span> (Law on Protection of Personal Data) in order to transparently outline the types of processed data, statutory legal grounds, technical architecture of hardware/software permissions, scope of ad and subscription integrations, and your legal rights without leaving room for ambiguity or misinterpretation.
+                </p>
+            </section>
+
+            <!-- Section 1 -->
+            <section class="space-y-4">
+                <h2 class="text-lg sm:text-xl font-semibold text-zinc-100 tracking-tight flex items-center space-x-2">
+                    <span class="text-cyan-400 font-mono">1.</span>
+                    <span>Data Controller Declaration, Zero Data Collection Principle, and Account Exemption</span>
+                </h2>
+                <p class="text-zinc-400">
+                    Our Application is engineered from the ground up strictly adhering to the industry-standard software engineering paradigms of <span class="text-zinc-200 font-medium">"Privacy by Design"</span> and <span class="text-zinc-200 font-medium">"Privacy by Default"</span>. Accordingly, our data collection framework is established as follows:
+                </p>
+                <div class="space-y-3 pl-1 sm:pl-3">
+                    <div class="p-4 rounded-2xl bg-zinc-950/60 border border-zinc-800/60 hover:border-cyan-500/20 transition-colors">
+                        <p class="text-zinc-300 text-xs sm:text-sm leading-relaxed">
+                            <strong class="text-cyan-300">1.1. Account Registration and Authentication Exemption:</strong> To utilize any standard or premium features of the Application (creating alarms, setting routines, configuring challenge tasks, etc.), you are never required to provide a name, surname, email address, phone number, username, password, biometric credential, or authenticate via third-party social media profiles (Google, Facebook, Apple, Twitter, etc.). The Application operates on a completely anonymous and accountless foundation.
+                        </p>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-zinc-950/60 border border-zinc-800/60 hover:border-cyan-500/20 transition-colors">
+                        <p class="text-zinc-300 text-xs sm:text-sm leading-relaxed">
+                            <strong class="text-cyan-300">1.2. Non-Processing of Personal Data and Serverless Architecture:</strong> GalahatDev does not own, manage, or operate external remote databases or cloud storage servers. No personal, identifying, or technical telemetry—including your IP address, MAC address, IMEI number, geographical location, web browsing history, contacts, SMS messages, or installed application lists—is ever <span class="text-teal-300 font-medium">COLLECTED, PROCESSED, STORED, TRANSMITTED to remote servers, SOLD, or SHARED with third parties, data brokers, advertising agencies, or authorities (except where explicitly mandated by court orders).</span>
+                        </p>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-zinc-950/60 border border-zinc-800/60 hover:border-cyan-500/20 transition-colors">
+                        <p class="text-zinc-300 text-xs sm:text-sm leading-relaxed">
+                            <strong class="text-cyan-300">1.3. Local Storage Guarantee:</strong> All customized alarm schedules, recurring weekdays, volume settings, snooze intervals, personalized ringtones, and progress records belonging to "Challenges / Tasks" modes are stored exclusively on your own mobile device within protected local storage areas (<span class="text-indigo-300 font-mono text-[11px] bg-indigo-500/10 px-1.5 py-0.5 rounded border border-indigo-500/20">SharedPreferences</span> and SQLite-based <span class="text-indigo-300 font-mono text-[11px] bg-indigo-500/10 px-1.5 py-0.5 rounded border border-indigo-500/20">Room Database</span> architecture) encrypted and sandboxed by Android. This data remains under your physical ownership. If you uninstall the Application or perform a factory reset, all local records are permanently wiped; it is technically impossible for the Developer to access, restore, or retrieve these local files remotely.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 2 -->
+            <section class="space-y-4">
+                <h2 class="text-lg sm:text-xl font-semibold text-zinc-100 tracking-tight flex items-center space-x-2">
+                    <span class="text-cyan-400 font-mono">2.</span>
+                    <span>Advanced Device Permissions, Hardware Access, and Technical Processing Purposes</span>
+                </h2>
+                <p class="text-zinc-400">
+                    To reliably fulfill its core mission of providing an "uninterrupted wake-up" and "unsabotageable alarm" experience under the modern, rigorous security architecture of Android (particularly Android 10 and above), the Application requires user approval for specific hardware and system permissions. The technical rationale for each permission is detailed below:
+                </p>
+                
+                <div class="space-y-3 pl-1 sm:pl-3">
+                    <div class="p-4 rounded-2xl bg-zinc-950/60 border border-zinc-800/60 hover:border-cyan-500/20 transition-colors">
+                        <p class="text-zinc-300 text-xs sm:text-sm leading-relaxed">
+                            <strong class="text-cyan-300">2.1. Notification Permission (<code class="text-xs text-teal-300 bg-teal-500/10 px-1.5 py-0.5 rounded border border-teal-500/20 font-mono">POST_NOTIFICATIONS</code>):</strong> Mandatory on Android 13 and above, this permission is used to deliver alerts for upcoming alarms, display alarm interaction cards on the lock screen, and maintain an uninterrupted "Foreground Service" notification to prevent the Android operating system from terminating the alarm background engine. No marketing or behavioral tracking signals traverse this channel.
+                        </p>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-zinc-950/60 border border-zinc-800/60 hover:border-cyan-500/20 transition-colors">
+                        <p class="text-zinc-300 text-xs sm:text-sm leading-relaxed">
+                            <strong class="text-cyan-300">2.2. Display Over Other Apps (<code class="text-xs text-teal-300 bg-teal-500/10 px-1.5 py-0.5 rounded border border-teal-500/20 font-mono">SYSTEM_ALERT_WINDOW / Draw Over Other Apps</code>):</strong> When an alarm triggers, this permission allows the full-screen alarm interface to pop up immediately over any active window, whether the device is asleep, locked, or running another application (games, video players, browsers). This ensures the alarm challenge screen reliably presents itself to sleepy users.
+                        </p>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-zinc-950/60 border border-zinc-800/60 hover:border-cyan-500/20 transition-colors">
+                        <p class="text-zinc-300 text-xs sm:text-sm leading-relaxed">
+                            <strong class="text-cyan-300">2.3. Battery Optimization Exemption (<code class="text-xs text-teal-300 bg-teal-500/10 px-1.5 py-0.5 rounded border border-teal-500/20 font-mono">REQUEST_IGNORE_BATTERY_OPTIMIZATIONS</code>):</strong> Aggressive battery management implementations such as Android's "Doze Mode" and vendor-specific power algorithms (Samsung, Xiaomi, Huawei, etc.) frequently suspend or kill background timers (<code class="text-xs text-zinc-300 font-mono">AlarmManager</code>). Exempting the Application from battery restrictions is essential to trigger alarms with millisecond precision without inducing excessive or abnormal battery drain.
+                        </p>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-zinc-950/60 border border-zinc-800/60 hover:border-cyan-500/20 transition-colors">
+                        <p class="text-zinc-300 text-xs sm:text-sm leading-relaxed">
+                            <strong class="text-cyan-300">2.4. Hardware Camera Access (<code class="text-xs text-teal-300 bg-teal-500/10 px-1.5 py-0.5 rounded border border-teal-500/20 font-mono">CAMERA</code>):</strong> Activated solely when users choose task modes that require scanning a designated barcode/QR code or taking a matching photo of a specific household object (e.g., sink faucet, coffee maker) to silence the alarm. Image data processed through the camera lens is never <span class="text-teal-300 font-medium">SAVED</span> to the local gallery and never <span class="text-teal-300 font-medium">UPLOADED</span> to remote servers. All verification is handled in real-time on local hardware (CPU/GPU) and instantly purged from memory (RAM).
+                        </p>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-zinc-950/60 border border-zinc-800/60 hover:border-cyan-500/20 transition-colors">
+                        <p class="text-zinc-300 text-xs sm:text-sm leading-relaxed">
+                            <strong class="text-cyan-300">2.5. Physical Activity and Sensor Access (<code class="text-xs text-teal-300 bg-teal-500/10 px-1.5 py-0.5 rounded border border-teal-500/20 font-mono">ACTIVITY_RECOGNITION / Accelerometer</code>):</strong> To evaluate optional physical wake-up tasks such as vigorously shaking the phone or taking a set number of steps, the Application accesses raw data from the accelerometer, gyroscope, and step counter sensors. These sensor inputs are parsed in real time solely during an active alarm cycle and are never monitored or recorded in the background for continuous fitness tracking or location logging.
+                        </p>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-zinc-950/60 border border-zinc-800/60 hover:border-cyan-500/20 transition-colors">
+                        <p class="text-zinc-300 text-xs sm:text-sm leading-relaxed">
+                            <strong class="text-cyan-300">2.6. Advanced App Protection and Device Administrator Permission (<code class="text-xs text-teal-300 bg-teal-500/10 px-1.5 py-0.5 rounded border border-teal-500/20 font-mono">BIND_DEVICE_ADMIN</code>):</strong> Designed to stop heavy sleepers from instinctively sabotaging their wake-up routines by opening Android system settings to "Force Stop" the Application or uninstall it while the alarm is ringing. When voluntarily granted, this policy prevents the OS from terminating or removing the Application until the ongoing alarm challenge is fulfilled. It does not perform or interfere with any other administrator operations (device wipes, password changes, etc.).
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 3 -->
+            <section class="space-y-4">
+                <h2 class="text-lg sm:text-xl font-semibold text-zinc-100 tracking-tight flex items-center space-x-2">
+                    <span class="text-cyan-400 font-mono">3.</span>
+                    <span>Third-Party Advertising Integrations, Data Collection Framework, and Cookies</span>
+                </h2>
+                <p class="text-zinc-400">
+                    To maintain the continuous technical operation of the free version, cover digital distribution license expenses, and sustain active development, third-party advertising SDKs are integrated into the Application:
+                </p>
+                <div class="p-4 rounded-2xl bg-zinc-950/60 border border-zinc-800/60 hover:border-cyan-500/20 transition-colors">
+                    <p class="text-zinc-300 text-xs sm:text-sm leading-relaxed">
+                        <strong class="text-cyan-300">3.1. Google AdMob SDK Integration:</strong> The Application serves banner, interstitial, and rewarded ad formats through the infrastructure provided by Google Inc. <span class="text-indigo-300 font-medium">Google AdMob</span> may automatically collect your device's unique <span class="text-zinc-200">Google Advertising ID (AAID)</span>, hardware profile (brand, model, display resolution), carrier identifier, language preference, and advertising interaction metrics to deliver personalized ads or enforce standard frequency capping. This data is collected under Google's independent privacy umbrellas; GalahatDev has no technical capability to view, intercept, or transfer these metrics to private servers. To review AdMob data practices or opt out of personalized tracking, visit the official Google Privacy Policy.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Section 4 -->
+            <section class="space-y-4">
+                <h2 class="text-lg sm:text-xl font-semibold text-zinc-100 tracking-tight flex items-center space-x-2">
+                    <span class="text-cyan-400 font-mono">4.</span>
+                    <span>In-App Purchases, Subscription Lifecycle, and Financial Data Protection Standards</span>
+                </h2>
+                <p class="text-zinc-400">
+                    For users wishing to permanently eliminate advertisements and unlock unlimited access to all wake-up challenges, the Application offers flexible and secure premium options:
+                </p>
+                <div class="space-y-3 pl-1 sm:pl-3">
+                    <div class="p-4 rounded-2xl bg-zinc-950/60 border border-zinc-800/60 hover:border-cyan-500/20 transition-colors">
+                        <p class="text-zinc-300 text-xs sm:text-sm leading-relaxed">
+                            <strong class="text-cyan-300">4.1. Membership & Package Tiers:</strong> Users may acquire auto-renewing <span class="text-zinc-200 font-medium">1-Month</span> or <span class="text-zinc-200 font-medium">1-Year</span> subscriptions, or purchase a one-time <span class="text-teal-300 font-medium">Lifetime Premium</span> tier directly via the in-app billing interface.
+                        </p>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-zinc-950/60 border border-zinc-800/60 hover:border-cyan-500/20 transition-colors">
+                        <p class="text-zinc-300 text-xs sm:text-sm leading-relaxed">
+                            <strong class="text-cyan-300">4.2. Financial Security & PCI-DSS Compliance:</strong> GalahatDev does not operate custom payment gateways or retain card payment records. All purchase verification, invoicing, subscription recurring fees, and cancellations are executed exclusively through the secure, PCI-DSS-compliant <span class="text-indigo-300 font-medium">Google Play In-App Billing</span> infrastructure. GalahatDev never accesses, stores, or handles credit card numbers, CVV codes, bank account credentials, or billing addresses. All billing records remain entirely under Google Play's regulatory purview.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 5 -->
+            <section class="space-y-4">
+                <h2 class="text-lg sm:text-xl font-semibold text-zinc-100 tracking-tight flex items-center space-x-2">
+                    <span class="text-cyan-400 font-mono">5.</span>
+                    <span>Children's Privacy and Age Limitation Policy</span>
+                </h2>
+                <div class="p-4 rounded-2xl bg-zinc-950/60 border border-zinc-800/60 hover:border-cyan-500/20 transition-colors">
+                    <p class="text-zinc-300 text-xs sm:text-sm leading-relaxed">
+                        Due to its serverless architecture, our Application does not solicit or collect personal information and does not present safety risks to minors. Nevertheless, in compliance with international legal frameworks such as <span class="text-indigo-300 font-medium">COPPA</span> (Children's Online Privacy Protection Act) and Google Play Family Policies, children under the age of 13 (or the legal age of majority in your jurisdiction) should only use the Application under the supervision of a parent or legal guardian. If you believe your child has interacted with AdMob identifiers without consent, you may configure child safety profiles via Google Play or contact us directly.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Section 6 -->
+            <section class="space-y-4">
+                <h2 class="text-lg sm:text-xl font-semibold text-zinc-100 tracking-tight flex items-center space-x-2">
+                    <span class="text-cyan-400 font-mono">6.</span>
+                    <span>User Statutory Rights (GDPR / CCPA / KVKK) and Contact Channels</span>
+                </h2>
+                <div class="p-4 rounded-2xl bg-zinc-950/60 border border-zinc-800/60 hover:border-cyan-500/20 transition-colors space-y-3">
+                    <p class="text-zinc-300 text-xs sm:text-sm leading-relaxed">
+                        Although GalahatDev does not maintain remote user databases or store your personal identifiers, you retain complete statutory rights under applicable privacy legislations to query data policies or request the deletion of all local records (achievable instantly by clearing application storage or uninstalling the app). For any legal or technical inquiries, feedback, or concerns regarding permission mechanics, you can reach out through the "Contact" button inside the Application to generate a formal communication via your default email client. Inquiries are reviewed and answered within 30 business days.
+                    </p>
+                    <div class="pt-2">
+                        <a href="mailto:galahatdev@gmail.com" class="inline-flex items-center space-x-2 text-sm font-semibold text-cyan-400 hover:text-cyan-300 transition-colors">
+                            <span>galahatdev@gmail.com</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 7 -->
+            <section class="space-y-4">
+                <h2 class="text-lg sm:text-xl font-semibold text-zinc-100 tracking-tight flex items-center space-x-2">
+                    <span class="text-cyan-400 font-mono">7.</span>
+                    <span>User Feedback, Bug Reporting, and Telegram API Transmission</span>
+                </h2>
+                <div class="p-4 rounded-2xl bg-zinc-950/60 border border-zinc-800/80 hover:border-cyan-500/20 transition-colors space-y-3">
+                    <p class="text-zinc-300 text-xs sm:text-sm leading-relaxed">
+                        Messages submitted to the Developer via the <strong class="text-cyan-300">"Suggestions & Bug Report"</strong> module are processed exclusively to optimize user experience, diagnose unexpected exceptions, and reinforce software stability. This transmission operates under the following safeguards:
+                    </p>
+                    <ul class="list-disc list-inside space-y-1.5 text-zinc-400 text-xs sm:text-sm pl-2">
+                        <li><strong class="text-zinc-200">Voluntary Submission:</strong> The feedback interface is entirely optional. Only the explicit text written and submitted by the user is transmitted.</li>
+                        <li><strong class="text-zinc-200">Data Transmission Conduit:</strong> Submitted content is securely dispatched to the Developer's authenticated administrative channel over encrypted HTTPS requests powered by the <span class="text-indigo-300 font-medium">Telegram Bot API</span> infrastructure.</li>
+                        <li><strong class="text-zinc-200">Content Restrictions & Safety:</strong> No silent background identifiers—such as device serial numbers, contacts, location tags, or saved passwords—are appended to the dispatch. Users are explicitly requested not to submit sensitive personal data, passwords, government IDs, or payment details through this open text form.</li>
+                        <li><strong class="text-zinc-200">Scope of Use:</strong> Received feedback is examined solely for software debugging, feature iteration, and reliability diagnostics; it is never shared with third parties for commercial profiling, marketing, or advertising endeavors.</li>
+                    </ul>
+                </div>
+            </section>
+
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full max-w-4xl mx-auto px-6 py-8 border-t border-zinc-900 flex flex-col sm:flex-row items-center justify-between text-xs text-zinc-500 mt-12 relative z-10">
+        <p>&copy; 2026 Galahat Dev. All rights reserved.</p>
+        
+        <div class="flex items-center space-x-6 mt-4 sm:mt-0">
+            <!-- Google Play Link -->
+            <a id="gp-link" 
+               href="https://play.google.com/store/apps/developer?id=Galahat+Dev" 
+               target="_blank" 
+               rel="noopener noreferrer" 
+               class="hover:text-zinc-300 transition-all duration-500 whitespace-nowrap">
+                Google Play
+            </a>
+            
+            <!-- Animated Contact / Email Area -->
+            <div id="contact-wrapper" class="relative overflow-hidden h-5 w-16 transition-all duration-500 ease-out flex items-center justify-end">
+                <button onclick="revealEmail()" id="contact-btn" class="hover:text-zinc-300 transition-all duration-300 text-right whitespace-nowrap cursor-pointer">
+                    Contact
+                </button>
+                <a href="mailto:galahatdev@gmail.com" id="email-text" class="hover:text-cyan-400 transition-all duration-500 absolute right-0 opacity-0 translate-y-3 pointer-events-none whitespace-nowrap">
+                    galahatdev@gmail.com
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- 1. Dinamik Canvas Parçacık Ağı (Constellation Effect) ---
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let mouse = { x: null, y: null, radius: 140 };
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            initParticles();
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        });
+        window.addEventListener('mouseout', () => {
+            mouse.x = null;
+            mouse.y = null;
+        });
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 1.6 + 0.8;
+                this.speedX = (Math.random() - 0.5) * 0.45;
+                this.speedY = (Math.random() - 0.5) * 0.45;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+
+                // Fare etkileşimi
+                if (mouse.x !== null) {
+                    let dx = mouse.x - this.x;
+                    let dy = mouse.y - this.y;
+                    let distance = Math.sqrt(dx * dx + dy * dy);
+                    if (distance < mouse.radius) {
+                        let force = (mouse.radius - distance) / mouse.radius;
+                        this.x -= (dx / distance) * force * 1.5;
+                        this.y -= (dy / distance) * force * 1.5;
+                    }
+                }
+            }
+            draw() {
+                ctx.fillStyle = 'rgba(45, 212, 191, 0.45)';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            const particleCount = Math.floor((canvas.width * canvas.height) / 14000);
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function connectParticles() {
+            for (let a = 0; a < particles.length; a++) {
+                for (let b = a + 1; b < particles.length; b++) {
+                    let dx = particles[a].x - particles[b].x;
+                    let dy = particles[a].y - particles[b].y;
+                    let distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < 115) {
+                        let opacity = 1 - (distance / 115);
+                        ctx.strokeStyle = `rgba(20, 184, 166, ${opacity * 0.18})`;
+                        ctx.lineWidth = 0.7;
+                        ctx.beginPath();
+                        ctx.moveTo(particles[a].x, particles[a].y);
+                        ctx.lineTo(particles[b].x, particles[b].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+            }
+            connectParticles();
+            requestAnimationFrame(animate);
+        }
+
+        resizeCanvas();
+        animate();
+
+        // --- 2. İletişim / Mail Açılış Animasyonu ---
+        function revealEmail() {
+            const btn = document.getElementById('contact-btn');
+            const email = document.getElementById('email-text');
+            const wrapper = document.getElementById('contact-wrapper');
+            const gpLink = document.getElementById('gp-link');
+            
+            gpLink.classList.add('-translate-x-3');
+            wrapper.classList.remove('w-16');
+            wrapper.classList.add('w-44');
+            btn.classList.add('opacity-0', '-translate-y-3', 'pointer-events-none');
+            
+            setTimeout(() => {
+                email.classList.remove('opacity-0', 'translate-y-3', 'pointer-events-none');
+                email.classList.add('opacity-100', 'translate-y-0');
+            }, 80);
+        }
+    </script>
+
+</body>
+</html>
