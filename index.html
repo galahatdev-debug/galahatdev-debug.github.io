@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="tr" class="dark">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,27 +17,62 @@
                         sans: ['"Plus Jakarta Sans"', 'sans-serif'],
                         brand: ['"Syncopate"', 'sans-serif'],
                     },
+                    animation: {
+                        'aurora-spin': 'aurora 18s linear infinite',
+                        'aurora-reverse': 'auroraRev 22s linear infinite',
+                    },
+                    keyframes: {
+                        aurora: {
+                            '0%': { transform: 'rotate(0deg) scale(1) translateY(0px)' },
+                            '50%': { transform: 'rotate(180deg) scale(1.15) translateY(-30px)' },
+                            '100%': { transform: 'rotate(360deg) scale(1) translateY(0px)' }
+                        },
+                        auroraRev: {
+                            '0%': { transform: 'rotate(360deg) scale(1.1) translateY(0px)' },
+                            '50%': { transform: 'rotate(180deg) scale(0.9) translateY(40px)' },
+                            '100%': { transform: 'rotate(0deg) scale(1.1) translateY(0px)' }
+                        }
+                    }
                 }
             }
         }
     </script>
+    <style>
+        /* Derinlik katan ince ızgara */
+        .bg-grid {
+            background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 0);
+            background-size: 28px 28px;
+        }
+    </style>
 </head>
-<body class="bg-zinc-950 text-zinc-100 font-sans antialiased selection:bg-cyan-500 selection:text-white min-h-screen flex flex-col justify-between">
+<body class="bg-zinc-950 text-zinc-100 font-sans antialiased selection:bg-cyan-500 selection:text-white min-h-screen flex flex-col justify-between relative overflow-x-hidden">
+
+    <!-- Dinamik & Hareketli Arka Plan Katmanı -->
+    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <!-- Izgara Deseni -->
+        <div class="absolute inset-0 bg-grid opacity-60"></div>
+        
+        <!-- Yüzen Aurora Işık Efektleri -->
+        <div class="absolute -top-40 -left-20 w-[550px] h-[550px] bg-gradient-to-br from-cyan-500/20 via-teal-500/10 to-transparent rounded-full blur-[110px] animate-aurora-spin"></div>
+        <div class="absolute top-1/3 -right-32 w-[600px] h-[600px] bg-gradient-to-bl from-indigo-500/15 via-teal-400/15 to-transparent rounded-full blur-[130px] animate-aurora-reverse"></div>
+        <div class="absolute -bottom-32 left-1/4 w-[500px] h-[500px] bg-gradient-to-tr from-cyan-600/15 via-emerald-500/10 to-transparent rounded-full blur-[120px] animate-aurora-spin"></div>
+
+        <!-- Etkileşimli Canvas Parçacık Ağı -->
+        <canvas id="bg-canvas" class="absolute inset-0 w-full h-full opacity-65"></canvas>
+    </div>
 
     <!-- Header / Brand Section -->
-    <header class="w-full max-w-4xl mx-auto px-6 py-10 flex items-center justify-between">
-        <a href="https://play.google.com/store/apps/developer?id=Galahat+Dev" 
-           target="_blank" 
-           rel="noopener noreferrer"
+    <header class="w-full max-w-4xl mx-auto px-6 py-10 flex items-center justify-between relative z-10">
+        <a href="https://galahatdev-debug.github.io" 
            class="flex items-center space-x-4 group cursor-pointer"
-           title="Google Play Geliştirici Profilini Görüntüle">
-            <!-- Büyütülmüş Logo Çerçevesi -->
-            <div class="w-12 h-12 rounded-2xl overflow-hidden shadow-lg shadow-cyan-950/40 group-hover:scale-105 transition-transform duration-300 border border-zinc-800/80 bg-zinc-900/60 p-1">
+           title="Galahat Dev Portfolio">
+            <!-- Developer Logo Box -->
+            <div class="w-12 h-12 rounded-2xl overflow-hidden shadow-lg shadow-cyan-950/40 group-hover:scale-105 group-hover:border-cyan-500/40 transition-all duration-300 border border-zinc-800/80 bg-zinc-900/80 backdrop-blur-md p-1">
                 <img src="512_Galahat.png" 
                      alt="Galahat Dev Logo" 
                      class="w-full h-full object-contain rounded-xl">
             </div>
-            <!-- Görseldeki Fütüristik Yazı Stili -->
+            <!-- Futuristic Typography -->
             <div class="flex items-baseline space-x-1.5">
                 <span class="font-brand font-normal text-lg sm:text-xl tracking-[0.22em] text-zinc-100 group-hover:text-cyan-300 transition-colors uppercase">
                     Galahat
@@ -47,42 +82,52 @@
                 </span>
             </div>
         </a>
-        <div class="text-xs uppercase tracking-widest text-zinc-500 font-medium">
-            Android Apps
+
+        <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full text-[11px] uppercase tracking-widest text-zinc-300 font-medium bg-zinc-900/70 border border-zinc-800/80 backdrop-blur-md shadow-sm">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span>Android Apps</span>
         </div>
     </header>
 
-    <main class="w-full max-w-4xl mx-auto px-6 py-12 flex-grow flex flex-col justify-center">
+    <!-- Main Content -->
+    <main class="w-full max-w-4xl mx-auto px-6 py-12 flex-grow flex flex-col justify-center relative z-10">
         <!-- Developer Bio Section -->
         <section class="mb-16">
-            <h1 class="text-4xl sm:text-5xl font-bold tracking-tight mb-4 bg-gradient-to-r from-zinc-100 via-zinc-300 to-zinc-500 bg-clip-text text-transparent">
-                Mobil deneyimler tasarlıyorum.
+            <h1 class="text-4xl sm:text-5xl font-bold tracking-tight pb-2 leading-normal sm:leading-tight mb-3 bg-gradient-to-r from-zinc-100 via-zinc-200 to-zinc-500 bg-clip-text text-transparent inline-block">
+                Designing mobile experiences.
             </h1>
             <p class="text-zinc-400 text-lg max-w-xl font-light leading-relaxed">
-                Kullanıcı odaklı, minimalist ve akıcı Android uygulamaları geliştiren bağımsız yazılım geliştirici stüdyosu.
+                An independent developer studio building user-centric, minimalist, and fluid Android applications.
             </p>
         </section>
 
         <!-- Apps Section Header -->
         <div class="flex items-center justify-between mb-6">
-            <h2 class="text-xs uppercase tracking-widest text-zinc-500 font-semibold">Uygulamalarım</h2>
-            <span class="text-xs text-zinc-600">1 Proje</span>
+            <h2 class="text-xs uppercase tracking-widest text-zinc-500 font-semibold flex items-center space-x-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
+                <span>My Applications</span>
+            </h2>
+            <span class="text-xs text-zinc-400 font-mono bg-zinc-900/80 px-2.5 py-0.5 rounded-md border border-zinc-800/80 backdrop-blur-sm">1 Project</span>
         </div>
 
-        <!-- Apps Grid / Card -->
+        <!-- Apps Grid -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <!-- App Card: My Alarm -->
-            <div class="group relative bg-zinc-900/50 border border-zinc-800/80 hover:border-zinc-700 rounded-3xl p-6 transition-all duration-300 hover:shadow-2xl hover:shadow-cyan-500/5 flex flex-col justify-between">
-                <div>
+            <!-- App Card: My Alarm with Spotlight Effect -->
+            <div id="alarm-card" 
+                 class="group relative bg-zinc-900/40 backdrop-blur-md border border-zinc-800/80 hover:border-zinc-700/90 rounded-3xl p-7 transition-all duration-300 hover:shadow-2xl hover:shadow-cyan-500/10 flex flex-col justify-between overflow-hidden">
+                
+                <!-- Fare Takip Eden Spot Işığı -->
+                <div id="spotlight" class="pointer-events-none absolute -inset-px opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0"></div>
+
+                <div class="relative z-10">
                     <div class="flex items-start justify-between mb-6">
-                        <!-- Clickable App Icon with Coordinated Cyan/Sun Glow -->
+                        <!-- Clickable App Icon with Glow -->
                         <a href="https://play.google.com/store/apps/details?id=com.galahatdev.myalarm" 
                            target="_blank" 
                            rel="noopener noreferrer"
                            class="relative block group-hover:scale-105 transition-transform duration-300 cursor-pointer"
-                           title="Google Play'de Görüntüle">
-                            <!-- İkon Renkleriyle Uyumlu (Camgöbeği & Güneş Sarısı) Işık Efekti -->
-                            <div class="absolute -inset-1.5 bg-gradient-to-tr from-teal-500 via-cyan-400 to-amber-200 rounded-2xl blur-md opacity-25 group-hover:opacity-80 transition duration-300"></div>
+                           title="View on Google Play">
+                            <div class="absolute -inset-1.5 bg-gradient-to-tr from-teal-500 via-cyan-400 to-amber-200 rounded-2xl blur-md opacity-30 group-hover:opacity-90 transition duration-300"></div>
                             
                             <div class="relative w-16 h-16 rounded-2xl bg-zinc-800 border border-zinc-700/60 flex items-center justify-center overflow-hidden shadow-md">
                                 <img src="512_2.png" 
@@ -90,27 +135,34 @@
                                      class="w-full h-full object-cover rounded-2xl">
                             </div>
                         </a>
-                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-teal-500/10 text-teal-300 border border-teal-500/20">
-                            Aktif
+
+                        <span class="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-medium bg-teal-500/10 text-teal-300 border border-teal-500/20 shadow-sm shadow-teal-500/10">
+                            <span class="w-1.5 h-1.5 rounded-full bg-teal-400 animate-pulse"></span>
+                            <span>Active</span>
                         </span>
                     </div>
 
-                    <h3 class="text-xl font-semibold tracking-tight text-zinc-100 mb-2">
+                    <h3 class="text-xl font-semibold tracking-tight text-zinc-100 mb-2 group-hover:text-cyan-200 transition-colors">
                         My Alarm: Alarm Clock & Task
                     </h3>
                     <p class="text-zinc-400 text-sm font-light leading-relaxed mb-6">
-                        İster normal alarm modunda ister görevli modunda kullanılabilen; zor uyananlar için görevi tamamlamadan alarmın susmadığı akıllı alarm ve görev uygulaması.
+                        Usable in standard or task-based alarm modes; designed for heavy sleepers with mission challenges that keep ringing until completed.
                     </p>
                 </div>
 
                 <!-- Card Footer / Store Link -->
-                <div class="pt-4 border-t border-zinc-800/60 flex items-center justify-between">
-                    <span class="text-xs text-zinc-500">Google Play Store</span>
+                <div class="pt-5 border-t border-zinc-800/60 flex items-center justify-between relative z-10">
+                    <span class="text-xs text-zinc-500 flex items-center space-x-1.5">
+                        <svg class="w-3.5 h-3.5 text-zinc-600" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M3.609 1.814L13.792 12 3.61 22.186a2.38 2.38 0 0 1-.22-.989V2.803c0-.368.08-.707.22-.989zm11.235 11.238l2.257 2.258-12.78 7.377 10.523-9.635zm0-2.104L4.321 1.313l12.78 7.377-2.257 2.258zm1.096 1.052l2.96 1.708a2.128 2.128 0 0 0 0-3.692l-2.96 1.708a.96.96 0 0 0 0 .276z"/>
+                        </svg>
+                        <span>Google Play</span>
+                    </span>
                     <a href="https://play.google.com/store/apps/details?id=com.galahatdev.myalarm" 
                        target="_blank" 
                        rel="noopener noreferrer"
                        class="inline-flex items-center space-x-2 text-xs font-semibold text-teal-400 hover:text-teal-300 transition-colors group-hover:translate-x-1 duration-300">
-                        <span>İncele</span>
+                        <span>Explore</span>
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
                         </svg>
@@ -120,11 +172,12 @@
         </div>
     </main>
 
-    <footer class="w-full max-w-4xl mx-auto px-6 py-8 border-t border-zinc-900 flex flex-col sm:flex-row items-center justify-between text-xs text-zinc-500">
-        <p>&copy; 2026 Galahat Dev. Tüm hakları saklıdır.</p>
+    <!-- Footer -->
+    <footer class="w-full max-w-4xl mx-auto px-6 py-8 border-t border-zinc-900 flex flex-col sm:flex-row items-center justify-between text-xs text-zinc-500 relative z-10">
+        <p>&copy; 2026 Galahat Dev. All rights reserved.</p>
         
         <div class="flex items-center space-x-6 mt-4 sm:mt-0">
-            <!-- Google Play Linki -->
+            <!-- Google Play Link -->
             <a id="gp-link" 
                href="https://play.google.com/store/apps/developer?id=Galahat+Dev" 
                target="_blank" 
@@ -133,10 +186,10 @@
                 Google Play
             </a>
             
-            <!-- İletişim / Mail alanı -->
-            <div id="contact-wrapper" class="relative overflow-hidden h-5 w-14 transition-all duration-500 ease-out flex items-center justify-end">
+            <!-- Animated Contact / Email Area -->
+            <div id="contact-wrapper" class="relative overflow-hidden h-5 w-16 transition-all duration-500 ease-out flex items-center justify-end">
                 <button onclick="revealEmail()" id="contact-btn" class="hover:text-zinc-300 transition-all duration-300 text-right whitespace-nowrap cursor-pointer">
-                    İletişim
+                    Contact
                 </button>
                 <a href="mailto:galahatdev@gmail.com" id="email-text" class="hover:text-teal-400 transition-all duration-500 absolute right-0 opacity-0 translate-y-3 pointer-events-none whitespace-nowrap">
                     galahatdev@gmail.com
@@ -146,6 +199,118 @@
     </footer>
 
     <script>
+        // --- 1. Dinamik Canvas Parçacık Ağı (Constellation Effect) ---
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let mouse = { x: null, y: null, radius: 140 };
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            initParticles();
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        });
+        window.addEventListener('mouseout', () => {
+            mouse.x = null;
+            mouse.y = null;
+        });
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 1.6 + 0.8;
+                this.speedX = (Math.random() - 0.5) * 0.45;
+                this.speedY = (Math.random() - 0.5) * 0.45;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+
+                // Fare etkileşimi
+                if (mouse.x !== null) {
+                    let dx = mouse.x - this.x;
+                    let dy = mouse.y - this.y;
+                    let distance = Math.sqrt(dx * dx + dy * dy);
+                    if (distance < mouse.radius) {
+                        let force = (mouse.radius - distance) / mouse.radius;
+                        this.x -= (dx / distance) * force * 1.5;
+                        this.y -= (dy / distance) * force * 1.5;
+                    }
+                }
+            }
+            draw() {
+                ctx.fillStyle = 'rgba(45, 212, 191, 0.45)';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            const particleCount = Math.floor((canvas.width * canvas.height) / 14000);
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function connectParticles() {
+            for (let a = 0; a < particles.length; a++) {
+                for (let b = a + 1; b < particles.length; b++) {
+                    let dx = particles[a].x - particles[b].x;
+                    let dy = particles[a].y - particles[b].y;
+                    let distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < 115) {
+                        let opacity = 1 - (distance / 115);
+                        ctx.strokeStyle = `rgba(20, 184, 166, ${opacity * 0.18})`;
+                        ctx.lineWidth = 0.7;
+                        ctx.beginPath();
+                        ctx.moveTo(particles[a].x, particles[a].y);
+                        ctx.lineTo(particles[b].x, particles[b].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+            }
+            connectParticles();
+            requestAnimationFrame(animate);
+        }
+
+        resizeCanvas();
+        animate();
+
+        // --- 2. Kart Üzerindeki Spot Işığı ---
+        const card = document.getElementById('alarm-card');
+        const spotlight = document.getElementById('spotlight');
+
+        if (card && spotlight) {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                spotlight.style.background = `radial-gradient(400px circle at ${x}px ${y}px, rgba(45, 212, 191, 0.12), transparent 80%)`;
+            });
+        }
+
+        // --- 3. İletişim / Mail Açılış Animasyonu ---
         function revealEmail() {
             const btn = document.getElementById('contact-btn');
             const email = document.getElementById('email-text');
@@ -153,7 +318,7 @@
             const gpLink = document.getElementById('gp-link');
             
             gpLink.classList.add('-translate-x-3');
-            wrapper.classList.remove('w-14');
+            wrapper.classList.remove('w-16');
             wrapper.classList.add('w-44');
             btn.classList.add('opacity-0', '-translate-y-3', 'pointer-events-none');
             
