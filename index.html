@@ -1,1 +1,112 @@
-Uygulama Adı - Harika Mobil Uygulamanız
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galahat Dev — Android Developer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-zinc-950 text-zinc-100 font-sans antialiased selection:bg-indigo-500 selection:text-white min-h-screen flex flex-col justify-between">
+
+    <header class="w-full max-w-4xl mx-auto px-6 py-10 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center font-bold text-lg shadow-lg shadow-indigo-500/20">
+                G
+            </div>
+            <span class="font-semibold tracking-tight text-lg">Galahat Dev</span>
+        </div>
+        <div class="text-xs uppercase tracking-widest text-zinc-500 font-medium">
+            Android Apps
+        </div>
+    </header>
+
+    <main class="w-full max-w-4xl mx-auto px-6 py-12 flex-grow flex flex-col justify-center">
+        <!-- Developer Bio Section -->
+        <section class="mb-16">
+            <h1 class="text-4xl sm:text-5xl font-bold tracking-tight mb-4 bg-gradient-to-r from-zinc-100 via-zinc-300 to-zinc-500 bg-clip-text text-transparent">
+                Mobil deneyimler tasarlıyorum.
+            </h1>
+            <p class="text-zinc-400 text-lg max-w-xl font-light leading-relaxed">
+                Kullanıcı odaklı, minimalist ve akıcı Android uygulamaları geliştiren bağımsız yazılım geliştirici stüdyosu.
+            </p>
+        </section>
+
+        <!-- Apps Section Header -->
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-xs uppercase tracking-widest text-zinc-500 font-semibold">Uygulamalarım</h2>
+            <span class="text-xs text-zinc-600">1 Proje</span>
+        </div>
+
+        <!-- Apps Grid / Card -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <!-- App Card: My Alarm -->
+            <div class="group relative bg-zinc-900/50 border border-zinc-800/80 hover:border-zinc-700 rounded-3xl p-6 transition-all duration-300 hover:shadow-2xl hover:shadow-indigo-500/5 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-start justify-between mb-6">
+                        <!-- Clickable App Icon -->
+                        <a href="https://play.google.com/store/apps/details?id=com.galahatdev.myalarm" 
+                           target="_blank" 
+                           rel="noopener noreferrer"
+                           class="relative block group-hover:scale-105 transition-transform duration-300 cursor-pointer"
+                           title="Google Play'de Görüntüle">
+                            <div class="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl blur opacity-30 group-hover:opacity-75 transition duration-300"></div>
+                            <div class="relative w-16 h-16 rounded-2xl bg-zinc-800 border border-zinc-700 flex items-center justify-center overflow-hidden shadow-md">
+                                <!-- App Icon SVG Placeholder / Alarm Icon -->
+                                <svg class="w-8 h-8 text-indigo-400 group-hover:text-indigo-300 transition-colors" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </div>
+                        </a>
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+                            Aktif
+                        </span>
+                    </div>
+
+                    <h3 class="text-xl font-semibold tracking-tight text-zinc-100 mb-2">
+                        My Alarm: Alarm Clock & Task
+                    </h3>
+                    <p class="text-zinc-400 text-sm font-light leading-relaxed mb-6">
+                        Günlük planlarınızı kaçırmamanız için tasarlanmış şık, modern ve güvenilir akıllı alarm ve görev yönetim uygulaması.
+                    </p>
+                </div>
+
+                <!-- Card Footer / Store Link -->
+                <div class="pt-4 border-t border-zinc-800/60 flex items-center justify-between">
+                    <span class="text-xs text-zinc-500">Google Play Store</span>
+                    <a href="https://play.google.com/store/apps/details?id=com.galahatdev.myalarm" 
+                       target="_blank" 
+                       rel="noopener noreferrer"
+                       class="inline-flex items-center space-x-2 text-xs font-semibold text-indigo-400 hover:text-indigo-300 transition-colors group-hover:translate-x-1 duration-300">
+                        <span>İncele</span>
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="w-full max-w-4xl mx-auto px-6 py-8 border-t border-zinc-900 flex flex-col sm:flex-row items-center justify-between text-xs text-zinc-500">
+        <p>&copy; 2026 Galahat Dev. Tüm hakları saklıdır.</p>
+        <div class="flex space-x-4 mt-4 sm:mt-0">
+            <a href="https://play.google.com/store/apps/dev?id=..." target="_blank" rel="noopener noreferrer" class="hover:text-zinc-300 transition-colors">Google Play</a>
+            <a href="mailto:contact@galahatdev.com" class="hover:text-zinc-300 transition-colors">İletişim</a>
+        </div>
+    </footer>
+
+</body>
+</html>
