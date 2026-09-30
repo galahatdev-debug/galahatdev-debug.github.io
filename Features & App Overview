@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Alarm: Alarm Clock &amp; Task — Galahat Dev</title>
+    <!-- Favicon & Apple Touch Icon -->
+    <link rel="icon" type="image/png" href="512_Galahat.png">
+    <link rel="apple-touch-icon" href="512_Galahat.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        brand: ['"Syncopate"', 'sans-serif'],
+                    },
+                    animation: {
+                        'aurora-spin': 'aurora 20s linear infinite',
+                        'aurora-reverse': 'auroraRev 24s linear infinite',
+                        'float-slow': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        aurora: {
+                            '0%': { transform: 'rotate(0deg) scale(1) translateY(0px)' },
+                            '50%': { transform: 'rotate(180deg) scale(1.15) translateY(-30px)' },
+                            '100%': { transform: 'rotate(360deg) scale(1) translateY(0px)' }
+                        },
+                        auroraRev: {
+                            '0%': { transform: 'rotate(360deg) scale(1.1) translateY(0px)' },
+                            '50%': { transform: 'rotate(180deg) scale(0.9) translateY(40px)' },
+                            '100%': { transform: 'rotate(0deg) scale(1.1) translateY(0px)' }
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .bg-grid {
+            background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 0);
+            background-size: 28px 28px;
+        }
+
+        /* Scroll Reveal Animation Styles */
+        .reveal-init {
+            opacity: 0;
+            will-change: transform, opacity;
+            transition: opacity 0.95s cubic-bezier(0.16, 1, 0.3, 1), transform 0.95s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal-left {
+            transform: translateX(-70px);
+        }
+
+        .reveal-right {
+            transform: translateX(70px);
+        }
+
+        .reveal-up {
+            transform: translateY(60px);
+        }
+
+        .reveal-scale {
+            transform: scale(0.92) translateY(30px);
+        }
+
+        /* Once element hits viewport threshold */
+        .revealed {
+            opacity: 1 !important;
+            transform: translate(0, 0) scale(1) !important;
+        }
+
+        /* Stagger Delays */
+        .delay-100 { transition-delay: 100ms; }
+        .delay-200 { transition-delay: 200ms; }
+        .delay-300 { transition-delay: 300ms; }
+        .delay-400 { transition-delay: 400ms; }
+        .delay-500 { transition-delay: 500ms; }
+
+        /* Smartphone Hardware Mockup Frame Effect */
+        .phone-chassis {
+            transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.5s ease;
+            transform-style: preserve-3d;
+        }
+        .phone-chassis:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 25px 50px -12px rgba(45, 212, 191, 0.25);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #09090b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #27272a;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3f3f46;
+        }
+    </style>
+</head>
+<body class="bg-zinc-950 text-zinc-100 font-sans antialiased selection:bg-cyan-500 selection:text-white min-h-screen flex flex-col justify-between relative overflow-x-hidden">
+
+    <!-- Dynamic Animated Background Layer -->
+    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <div class="absolute inset-0 bg-grid opacity-60"></div>
+        <div class="absolute -top-40 -left-20 w-[550px] h-[550px] bg-gradient-to-br from-cyan-500/20 via-teal-500/10 to-transparent rounded-full blur-[110px] animate-aurora-spin"></div>
+        <div class="absolute top-1/3 -right-32 w-[600px] h-[600px] bg-gradient-to-bl from-indigo-500/15 via-teal-400/15 to-transparent rounded-full blur-[130px] animate-aurora-reverse"></div>
+        <div class="absolute -bottom-32 left-1/4 w-[500px] h-[500px] bg-gradient-to-tr from-cyan-600/15 via-emerald-500/10 to-transparent rounded-full blur-[120px] animate-aurora-spin"></div>
+        <canvas id="bg-canvas" class="absolute inset-0 w-full h-full opacity-65"></canvas>
+    </div>
+
+    <!-- Header / Brand Section -->
+    <header class="w-full max-w-6xl mx-auto px-6 py-8 flex items-center justify-between relative z-20">
+        <a href="https://galahatdev-debug.github.io" 
+           class="flex items-center space-x-4 group cursor-pointer"
+           title="Galahat Dev Portfolio">
+            <div class="w-11 h-11 rounded-2xl overflow-hidden shadow-lg shadow-cyan-950/40 group-hover:scale-105 group-hover:border-cyan-500/40 transition-all duration-300 border border-zinc-800/80 bg-zinc-900/80 backdrop-blur-md p-1">
+                <img src="512_Galahat.png" 
+                     alt="Galahat Dev Logo" 
+                     onerror="this.src='https://placehold.co/128x128/18181b/38bdf8?text=GD'"
+                     class="w-full h-full object-contain rounded-xl">
+            </div>
+            <div class="flex items-baseline space-x-1.5">
+                <span class="font-brand font-normal text-lg sm:text-xl tracking-[0.22em] text-zinc-100 group-hover:text-cyan-300 transition-colors uppercase">
+                    Galahat
+                </span>
+                <span class="font-brand font-bold text-xs sm:text-sm tracking-[0.18em] text-zinc-400 group-hover:text-cyan-400 transition-colors uppercase">
+                    Dev
+                </span>
+            </div>
+        </a>
+
+        <!-- Return to Portfolio Button -->
+        <a href="https://galahatdev-debug.github.io" 
+           class="inline-flex items-center space-x-2 px-4 py-2 rounded-full text-xs font-semibold text-zinc-300 hover:text-cyan-300 bg-zinc-900/80 hover:bg-zinc-800/80 border border-zinc-800/80 hover:border-cyan-500/40 backdrop-blur-md transition-all duration-300 shadow-sm">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            <span>Back to Portfolio</span>
+        </a>
+    </header>
+
+    <main class="w-full max-w-6xl mx-auto px-6 py-6 flex-grow relative z-10">
+        
+        <!-- Hero Section with Staggered Entrance -->
+        <section class="text-center max-w-3xl mx-auto mb-28">
+            <div class="reveal-init reveal-scale inline-block relative mb-6 group">
+                <div class="absolute -inset-2 bg-gradient-to-tr from-teal-500 via-cyan-400 to-amber-200 rounded-3xl blur-xl opacity-40 group-hover:opacity-80 transition duration-500"></div>
+                <div class="relative w-24 h-24 rounded-3xl bg-zinc-900 border border-zinc-700/60 p-1 shadow-2xl flex items-center justify-center animate-float-slow">
+                    <img src="512_2.png" 
+                         alt="My Alarm Logo" 
+                         onerror="this.src='https://placehold.co/128x128/18181b/2dd4bf?text=Alarm'"
+                         class="w-full h-full object-cover rounded-2xl">
+                </div>
+            </div>
+
+            <div class="reveal-init reveal-up delay-100 flex items-center justify-center space-x-2.5 mb-3">
+                <span class="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-[11px] font-medium bg-teal-500/10 text-teal-300 border border-teal-500/20">
+                    <span class="w-1.5 h-1.5 rounded-full bg-teal-400 animate-pulse"></span>
+                    <span>Android Application</span>
+                </span>
+                <span class="px-2.5 py-1 rounded-full text-[11px] font-medium bg-zinc-900 border border-zinc-800 text-zinc-400">
+                    Feature Guide &amp; Mission Directory
+                </span>
+            </div>
+
+            <h1 class="reveal-init reveal-up delay-200 text-3xl sm:text-5xl font-extrabold tracking-tight pb-1 mb-4 bg-gradient-to-r from-zinc-100 via-zinc-200 to-zinc-400 bg-clip-text text-transparent">
+                My Alarm: Alarm Clock &amp; Task
+            </h1>
+            <p class="reveal-init reveal-up delay-300 text-zinc-400 text-base sm:text-lg font-light leading-relaxed mb-8 max-w-2xl mx-auto">
+                Engineered for heavy sleepers. Break free from morning fatigue with 12 smart awakening missions, anti-oversleep wake-up verification tests, precision countdown timers, and fully customizable photo backdrops.
+            </p>
+
+            <div class="reveal-init reveal-up delay-400 flex flex-wrap items-center justify-center gap-3">
+                <a href="https://play.google.com/store/apps/details?id=com.galahatdev.myalarm" 
+                   target="_blank" 
+                   rel="noopener noreferrer" 
+                   class="inline-flex items-center space-x-2.5 px-6 py-3 rounded-2xl bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-400 hover:to-cyan-400 text-zinc-950 font-bold text-sm transition-all duration-300 shadow-lg shadow-cyan-500/20 hover:scale-105">
+                    <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                        <path d="M3.609 1.814L13.792 12 3.61 22.186a2.38 2.38 0 0 1-.22-.989V2.803c0-.368.08-.707.22-.989zm11.235 11.238l2.257 2.258-12.78 7.377 10.523-9.635zm0-2.104L4.321 1.313l12.78 7.377-2.257 2.258zm1.096 1.052l2.96 1.708a2.128 2.128 0 0 0 0-3.692l-2.96 1.708a.96.96 0 0 0 0 .276z"/>
+                    </svg>
+                    <span>Download on Google Play</span>
+                </a>
+
+                <a href="https://galahatdev-debug.github.io/My_Alarm_GP_en.html" 
+                   target="_blank" 
+                   rel="noopener noreferrer" 
+                   class="inline-flex items-center space-x-1.5 px-4 py-3 rounded-2xl bg-zinc-900/90 hover:bg-zinc-800 text-zinc-300 text-xs font-medium border border-zinc-800 hover:border-zinc-700 transition-colors">
+                    <svg class="w-3.5 h-3.5 text-cyan-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    </svg>
+                    <span>Privacy Policy</span>
+                </a>
+
+                <a href="https://galahatdev-debug.github.io/My_Alarm_KK_en.html" 
+                   target="_blank" 
+                   rel="noopener noreferrer" 
+                   class="inline-flex items-center space-x-1.5 px-4 py-3 rounded-2xl bg-zinc-900/90 hover:bg-zinc-800 text-zinc-300 text-xs font-medium border border-zinc-800 hover:border-zinc-700 transition-colors">
+                    <svg class="w-3.5 h-3.5 text-cyan-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>
+                    </svg>
+                    <span>Terms of Use</span>
+                </a>
+            </div>
+        </section>
+
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center mb-36">
+            <div class="lg:col-span-7 order-2 lg:order-1 reveal-init reveal-left">
+                <div class="inline-flex items-center space-x-2 text-cyan-400 text-xs uppercase tracking-widest font-semibold mb-3">
+                    <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+                    <span>Adaptive Modern Interface</span>
+                </div>
+                <h2 class="text-2xl sm:text-4xl font-bold tracking-tight text-zinc-100 mb-4">
+                    Home Screen &amp; Dual Alarm Modes
+                </h2>
+                <p class="text-zinc-400 text-base leading-relaxed mb-6 font-light">
+                    Effortlessly adapt your wake-up experience to your schedule. Choose standard mode for casual days or switch to <strong class="text-cyan-300 font-semibold">Task-Based Alarms (Missions)</strong> designed for heavy sleepers who need mental stimulation or physical motion to get out of bed.
+                </p>
+                <div class="space-y-3.5 text-sm text-zinc-300">
+                    <div class="p-3.5 rounded-2xl bg-zinc-900/50 border border-zinc-800/80 flex items-start space-x-3">
+                        <span class="p-1 rounded-lg bg-cyan-500/10 text-cyan-400 mt-0.5">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                        </span>
+                        <span>Live countdown timer header indicating the exact time remaining until the next active alarm rings.</span>
+                    </div>
+                    <div class="p-3.5 rounded-2xl bg-zinc-900/50 border border-zinc-800/80 flex items-start space-x-3">
+                        <span class="p-1 rounded-lg bg-cyan-500/10 text-cyan-400 mt-0.5">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                        </span>
+                        <span>Interactive mission badge badges (QR code, Memory, Notes icons) for swift overview on every card.</span>
+                    </div>
+                    <div class="p-3.5 rounded-2xl bg-zinc-900/50 border border-zinc-800/80 flex items-start space-x-3">
+                        <span class="p-1 rounded-lg bg-cyan-500/10 text-cyan-400 mt-0.5">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                        </span>
+                        <span>Fluid bottom navigation island allowing instant transitions between Alarms, Timer, Settings, and Profile.</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Mockups Sliding In from Right -->
+            <div class="lg:col-span-5 order-1 lg:order-2 flex justify-center items-center gap-4 reveal-init reveal-right">
+                <div class="relative group cursor-pointer phone-chassis" onclick="openLightbox('/resimler/Ana.png')">
+                    <div class="w-44 sm:w-52 rounded-[36px] p-2 bg-zinc-900 border-2 border-zinc-800 shadow-2xl transition-all duration-300 group-hover:border-cyan-500/60">
+                        <img src="/resimler/Ana.png" alt="Home Screen" onerror="this.src='https://placehold.co/360x780/18181b/38bdf8?text=Home+Screen'" class="w-full h-auto rounded-[30px] object-cover">
+                    </div>
+                    <span class="absolute bottom-4 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity text-[11px] bg-zinc-950/90 text-cyan-300 px-3 py-1 rounded-full border border-cyan-500/30 whitespace-nowrap backdrop-blur-md pointer-events-none">Inspect</span>
+                </div>
+
+                <div class="relative group cursor-pointer phone-chassis -mt-8" onclick="openLightbox('/resimler/açık liste.png')">
+                    <div class="w-44 sm:w-52 rounded-[36px] p-2 bg-zinc-900 border-2 border-zinc-800 shadow-2xl transition-all duration-300 group-hover:border-teal-500/60">
+                        <img src="/resimler/açık liste.png" alt="Expanded Alarm List" onerror="this.src='https://placehold.co/360x780/18181b/2dd4bf?text=Alarm+List'" class="w-full h-auto rounded-[30px] object-cover">
+                    </div>
+                    <span class="absolute bottom-4 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity text-[11px] bg-zinc-950/90 text-teal-300 px-3 py-1 rounded-full border border-teal-500/30 whitespace-nowrap backdrop-blur-md pointer-events-none">Inspect</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-36">
+            
+            <!-- Value Highlight Banner: Difficulty, Stacking & 100% Free -->
+            <div class="reveal-init reveal-scale p-7 sm:p-9 rounded-3xl bg-gradient-to-r from-zinc-900/90 via-zinc-900/60 to-zinc-900/90 border border-teal-500/30 shadow-2xl relative overflow-hidden mb-12">
+                <div class="absolute -right-20 -top-20 w-72 h-72 bg-teal-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10">
+                    <div class="flex items-start space-x-3.5">
+                        <div class="p-3 rounded-2xl bg-teal-500/10 text-teal-400 border border-teal-500/20 shrink-0">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-bold text-zinc-100 uppercase tracking-wide">Custom Difficulty Tuning</h3>
+                            <p class="text-xs text-zinc-400 mt-1 font-light leading-relaxed">
+                                Fine-tune every single mission to match your habits (Easy, Medium, or Hard). From gentle mental warm-ups to intense calculation challenges.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start space-x-3.5">
+                        <div class="p-3 rounded-2xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 shrink-0">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-bold text-zinc-100 uppercase tracking-wide">Multi-Mission Stacking</h3>
+                            <p class="text-xs text-zinc-400 mt-1 font-light leading-relaxed">
+                                Never hit snooze again. Stack as many missions as you want in sequence—even activating all 12 missions back-to-back for guaranteed mornings!
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start space-x-3.5">
+                        <div class="p-3 rounded-2xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shrink-0">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-bold text-zinc-100 uppercase tracking-wide">100% Free &amp; Fully Unlocked</h3>
+                            <p class="text-xs text-zinc-400 mt-1 font-light leading-relaxed">
+                                No locked features, no premium tier, and no paywalls. All 12 mission engines and custom tools are free for everyone right out of the box.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+                
+                <!-- Mockup Sticky Column (Sliding in from Left) -->
+                <div class="lg:col-span-4 flex flex-col items-center reveal-init reveal-left lg:sticky lg:top-24">
+                    <div class="relative group cursor-pointer phone-chassis" onclick="openLightbox('/resimler/görevler.png')">
+                        <div class="w-56 sm:w-64 rounded-[40px] p-2.5 bg-zinc-900 border-2 border-zinc-800 shadow-2xl transition-all duration-300 group-hover:border-teal-500/60">
+                            <img src="/resimler/görevler.png" alt="Missions Directory" onerror="this.src='https://placehold.co/360x780/18181b/38bdf8?text=Missions'" class="w-full h-auto rounded-[32px] object-cover">
+                        </div>
+                        <span class="absolute bottom-4 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity text-[11px] bg-zinc-950/90 text-teal-300 px-3 py-1 rounded-full border border-teal-500/30 whitespace-nowrap backdrop-blur-md pointer-events-none">Inspect</span>
+                    </div>
+                    <span class="text-xs text-zinc-400 font-mono mt-4 bg-zinc-900/80 px-3 py-1 rounded-full border border-zinc-800">
+                        12 Physical &amp; Mental Challenge Modules
+                    </span>
+                </div>
+
+                <!-- 12 Mission Grid (Sliding in from Right) -->
+                <div class="lg:col-span-8 reveal-init reveal-right space-y-4">
+                    <div class="mb-4">
+                        <div class="inline-flex items-center space-x-2 text-teal-400 text-xs uppercase tracking-widest font-semibold mb-2">
+                            <span class="w-2 h-2 rounded-full bg-teal-400"></span>
+                            <span>Wake-Up Arsenal</span>
+                        </div>
+                        <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-100">
+                            12 Smart Awakening Missions
+                        </h2>
+                        <p class="text-zinc-400 text-sm font-light mt-1">
+                            Explore cognitive and motion-based challenges designed to guarantee you leave your bed alert and ready:
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                        
+                        <!-- 1. Math Mission -->
+                        <div class="p-4 rounded-2xl bg-zinc-900/60 border border-zinc-800/80 hover:border-cyan-500/40 transition-all duration-300 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-base font-bold text-zinc-100 flex items-center space-x-2">
+                                        <span>🧮</span>
+                                        <span>Math Mission</span>
+                                    </span>
+                                    <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-300 border border-cyan-500/20">Cognitive</span>
+                                </div>
+                                <p class="text-xs text-zinc-400 font-light leading-relaxed">
+                                    Kickstart your brain and dispel morning fog by solving customized multi-step arithmetic equations with your choice of difficulty.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- 2. Walking Mission -->
+                        <div class="p-4 rounded-2xl bg-zinc-900/60 border border-zinc-800/80 hover:border-cyan-500/40 transition-all duration-300 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-base font-bold text-zinc-100 flex items-center space-x-2">
+                                        <span>🚶</span>
+                                        <span>Walking / Step Mission</span>
+                                    </span>
+                                    <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-teal-500/10 text-teal-300 border border-teal-500/20">Physical</span>
+                                </div>
+                                <p class="text-xs text-zinc-400 font-light leading-relaxed">
+                                    Guarantees you leave the mattress. Place your phone in your pocket and take your target number of steps (e.g., 20 or 50) before the alarm turns off.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- 3. Barcode / QR Code Scanner -->
+                        <div class="p-4 rounded-2xl bg-zinc-900/60 border border-zinc-800/80 hover:border-cyan-500/40 transition-all duration-300 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-base font-bold text-zinc-100 flex items-center space-x-2">
+                                        <span>📷</span>
+                                        <span>Barcode &amp; QR Code</span>
+                                    </span>
+                                    <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-300 border border-cyan-500/20">Camera</span>
+                                </div>
+                                <p class="text-xs text-zinc-400 font-light leading-relaxed">
+                                    Register the barcode of your bathroom toothpaste or kitchen coffee package. The alarm will only silence once you stand up and scan that physical barcode.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- 4. Shake Mission -->
+                        <div class="p-4 rounded-2xl bg-zinc-900/60 border border-zinc-800/80 hover:border-cyan-500/40 transition-all duration-300 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-base font-bold text-zinc-100 flex items-center space-x-2">
+                                        <span>📳</span>
+                                        <span>Shake Mission</span>
+                                    </span>
+                                    <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-teal-500/10 text-teal-300 border border-teal-500/20">Motion</span>
+                                </div>
+                                <p class="text-xs text-zinc-400 font-light leading-relaxed">
+                                    Boost your blood circulation and morning heart rate by vigorously shaking your phone until the onscreen progress bar reaches 100%.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- 5. NFC Tag Mission -->
+                        <div class="p-4 rounded-2xl bg-zinc-900/60 border border-zinc-800/80 hover:border-cyan-500/40 transition-all duration-300 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-base font-bold text-zinc-100 flex items-center space-x-2">
+                                        <span>📶</span>
+                                        <span>NFC Tag Tap</span>
+                                    </span>
+                                    <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">Hardware</span>
+                                </div>
+                                <p class="text-xs text-zinc-400 font-light leading-relaxed">
+                                    Place an NFC card or sticker outside your bedroom, on your refrigerator or work desk. Hold your phone close to the tag to verify wake-up and silence the ring.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- 6. Emoji Memorization -->
+                        <div class="p-4 rounded-2xl bg-zinc-900/60 border border-zinc-800/80 hover:border-cyan-500/40 transition-all duration-300 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-base font-bold text-zinc-100 flex items-center space-x-2">
+                                        <span>🐨</span>
+                                        <span>Emoji Memory</span>
+                                    </span>
+                                    <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/20">Visual Memory</span>
+                                </div>
+                                <p class="text-xs text-zinc-400 font-light leading-relaxed">
+                                    Memorize 3 to 6 randomized emojis shown for 5 seconds before they vanish. Enter the identical sequence from memory to successfully complete the mission.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- 7. Reverse Typing -->
+                        <div class="p-4 rounded-2xl bg-zinc-900/60 border border-zinc-800/80 hover:border-cyan-500/40 transition-all duration-300 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-base font-bold text-zinc-100 flex items-center space-x-2">
+                                        <span>🔤</span>
+                                        <span>Reverse Typing</span>
+                                    </span>
+                                    <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-300 border border-cyan-500/20">Focus</span>
+                                </div>
+                                <p class="text-xs text-zinc-400 font-light leading-relaxed">
+                                    Read words presented backward in mirror layout and mentally decode them before accurately typing them in the correct forward sequence.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- 8. Typing Mission -->
+                        <div class="p-4 rounded-2xl bg-zinc-900/60 border border-zinc-800/80 hover:border-cyan-500/40 transition-all duration-300 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-base font-bold text-zinc-100 flex items-center space-x-2">
+                                        <span>✍️</span>
+                                        <span>Typing Mission</span>
+                                    </span>
+                                    <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-teal-500/10 text-teal-300 border border-teal-500/20">Typing</span>
+                                </div>
+                                <p class="text-xs text-zinc-400 font-light leading-relaxed">
+                                    Re-type inspirational quotes and precise sentences character by character without typos to establish sharp visual and motor coordination.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- 9. Card Memory Match -->
+                        <div class="p-4 rounded-2xl bg-zinc-900/60 border border-zinc-800/80 hover:border-cyan-500/40 transition-all duration-300 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-base font-bold text-zinc-100 flex items-center space-x-2">
+                                        <span>🃏</span>
+                                        <span>Card Pair Match</span>
+                                    </span>
+                                    <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">Visual Recall</span>
+                                </div>
+                                <p class="text-xs text-zinc-400 font-light leading-relaxed">
+                                    All cards are briefly revealed face-up before flipping over. Recall their hidden positions and pair identical symbols to pass the challenge.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- 10. Number Sorting -->
+                        <div class="p-4 rounded-2xl bg-zinc-900/60 border border-zinc-800/80 hover:border-cyan-500/40 transition-all duration-300 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-base font-bold text-zinc-100 flex items-center space-x-2">
+                                        <span>🔢</span>
+                                        <span>Number Sorting</span>
+                                    </span>
+                                    <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/20">Logic</span>
+                                </div>
+                                <p class="text-xs text-zinc-400 font-light leading-relaxed">
+                                    Scrambled numeric tiles populate the screen. Tap and arrange them in ascending order from lowest to highest to dismiss the alarm.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- 11. Trivia Quiz / Capital Cities -->
+                        <div class="p-4 rounded-2xl bg-zinc-900/60 border border-zinc-800/80 hover:border-cyan-500/40 transition-all duration-300 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-base font-bold text-zinc-100 flex items-center space-x-2">
+                                        <span>🌍</span>
+                                        <span>Country Capitals Quiz</span>
+                                    </span>
+                                    <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-300 border border-cyan-500/20">Knowledge</span>
+                                </div>
+                                <p class="text-xs text-zinc-400 font-light leading-relaxed">
+                                    Test your world knowledge. Multiple-choice general trivia asks for national capital cities. Select the accurate capital to shut off the alarm.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- 12. Pattern Sequence / Repeat -->
+                        <div class="p-4 rounded-2xl bg-zinc-900/60 border border-zinc-800/80 hover:border-cyan-500/40 transition-all duration-300 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-base font-bold text-zinc-100 flex items-center space-x-2">
+                                        <span>🔁</span>
+                                        <span>Pattern Repeat</span>
+                                    </span>
+                                    <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-teal-500/10 text-teal-300 border border-teal-500/20">Sequence</span>
+                                </div>
+                                <p class="text-xs text-zinc-400 font-light leading-relaxed">
+                                    Watch an illuminated tile sequence flash in randomized order, then repeat the exact order and rhythm accurately to silence your device.
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center mb-36">
+            <div class="lg:col-span-7 order-2 lg:order-1 reveal-init reveal-left">
+                <div class="inline-flex items-center space-x-2 text-rose-400 text-xs uppercase tracking-widest font-semibold mb-3">
+                    <span class="w-2 h-2 rounded-full bg-rose-400"></span>
+                    <span>Anti-Oversleep Safeguard</span>
+                </div>
+                <h2 class="text-2xl sm:text-4xl font-bold tracking-tight text-zinc-100 mb-4">
+                    Wake-up Verification Test &amp; Precision Timer
+                </h2>
+                <p class="text-zinc-400 text-base leading-relaxed mb-4 font-light">
+                    Solve the universal morning trap: completing your mission, putting down your device, and crawling right back under the blankets. Enter the <strong class="text-rose-400 font-semibold">Wake-up Test</strong>.
+                </p>
+                <p class="text-zinc-400 text-sm leading-relaxed mb-6 font-light">
+                    A few minutes after you dismiss your alarm, a high-priority countdown with a slider joystick verification activates. If you fail to slide the joystick before time runs out, <span class="text-zinc-200 font-semibold">the alarm immediately triggers again with all configured missions!</span>
+                </p>
+
+                <!-- Integrated Circular Timer Feature Box -->
+                <div class="p-5 rounded-2xl bg-zinc-900/50 border border-zinc-800/80">
+                    <div class="flex items-center space-x-3 mb-2">
+                        <span class="p-2 rounded-xl bg-cyan-500/10 text-cyan-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="10"/>
+                                <polyline points="12 6 12 12 16 14"/>
+                            </svg>
+                        </span>
+                        <h3 class="text-base font-semibold text-zinc-100">Integrated Circular Dial Timer</h3>
+                    </div>
+                    <p class="text-zinc-400 text-xs leading-relaxed font-light">
+                        Not just for mornings. Enjoy a sleek analog circular dial indicator with quick pause/resume controls for Pomodoro study sessions, workouts, tea brewing, and daily cooking routines.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Mockups Sliding In from Right -->
+            <div class="lg:col-span-5 order-1 lg:order-2 flex justify-center items-center gap-4 reveal-init reveal-right">
+                <div class="relative group cursor-pointer phone-chassis" onclick="openLightbox('/resimler/uyanıklık test.png')">
+                    <div class="w-44 sm:w-52 rounded-[36px] p-2 bg-zinc-900 border-2 border-zinc-800 shadow-2xl transition-all duration-300 group-hover:border-rose-500/60">
+                        <img src="/resimler/uyanıklık test.png" alt="Wake-up Test Screen" onerror="this.src='https://placehold.co/360x780/18181b/f43f5e?text=Wakeup+Test'" class="w-full h-auto rounded-[30px] object-cover">
+                    </div>
+                    <span class="absolute bottom-4 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity text-[11px] bg-zinc-950/90 text-rose-300 px-3 py-1 rounded-full border border-rose-500/30 whitespace-nowrap backdrop-blur-md pointer-events-none">Inspect</span>
+                </div>
+
+                <div class="relative group cursor-pointer phone-chassis -mt-8" onclick="openLightbox('/resimler/zamanlayıcı.png')">
+                    <div class="w-44 sm:w-52 rounded-[36px] p-2 bg-zinc-900 border-2 border-zinc-800 shadow-2xl transition-all duration-300 group-hover:border-cyan-500/60">
+                        <img src="/resimler/zamanlayıcı.png" alt="Timer Screen" onerror="this.src='https://placehold.co/360x780/18181b/38bdf8?text=Timer'" class="w-full h-auto rounded-[30px] object-cover">
+                    </div>
+                    <span class="absolute bottom-4 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity text-[11px] bg-zinc-950/90 text-cyan-300 px-3 py-1 rounded-full border border-cyan-500/30 whitespace-nowrap backdrop-blur-md pointer-events-none">Inspect</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center mb-36">
+            <!-- Mockup Sliding In from Left -->
+            <div class="lg:col-span-5 flex justify-center items-center reveal-init reveal-left">
+                <div class="relative group cursor-pointer phone-chassis" onclick="openLightbox('/resimler/ayarlar.png')">
+                    <div class="w-56 sm:w-64 rounded-[40px] p-2.5 bg-zinc-900 border-2 border-zinc-800 shadow-2xl transition-all duration-300 group-hover:border-indigo-500/60">
+                        <img src="/resimler/ayarlar.png" alt="Settings Screen" onerror="this.src='https://placehold.co/360x780/18181b/818cf8?text=Settings'" class="w-full h-auto rounded-[32px] object-cover">
+                    </div>
+                    <span class="absolute bottom-4 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity text-[11px] bg-zinc-950/90 text-indigo-300 px-3 py-1 rounded-full border border-indigo-500/30 whitespace-nowrap backdrop-blur-md pointer-events-none">Inspect</span>
+                </div>
+            </div>
+
+            <!-- Content Sliding In from Right -->
+            <div class="lg:col-span-7 reveal-init reveal-right">
+                <div class="inline-flex items-center space-x-2 text-indigo-400 text-xs uppercase tracking-widest font-semibold mb-3">
+                    <span class="w-2 h-2 rounded-full bg-indigo-400"></span>
+                    <span>Tuning &amp; Ergonomics</span>
+                </div>
+                <h2 class="text-2xl sm:text-4xl font-bold tracking-tight text-zinc-100 mb-4">
+                    Advanced Controls &amp; Gentle Wake-up
+                </h2>
+                <p class="text-zinc-400 text-base leading-relaxed mb-6 font-light">
+                    Tailored configurations that respect your natural circadian rhythm while keeping you on schedule without panic or disorientation.
+                </p>
+
+                <div class="space-y-4">
+                    <div class="p-4 rounded-2xl bg-zinc-900/60 border border-zinc-800/80 flex items-start space-x-3.5 hover:border-indigo-500/30 transition-colors">
+                        <span class="p-2 rounded-xl bg-indigo-500/10 text-indigo-400 mt-0.5">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                        </span>
+                        <div>
+                            <h4 class="text-sm font-semibold text-zinc-200">Gentle Wake-up (Gradual Volume Ramp)</h4>
+                            <p class="text-xs text-zinc-400 mt-1 font-light leading-relaxed">
+                                Avoid sudden heart-racing jolts. Audio starts as an ambient whisper and progressively swells along a smooth curve to protect your cardiovascular calm.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="p-4 rounded-2xl bg-zinc-900/60 border border-zinc-800/80 flex items-start space-x-3.5 hover:border-cyan-500/30 transition-colors">
+                        <span class="p-2 rounded-xl bg-cyan-500/10 text-cyan-400 mt-0.5">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                        </span>
+                        <div>
+                            <h4 class="text-sm font-semibold text-zinc-200">Granular Snooze Limits</h4>
+                            <p class="text-xs text-zinc-400 mt-1 font-light leading-relaxed">
+                                Define strict snooze intervals and set an absolute snooze count limit, or completely disable snoozing on critical exam and workdays.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="p-4 rounded-2xl bg-zinc-900/60 border border-zinc-800/80 flex items-start space-x-3.5 hover:border-teal-500/30 transition-colors">
+                        <span class="p-2 rounded-xl bg-teal-500/10 text-teal-400 mt-0.5">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                        </span>
+                        <div>
+                            <h4 class="text-sm font-semibold text-zinc-200">Smooth Drum Time Picker</h4>
+                            <p class="text-xs text-zinc-400 mt-1 font-light leading-relaxed">
+                                Tactile, frictionless roller picker enabling rapid hour, minute, and AM/PM selection with fluid inertial scrolling.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="p-8 sm:p-12 rounded-3xl bg-zinc-900/40 border border-zinc-800/80 backdrop-blur-md relative overflow-hidden mb-32 reveal-init reveal-scale">
+            <div class="max-w-2xl mb-12">
+                <div class="inline-flex items-center space-x-2 text-amber-400 text-xs uppercase tracking-widest font-semibold mb-3">
+                    <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+                    <span>Personalization</span>
+                </div>
+                <h2 class="text-2xl sm:text-4xl font-bold tracking-tight text-zinc-100 mb-3">
+                    Custom Photo Backgrounds &amp; Live Mission Overlays
+                </h2>
+                <p class="text-zinc-400 text-sm sm:text-base font-light leading-relaxed">
+                    Make your waking moments uniquely yours. Set your loved ones, scenic memories, beloved pets, or motivating vision boards as full-screen backgrounds. All mission widgets float over glassmorphic layers with razor-sharp contrast.
+                </p>
+            </div>
+
+            <!-- Staggered Three-Column Mockup Showcase -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-8">
+                <!-- cos1 -->
+                <div class="flex flex-col items-center group cursor-pointer phone-chassis reveal-init reveal-up delay-100" onclick="openLightbox('/resimler/cos1.png')">
+                    <div class="w-full max-w-[240px] rounded-[36px] p-2 bg-zinc-900 border-2 border-zinc-800 group-hover:border-cyan-400/70 shadow-2xl transition-all duration-300">
+                        <img src="/resimler/cos1.png" alt="Family Photo Background with Math Mission" onerror="this.src='https://placehold.co/360x780/18181b/38bdf8?text=Cos+Math'" class="w-full h-auto rounded-[28px] object-cover">
+                    </div>
+                    <div class="mt-4 text-center">
+                        <h4 class="text-sm font-semibold text-zinc-200 group-hover:text-cyan-300 transition-colors">Math Mission</h4>
+                        <p class="text-[11px] text-zinc-400 mt-0.5">Family &amp; Nature Scenery Theme</p>
+                    </div>
+                </div>
+
+                <!-- cos2 -->
+                <div class="flex flex-col items-center group cursor-pointer phone-chassis reveal-init reveal-up delay-200" onclick="openLightbox('/resimler/cos2.png')">
+                    <div class="w-full max-w-[240px] rounded-[36px] p-2 bg-zinc-900 border-2 border-zinc-800 group-hover:border-teal-400/70 shadow-2xl transition-all duration-300">
+                        <img src="/resimler/cos2.png" alt="Pet Background with NFC Mission" onerror="this.src='https://placehold.co/360x780/18181b/2dd4bf?text=Cos+NFC'" class="w-full h-auto rounded-[28px] object-cover">
+                    </div>
+                    <div class="mt-4 text-center">
+                        <h4 class="text-sm font-semibold text-zinc-200 group-hover:text-teal-300 transition-colors">NFC Tag Mission</h4>
+                        <p class="text-[11px] text-zinc-400 mt-0.5">Pet Portrait Backdrop Theme</p>
+                    </div>
+                </div>
+
+                <!-- cos3 -->
+                <div class="flex flex-col items-center group cursor-pointer phone-chassis reveal-init reveal-up delay-300" onclick="openLightbox('/resimler/cos3.png')">
+                    <div class="w-full max-w-[240px] rounded-[36px] p-2 bg-zinc-900 border-2 border-zinc-800 group-hover:border-amber-400/70 shadow-2xl transition-all duration-300">
+                        <img src="/resimler/cos3.png" alt="Motivation Theme with Step Mission" onerror="this.src='https://placehold.co/360x780/18181b/fbbf24?text=Cos+Walk'" class="w-full h-auto rounded-[28px] object-cover">
+                    </div>
+                    <div class="mt-4 text-center">
+                        <h4 class="text-sm font-semibold text-zinc-200 group-hover:text-amber-300 transition-colors">Walking Step Mission</h4>
+                        <p class="text-[11px] text-zinc-400 mt-0.5">Focus &amp; Ambition Goal Theme</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="reveal-init reveal-scale p-8 sm:p-14 rounded-3xl bg-gradient-to-b from-zinc-900/90 to-zinc-950 border border-zinc-800/80 text-center relative overflow-hidden shadow-2xl">
+            <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+            <h3 class="text-2xl sm:text-4xl font-extrabold tracking-tight text-zinc-100 mb-3 relative z-10">
+                Stop Losing Mornings to Snooze
+            </h3>
+            <p class="text-zinc-400 text-sm sm:text-base max-w-xl mx-auto mb-8 font-light relative z-10">
+                Start your days with momentum and mental clarity. All 12 missions are 100% free with no subscriptions.
+            </p>
+
+            <a href="https://play.google.com/store/apps/details?id=com.galahatdev.myalarm" 
+               target="_blank" 
+               rel="noopener noreferrer" 
+               class="inline-flex items-center space-x-2.5 px-8 py-3.5 rounded-2xl bg-gradient-to-r from-teal-500 via-cyan-400 to-teal-400 text-zinc-950 font-bold text-sm transition-all duration-300 shadow-xl shadow-cyan-500/20 hover:scale-105 relative z-10">
+                <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                    <path d="M3.609 1.814L13.792 12 3.61 22.186a2.38 2.38 0 0 1-.22-.989V2.803c0-.368.08-.707.22-.989zm11.235 11.238l2.257 2.258-12.78 7.377 10.523-9.635zm0-2.104L4.321 1.313l12.78 7.377-2.257 2.258zm1.096 1.052l2.96 1.708a2.128 2.128 0 0 0 0-3.692l-2.96 1.708a.96.96 0 0 0 0 .276z"/>
+                </svg>
+                <span>Download Free on Google Play</span>
+            </a>
+        </section>
+
+    </main>
+
+    <div id="lightbox-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden items-center justify-center p-4 transition-all duration-300">
+        <button onclick="closeLightbox()" class="absolute top-6 right-6 p-2 rounded-full bg-zinc-900 border border-zinc-700 text-zinc-300 hover:text-white transition">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+        </button>
+        <div class="max-w-md max-h-[90vh] overflow-hidden rounded-[36px] border-2 border-zinc-800 shadow-2xl p-1 bg-zinc-950">
+            <img id="lightbox-img" src="" alt="Fullscreen Screenshot Inspection" class="w-full h-auto max-h-[85vh] object-contain rounded-[32px]">
+        </div>
+    </div>
+
+    <footer class="w-full max-w-6xl mx-auto px-6 py-8 border-t border-zinc-900 flex flex-col sm:flex-row items-center justify-between text-xs text-zinc-500 relative z-10 mt-20">
+        <p>&copy; 2026 Galahat Dev. All rights reserved.</p>
+        
+        <div class="flex items-center space-x-6 mt-4 sm:mt-0">
+            <a id="gp-link" 
+               href="https://play.google.com/store/apps/developer?id=Galahat+Dev" 
+               target="_blank" 
+               rel="noopener noreferrer" 
+               class="hover:text-zinc-300 transition-all duration-500 whitespace-nowrap">
+                Google Play Store
+            </a>
+            
+            <div id="contact-wrapper" class="relative overflow-hidden h-5 w-16 transition-all duration-500 ease-out flex items-center justify-end">
+                <button onclick="revealEmail()" id="contact-btn" class="hover:text-zinc-300 transition-all duration-300 text-right whitespace-nowrap cursor-pointer">
+                    Contact
+                </button>
+                <a href="mailto:galahatdev@gmail.com" id="email-text" class="hover:text-teal-400 transition-all duration-500 absolute right-0 opacity-0 translate-y-3 pointer-events-none whitespace-nowrap">
+                    galahatdev@gmail.com
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 1. Intersection Observer for Scroll Reveal Animations
+        document.addEventListener('DOMContentLoaded', () => {
+            const revealElements = document.querySelectorAll('.reveal-init');
+
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px 0px -80px 0px',
+                threshold: 0.12
+            };
+
+            const revealObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('revealed');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            revealElements.forEach(el => revealObserver.observe(el));
+        });
+
+        // 2. Interactive Constellation Canvas Particle Background
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let mouse = { x: null, y: null, radius: 140 };
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            initParticles();
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        });
+        window.addEventListener('mouseout', () => {
+            mouse.x = null;
+            mouse.y = null;
+        });
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 1.6 + 0.8;
+                this.speedX = (Math.random() - 0.5) * 0.45;
+                this.speedY = (Math.random() - 0.5) * 0.45;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+
+                if (mouse.x !== null) {
+                    let dx = mouse.x - this.x;
+                    let dy = mouse.y - this.y;
+                    let distance = Math.sqrt(dx * dx + dy * dy);
+                    if (distance < mouse.radius) {
+                        let force = (mouse.radius - distance) / mouse.radius;
+                        this.x -= (dx / distance) * force * 1.5;
+                        this.y -= (dy / distance) * force * 1.5;
+                    }
+                }
+            }
+            draw() {
+                ctx.fillStyle = 'rgba(45, 212, 191, 0.4)';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            const particleCount = Math.floor((canvas.width * canvas.height) / 14000);
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function connectParticles() {
+            for (let a = 0; a < particles.length; a++) {
+                for (let b = a + 1; b < particles.length; b++) {
+                    let dx = particles[a].x - particles[b].x;
+                    let dy = particles[a].y - particles[b].y;
+                    let distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < 115) {
+                        let opacity = 1 - (distance / 115);
+                        ctx.strokeStyle = `rgba(20, 184, 166, ${opacity * 0.16})`;
+                        ctx.lineWidth = 0.7;
+                        ctx.beginPath();
+                        ctx.moveTo(particles[a].x, particles[a].y);
+                        ctx.lineTo(particles[b].x, particles[b].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+            }
+            connectParticles();
+            requestAnimationFrame(animate);
+        }
+
+        resizeCanvas();
+        animate();
+
+        // 3. Lightbox Inspection Functions
+        function openLightbox(src) {
+            const modal = document.getElementById('lightbox-modal');
+            const img = document.getElementById('lightbox-img');
+            img.src = src;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeLightbox() {
+            const modal = document.getElementById('lightbox-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        document.getElementById('lightbox-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'lightbox-modal') {
+                closeLightbox();
+            }
+        });
+
+        // 4. Animated Contact / Email Reveal in Footer
+        function revealEmail() {
+            const btn = document.getElementById('contact-btn');
+            const email = document.getElementById('email-text');
+            const wrapper = document.getElementById('contact-wrapper');
+            const gpLink = document.getElementById('gp-link');
+            
+            gpLink.classList.add('-translate-x-3');
+            wrapper.classList.remove('w-16');
+            wrapper.classList.add('w-44');
+            btn.classList.add('opacity-0', '-translate-y-3', 'pointer-events-none');
+            
+            setTimeout(() => {
+                email.classList.remove('opacity-0', 'translate-y-3', 'pointer-events-none');
+                email.classList.add('opacity-100', 'translate-y-0');
+            }, 80);
+        }
+    </script>
+</body>
+</html>
