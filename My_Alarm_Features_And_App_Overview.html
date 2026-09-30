@@ -21,24 +21,24 @@
                         brand: ['"Syncopate"', 'sans-serif'],
                     },
                     animation: {
-                        'aurora-spin': 'aurora 20s linear infinite',
-                        'aurora-reverse': 'auroraRev 24s linear infinite',
-                        'float-slow': 'float 6s ease-in-out infinite',
+                        'aurora-spin': 'aurora 22s linear infinite',
+                        'aurora-reverse': 'auroraRev 26s linear infinite',
+                        'float-gentle': 'floatGentle 5s ease-in-out infinite',
                     },
                     keyframes: {
                         aurora: {
                             '0%': { transform: 'rotate(0deg) scale(1) translateY(0px)' },
-                            '50%': { transform: 'rotate(180deg) scale(1.15) translateY(-30px)' },
+                            '50%': { transform: 'rotate(180deg) scale(1.15) translateY(-25px)' },
                             '100%': { transform: 'rotate(360deg) scale(1) translateY(0px)' }
                         },
                         auroraRev: {
                             '0%': { transform: 'rotate(360deg) scale(1.1) translateY(0px)' },
-                            '50%': { transform: 'rotate(180deg) scale(0.9) translateY(40px)' },
+                            '50%': { transform: 'rotate(180deg) scale(0.9) translateY(35px)' },
                             '100%': { transform: 'rotate(0deg) scale(1.1) translateY(0px)' }
                         },
-                        float: {
+                        floatGentle: {
                             '0%, 100%': { transform: 'translateY(0px)' },
-                            '50%': { transform: 'translateY(-10px)' }
+                            '50%': { transform: 'translateY(-8px)' }
                         }
                     }
                 }
@@ -55,26 +55,26 @@
         .reveal-init {
             opacity: 0;
             will-change: transform, opacity;
-            transition: opacity 0.95s cubic-bezier(0.16, 1, 0.3, 1), transform 0.95s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .reveal-left {
-            transform: translateX(-70px);
+            transform: translateX(-50px);
         }
 
         .reveal-right {
-            transform: translateX(70px);
+            transform: translateX(50px);
         }
 
         .reveal-up {
-            transform: translateY(60px);
+            transform: translateY(40px);
         }
 
         .reveal-scale {
-            transform: scale(0.92) translateY(30px);
+            transform: scale(0.94) translateY(20px);
         }
 
-        /* Once element hits viewport threshold */
+        /* Once element reaches viewport */
         .revealed {
             opacity: 1 !important;
             transform: translate(0, 0) scale(1) !important;
@@ -85,16 +85,16 @@
         .delay-200 { transition-delay: 200ms; }
         .delay-300 { transition-delay: 300ms; }
         .delay-400 { transition-delay: 400ms; }
-        .delay-500 { transition-delay: 500ms; }
 
-        /* Smartphone Hardware Mockup Frame Effect */
-        .phone-chassis {
-            transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.5s ease;
-            transform-style: preserve-3d;
+        /* Pure Device Showcase Physics: Zero artificial cropping or double frames */
+        .device-showcase {
+            transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.45s ease;
+            filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.8));
+            transform-origin: center center;
         }
-        .phone-chassis:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 25px 50px -12px rgba(45, 212, 191, 0.25);
+        .device-showcase:hover {
+            transform: translateY(-10px) scale(1.025);
+            filter: drop-shadow(0 30px 45px rgba(20, 184, 166, 0.32));
         }
 
         /* Custom Scrollbar */
@@ -161,7 +161,7 @@
         <section class="text-center max-w-3xl mx-auto mb-28">
             <div class="reveal-init reveal-scale inline-block relative mb-6 group">
                 <div class="absolute -inset-2 bg-gradient-to-tr from-teal-500 via-cyan-400 to-amber-200 rounded-3xl blur-xl opacity-40 group-hover:opacity-80 transition duration-500"></div>
-                <div class="relative w-24 h-24 rounded-3xl bg-zinc-900 border border-zinc-700/60 p-1 shadow-2xl flex items-center justify-center animate-float-slow">
+                <div class="relative w-24 h-24 rounded-3xl bg-zinc-900 border border-zinc-700/60 p-1 shadow-2xl flex items-center justify-center animate-float-gentle">
                     <img src="512_2.png" 
                          alt="My Alarm Logo" 
                          onerror="this.src='https://placehold.co/128x128/18181b/2dd4bf?text=Alarm'"
@@ -183,7 +183,7 @@
                 My Alarm: Alarm Clock &amp; Task
             </h1>
             <p class="reveal-init reveal-up delay-300 text-zinc-400 text-base sm:text-lg font-light leading-relaxed mb-8 max-w-2xl mx-auto">
-                Engineered for heavy sleepers. Break free from morning fatigue with 12 smart awakening missions, anti-oversleep wake-up verification tests, precision countdown timers, and fully customizable photo backdrops.
+                Engineered for heavy sleepers. Wake up on your terms with 12 smart awakening missions, anti-oversleep wake-up verification tests, precision countdown timers, and personalized photo backdrops.
             </p>
 
             <div class="reveal-init reveal-up delay-400 flex flex-wrap items-center justify-center gap-3">
@@ -220,7 +220,8 @@
             </div>
         </section>
 
-        <section class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center mb-36">
+        <!-- SECTION 1: Home Screen & Dual Alarm Modes -->
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center mb-36">
             <div class="lg:col-span-7 order-2 lg:order-1 reveal-init reveal-left">
                 <div class="inline-flex items-center space-x-2 text-cyan-400 text-xs uppercase tracking-widest font-semibold mb-3">
                     <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
@@ -254,24 +255,31 @@
                 </div>
             </div>
             
-            <!-- Mockups Sliding In from Right -->
-            <div class="lg:col-span-5 order-1 lg:order-2 flex justify-center items-center gap-4 reveal-init reveal-right">
-                <div class="relative group cursor-pointer phone-chassis" onclick="openLightbox('/resimler/Ana.png')">
-                    <div class="w-44 sm:w-52 rounded-[36px] p-2 bg-zinc-900 border-2 border-zinc-800 shadow-2xl transition-all duration-300 group-hover:border-cyan-500/60">
-                        <img src="/resimler/Ana.png" alt="Home Screen" onerror="this.src='https://placehold.co/360x780/18181b/38bdf8?text=Home+Screen'" class="w-full h-auto rounded-[30px] object-cover">
-                    </div>
-                    <span class="absolute bottom-4 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity text-[11px] bg-zinc-950/90 text-cyan-300 px-3 py-1 rounded-full border border-cyan-500/30 whitespace-nowrap backdrop-blur-md pointer-events-none">Inspect</span>
+            <!-- Real Device Screenshot Display: Zero cropping, natural bezel presentation -->
+            <div class="lg:col-span-5 order-1 lg:order-2 flex justify-center items-center gap-6 sm:gap-8 reveal-init reveal-right">
+                <div class="relative group cursor-pointer device-showcase flex-1 max-w-[210px] sm:max-w-[240px]" onclick="openLightbox('/resimler/Ana.png')">
+                    <img src="/resimler/Ana.png" 
+                         alt="Home Screen" 
+                         onerror="this.src='https://placehold.co/360x780/18181b/38bdf8?text=Home+Screen'" 
+                         class="w-full h-auto object-contain block select-none pointer-events-none">
+                    <span class="absolute -bottom-2 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-300 text-[11px] bg-zinc-900/90 text-cyan-300 px-3 py-1 rounded-full border border-cyan-500/30 whitespace-nowrap backdrop-blur-md">
+                        Inspect
+                    </span>
                 </div>
 
-                <div class="relative group cursor-pointer phone-chassis -mt-8" onclick="openLightbox('/resimler/açık liste.png')">
-                    <div class="w-44 sm:w-52 rounded-[36px] p-2 bg-zinc-900 border-2 border-zinc-800 shadow-2xl transition-all duration-300 group-hover:border-teal-500/60">
-                        <img src="/resimler/açık liste.png" alt="Expanded Alarm List" onerror="this.src='https://placehold.co/360x780/18181b/2dd4bf?text=Alarm+List'" class="w-full h-auto rounded-[30px] object-cover">
-                    </div>
-                    <span class="absolute bottom-4 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity text-[11px] bg-zinc-950/90 text-teal-300 px-3 py-1 rounded-full border border-teal-500/30 whitespace-nowrap backdrop-blur-md pointer-events-none">Inspect</span>
+                <div class="relative group cursor-pointer device-showcase flex-1 max-w-[210px] sm:max-w-[240px] -mt-10" onclick="openLightbox('/resimler/açık liste.png')">
+                    <img src="/resimler/açık liste.png" 
+                         alt="Expanded Alarm List" 
+                         onerror="this.src='https://placehold.co/360x780/18181b/2dd4bf?text=Alarm+List'" 
+                         class="w-full h-auto object-contain block select-none pointer-events-none">
+                    <span class="absolute -bottom-2 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-300 text-[11px] bg-zinc-900/90 text-teal-300 px-3 py-1 rounded-full border border-teal-500/30 whitespace-nowrap backdrop-blur-md">
+                        Inspect
+                    </span>
                 </div>
             </div>
         </section>
 
+        <!-- SECTION 2: 12 Smart Missions & Key Value Highlights -->
         <section class="mb-36">
             
             <!-- Value Highlight Banner: Difficulty, Stacking & 100% Free -->
@@ -323,22 +331,25 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
                 
-                <!-- Mockup Sticky Column (Sliding in from Left) -->
+                <!-- Mockup Column (Natural aspect ratio showcase) -->
                 <div class="lg:col-span-4 flex flex-col items-center reveal-init reveal-left lg:sticky lg:top-24">
-                    <div class="relative group cursor-pointer phone-chassis" onclick="openLightbox('/resimler/görevler.png')">
-                        <div class="w-56 sm:w-64 rounded-[40px] p-2.5 bg-zinc-900 border-2 border-zinc-800 shadow-2xl transition-all duration-300 group-hover:border-teal-500/60">
-                            <img src="/resimler/görevler.png" alt="Missions Directory" onerror="this.src='https://placehold.co/360x780/18181b/38bdf8?text=Missions'" class="w-full h-auto rounded-[32px] object-cover">
-                        </div>
-                        <span class="absolute bottom-4 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity text-[11px] bg-zinc-950/90 text-teal-300 px-3 py-1 rounded-full border border-teal-500/30 whitespace-nowrap backdrop-blur-md pointer-events-none">Inspect</span>
+                    <div class="relative group cursor-pointer device-showcase w-full max-w-[250px] sm:max-w-[270px]" onclick="openLightbox('/resimler/görevler.png')">
+                        <img src="/resimler/görevler.png" 
+                             alt="Missions Directory" 
+                             onerror="this.src='https://placehold.co/360x780/18181b/38bdf8?text=Missions'" 
+                             class="w-full h-auto object-contain block select-none pointer-events-none">
+                        <span class="absolute -bottom-2 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-300 text-[11px] bg-zinc-900/90 text-teal-300 px-3 py-1 rounded-full border border-teal-500/30 whitespace-nowrap backdrop-blur-md">
+                            Inspect
+                        </span>
                     </div>
-                    <span class="text-xs text-zinc-400 font-mono mt-4 bg-zinc-900/80 px-3 py-1 rounded-full border border-zinc-800">
+                    <span class="text-xs text-zinc-400 font-mono mt-5 bg-zinc-900/80 px-3.5 py-1.5 rounded-full border border-zinc-800 text-center">
                         12 Physical &amp; Mental Challenge Modules
                     </span>
                 </div>
 
-                <!-- 12 Mission Grid (Sliding in from Right) -->
+                <!-- 12 Mission Grid -->
                 <div class="lg:col-span-8 reveal-init reveal-right space-y-4">
                     <div class="mb-4">
                         <div class="inline-flex items-center space-x-2 text-teal-400 text-xs uppercase tracking-widest font-semibold mb-2">
@@ -552,7 +563,8 @@
             </div>
         </section>
 
-        <section class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center mb-36">
+        <!-- SECTION 3: Wake-up Verification Test & Precision Timer -->
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center mb-36">
             <div class="lg:col-span-7 order-2 lg:order-1 reveal-init reveal-left">
                 <div class="inline-flex items-center space-x-2 text-rose-400 text-xs uppercase tracking-widest font-semibold mb-3">
                     <span class="w-2 h-2 rounded-full bg-rose-400"></span>
@@ -585,36 +597,46 @@
                 </div>
             </div>
 
-            <!-- Mockups Sliding In from Right -->
-            <div class="lg:col-span-5 order-1 lg:order-2 flex justify-center items-center gap-4 reveal-init reveal-right">
-                <div class="relative group cursor-pointer phone-chassis" onclick="openLightbox('/resimler/uyanıklık test.png')">
-                    <div class="w-44 sm:w-52 rounded-[36px] p-2 bg-zinc-900 border-2 border-zinc-800 shadow-2xl transition-all duration-300 group-hover:border-rose-500/60">
-                        <img src="/resimler/uyanıklık test.png" alt="Wake-up Test Screen" onerror="this.src='https://placehold.co/360x780/18181b/f43f5e?text=Wakeup+Test'" class="w-full h-auto rounded-[30px] object-cover">
-                    </div>
-                    <span class="absolute bottom-4 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity text-[11px] bg-zinc-950/90 text-rose-300 px-3 py-1 rounded-full border border-rose-500/30 whitespace-nowrap backdrop-blur-md pointer-events-none">Inspect</span>
+            <!-- Natural Screenshot Displays -->
+            <div class="lg:col-span-5 order-1 lg:order-2 flex justify-center items-center gap-6 sm:gap-8 reveal-init reveal-right">
+                <div class="relative group cursor-pointer device-showcase flex-1 max-w-[210px] sm:max-w-[240px]" onclick="openLightbox('/resimler/uyanıklık test.png')">
+                    <img src="/resimler/uyanıklık test.png" 
+                         alt="Wake-up Test Screen" 
+                         onerror="this.src='https://placehold.co/360x780/18181b/f43f5e?text=Wakeup+Test'" 
+                         class="w-full h-auto object-contain block select-none pointer-events-none">
+                    <span class="absolute -bottom-2 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-300 text-[11px] bg-zinc-900/90 text-rose-300 px-3 py-1 rounded-full border border-rose-500/30 whitespace-nowrap backdrop-blur-md">
+                        Inspect
+                    </span>
                 </div>
 
-                <div class="relative group cursor-pointer phone-chassis -mt-8" onclick="openLightbox('/resimler/zamanlayıcı.png')">
-                    <div class="w-44 sm:w-52 rounded-[36px] p-2 bg-zinc-900 border-2 border-zinc-800 shadow-2xl transition-all duration-300 group-hover:border-cyan-500/60">
-                        <img src="/resimler/zamanlayıcı.png" alt="Timer Screen" onerror="this.src='https://placehold.co/360x780/18181b/38bdf8?text=Timer'" class="w-full h-auto rounded-[30px] object-cover">
-                    </div>
-                    <span class="absolute bottom-4 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity text-[11px] bg-zinc-950/90 text-cyan-300 px-3 py-1 rounded-full border border-cyan-500/30 whitespace-nowrap backdrop-blur-md pointer-events-none">Inspect</span>
+                <div class="relative group cursor-pointer device-showcase flex-1 max-w-[210px] sm:max-w-[240px] -mt-10" onclick="openLightbox('/resimler/zamanlayıcı.png')">
+                    <img src="/resimler/zamanlayıcı.png" 
+                         alt="Timer Screen" 
+                         onerror="this.src='https://placehold.co/360x780/18181b/38bdf8?text=Timer'" 
+                         class="w-full h-auto object-contain block select-none pointer-events-none">
+                    <span class="absolute -bottom-2 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-300 text-[11px] bg-zinc-900/90 text-cyan-300 px-3 py-1 rounded-full border border-cyan-500/30 whitespace-nowrap backdrop-blur-md">
+                        Inspect
+                    </span>
                 </div>
             </div>
         </section>
 
-        <section class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center mb-36">
-            <!-- Mockup Sliding In from Left -->
+        <!-- SECTION 4: Advanced Controls & Gentle Wake-up -->
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center mb-36">
+            <!-- Mockup on the Left -->
             <div class="lg:col-span-5 flex justify-center items-center reveal-init reveal-left">
-                <div class="relative group cursor-pointer phone-chassis" onclick="openLightbox('/resimler/ayarlar.png')">
-                    <div class="w-56 sm:w-64 rounded-[40px] p-2.5 bg-zinc-900 border-2 border-zinc-800 shadow-2xl transition-all duration-300 group-hover:border-indigo-500/60">
-                        <img src="/resimler/ayarlar.png" alt="Settings Screen" onerror="this.src='https://placehold.co/360x780/18181b/818cf8?text=Settings'" class="w-full h-auto rounded-[32px] object-cover">
-                    </div>
-                    <span class="absolute bottom-4 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity text-[11px] bg-zinc-950/90 text-indigo-300 px-3 py-1 rounded-full border border-indigo-500/30 whitespace-nowrap backdrop-blur-md pointer-events-none">Inspect</span>
+                <div class="relative group cursor-pointer device-showcase w-full max-w-[250px] sm:max-w-[270px]" onclick="openLightbox('/resimler/ayarlar.png')">
+                    <img src="/resimler/ayarlar.png" 
+                         alt="Settings Screen" 
+                         onerror="this.src='https://placehold.co/360x780/18181b/818cf8?text=Settings'" 
+                         class="w-full h-auto object-contain block select-none pointer-events-none">
+                    <span class="absolute -bottom-2 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-300 text-[11px] bg-zinc-900/90 text-indigo-300 px-3 py-1 rounded-full border border-indigo-500/30 whitespace-nowrap backdrop-blur-md">
+                        Inspect
+                    </span>
                 </div>
             </div>
 
-            <!-- Content Sliding In from Right -->
+            <!-- Content on the Right -->
             <div class="lg:col-span-7 reveal-init reveal-right">
                 <div class="inline-flex items-center space-x-2 text-indigo-400 text-xs uppercase tracking-widest font-semibold mb-3">
                     <span class="w-2 h-2 rounded-full bg-indigo-400"></span>
@@ -667,7 +689,8 @@
             </div>
         </section>
 
-        <section class="p-8 sm:p-12 rounded-3xl bg-zinc-900/40 border border-zinc-800/80 backdrop-blur-md relative overflow-hidden mb-32 reveal-init reveal-scale">
+        <!-- SECTION 5: Custom Photo Backgrounds Showcase (Unclipped native displays) -->
+        <section class="p-8 sm:p-12 rounded-3xl bg-zinc-900/40 border border-zinc-800/80 backdrop-blur-md relative overflow-visible mb-32 reveal-init reveal-scale">
             <div class="max-w-2xl mb-12">
                 <div class="inline-flex items-center space-x-2 text-amber-400 text-xs uppercase tracking-widest font-semibold mb-3">
                     <span class="w-2 h-2 rounded-full bg-amber-400"></span>
@@ -681,12 +704,15 @@
                 </p>
             </div>
 
-            <!-- Staggered Three-Column Mockup Showcase -->
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-8">
+            <!-- Natural Three-Column Showcase -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-10 items-end">
                 <!-- cos1 -->
-                <div class="flex flex-col items-center group cursor-pointer phone-chassis reveal-init reveal-up delay-100" onclick="openLightbox('/resimler/cos1.png')">
-                    <div class="w-full max-w-[240px] rounded-[36px] p-2 bg-zinc-900 border-2 border-zinc-800 group-hover:border-cyan-400/70 shadow-2xl transition-all duration-300">
-                        <img src="/resimler/cos1.png" alt="Family Photo Background with Math Mission" onerror="this.src='https://placehold.co/360x780/18181b/38bdf8?text=Cos+Math'" class="w-full h-auto rounded-[28px] object-cover">
+                <div class="flex flex-col items-center group cursor-pointer reveal-init reveal-up delay-100" onclick="openLightbox('/resimler/cos1.png')">
+                    <div class="device-showcase w-full max-w-[230px]">
+                        <img src="/resimler/cos1.png" 
+                             alt="Family Photo Background with Math Mission" 
+                             onerror="this.src='https://placehold.co/360x780/18181b/38bdf8?text=Cos+Math'" 
+                             class="w-full h-auto object-contain block select-none pointer-events-none">
                     </div>
                     <div class="mt-4 text-center">
                         <h4 class="text-sm font-semibold text-zinc-200 group-hover:text-cyan-300 transition-colors">Math Mission</h4>
@@ -695,9 +721,12 @@
                 </div>
 
                 <!-- cos2 -->
-                <div class="flex flex-col items-center group cursor-pointer phone-chassis reveal-init reveal-up delay-200" onclick="openLightbox('/resimler/cos2.png')">
-                    <div class="w-full max-w-[240px] rounded-[36px] p-2 bg-zinc-900 border-2 border-zinc-800 group-hover:border-teal-400/70 shadow-2xl transition-all duration-300">
-                        <img src="/resimler/cos2.png" alt="Pet Background with NFC Mission" onerror="this.src='https://placehold.co/360x780/18181b/2dd4bf?text=Cos+NFC'" class="w-full h-auto rounded-[28px] object-cover">
+                <div class="flex flex-col items-center group cursor-pointer reveal-init reveal-up delay-200" onclick="openLightbox('/resimler/cos2.png')">
+                    <div class="device-showcase w-full max-w-[230px]">
+                        <img src="/resimler/cos2.png" 
+                             alt="Pet Background with NFC Mission" 
+                             onerror="this.src='https://placehold.co/360x780/18181b/2dd4bf?text=Cos+NFC'" 
+                             class="w-full h-auto object-contain block select-none pointer-events-none">
                     </div>
                     <div class="mt-4 text-center">
                         <h4 class="text-sm font-semibold text-zinc-200 group-hover:text-teal-300 transition-colors">NFC Tag Mission</h4>
@@ -706,9 +735,12 @@
                 </div>
 
                 <!-- cos3 -->
-                <div class="flex flex-col items-center group cursor-pointer phone-chassis reveal-init reveal-up delay-300" onclick="openLightbox('/resimler/cos3.png')">
-                    <div class="w-full max-w-[240px] rounded-[36px] p-2 bg-zinc-900 border-2 border-zinc-800 group-hover:border-amber-400/70 shadow-2xl transition-all duration-300">
-                        <img src="/resimler/cos3.png" alt="Motivation Theme with Step Mission" onerror="this.src='https://placehold.co/360x780/18181b/fbbf24?text=Cos+Walk'" class="w-full h-auto rounded-[28px] object-cover">
+                <div class="flex flex-col items-center group cursor-pointer reveal-init reveal-up delay-300" onclick="openLightbox('/resimler/cos3.png')">
+                    <div class="device-showcase w-full max-w-[230px]">
+                        <img src="/resimler/cos3.png" 
+                             alt="Motivation Theme with Step Mission" 
+                             onerror="this.src='https://placehold.co/360x780/18181b/fbbf24?text=Cos+Walk'" 
+                             class="w-full h-auto object-contain block select-none pointer-events-none">
                     </div>
                     <div class="mt-4 text-center">
                         <h4 class="text-sm font-semibold text-zinc-200 group-hover:text-amber-300 transition-colors">Walking Step Mission</h4>
@@ -718,6 +750,7 @@
             </div>
         </section>
 
+        <!-- Call to Action Banner -->
         <section class="reveal-init reveal-scale p-8 sm:p-14 rounded-3xl bg-gradient-to-b from-zinc-900/90 to-zinc-950 border border-zinc-800/80 text-center relative overflow-hidden shadow-2xl">
             <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
@@ -741,14 +774,15 @@
 
     </main>
 
+    <!-- Fullscreen Lightbox Modal (Clean zoom, preserving 100% image clarity) -->
     <div id="lightbox-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden items-center justify-center p-4 transition-all duration-300">
         <button onclick="closeLightbox()" class="absolute top-6 right-6 p-2 rounded-full bg-zinc-900 border border-zinc-700 text-zinc-300 hover:text-white transition">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
             </svg>
         </button>
-        <div class="max-w-md max-h-[90vh] overflow-hidden rounded-[36px] border-2 border-zinc-800 shadow-2xl p-1 bg-zinc-950">
-            <img id="lightbox-img" src="" alt="Fullscreen Screenshot Inspection" class="w-full h-auto max-h-[85vh] object-contain rounded-[32px]">
+        <div class="max-w-md max-h-[92vh] flex items-center justify-center">
+            <img id="lightbox-img" src="" alt="Fullscreen Screenshot Inspection" class="max-w-full max-h-[88vh] object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.9)]">
         </div>
     </div>
 
@@ -776,14 +810,14 @@
     </footer>
 
     <script>
-        // 1. Intersection Observer for Scroll Reveal Animations
+        // 1. Intersection Observer for Smooth Scroll Reveal Animations
         document.addEventListener('DOMContentLoaded', () => {
             const revealElements = document.querySelectorAll('.reveal-init');
 
             const observerOptions = {
                 root: null,
-                rootMargin: '0px 0px -80px 0px',
-                threshold: 0.12
+                rootMargin: '0px 0px -70px 0px',
+                threshold: 0.1
             };
 
             const revealObserver = new IntersectionObserver((entries, observer) => {
