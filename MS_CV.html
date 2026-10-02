@@ -120,170 +120,172 @@
     </header>
 
     <!-- Main Content - CV Layout -->
-    <main class="w-full max-w-5xl mx-auto px-6 py-6 flex-grow relative z-10 mb-20">
+    <main class="w-full max-w-5xl mx-auto px-4 sm:px-6 py-6 flex-grow relative z-10 mb-20">
         
         <!-- Hero Section: Profile -->
-        <div class="bg-zinc-900/40 backdrop-blur-md border border-zinc-800/80 rounded-3xl p-8 mb-8 shadow-2xl shadow-cyan-900/10 flex flex-col md:flex-row gap-8 items-center md:items-start relative overflow-hidden group">
+        <div class="bg-zinc-900/40 backdrop-blur-md border border-zinc-800/80 rounded-2xl sm:rounded-3xl p-5 sm:p-8 mb-6 sm:mb-8 shadow-2xl shadow-cyan-900/10 flex flex-row gap-4 sm:gap-8 items-start relative overflow-hidden group">
             <div class="absolute inset-0 bg-gradient-to-r from-cyan-500/5 to-teal-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
 
-            <div class="flex-shrink-0 relative">
-                <div class="w-32 h-32 md:w-40 md:h-40 rounded-full border-2 border-zinc-700 p-1 bg-zinc-900">
-                    <img src="https://placehold.co/200x200/27272a/a1a1aa?text=MS" alt="Muhammed Sultan" class="w-full h-full object-cover rounded-full">
+            <div class="flex-shrink-0 relative w-[25%] sm:w-auto min-w-[70px]">
+                <div class="w-full aspect-square sm:w-40 sm:h-40 rounded-full border-2 border-zinc-700 p-1 bg-zinc-900">
+                    <img src="resimler/My_Photo.jpeg" alt="Muhammed Sultan" onerror="this.src='https://placehold.co/200x200/27272a/a1a1aa?text=MS'" class="w-full h-full object-cover rounded-full">
                 </div>
-                <div class="absolute bottom-2 end-2 w-4 h-4 bg-emerald-500 border-2 border-zinc-900 rounded-full"></div>
+                <div class="absolute bottom-1 end-1 sm:bottom-2 sm:end-2 w-3 h-3 sm:w-4 sm:h-4 bg-emerald-500 border-2 border-zinc-900 rounded-full"></div>
             </div>
 
-            <div class="flex-grow text-center md:text-start">
-                <h1 class="text-3xl md:text-4xl font-bold tracking-tight mb-2 bg-gradient-to-r from-zinc-100 to-zinc-400 bg-clip-text text-transparent">
+            <div class="flex-grow text-start w-[75%] sm:w-full pt-1 sm:pt-0">
+                <h1 class="text-xl sm:text-4xl font-bold tracking-tight mb-1 sm:mb-2 bg-gradient-to-r from-zinc-100 to-zinc-400 bg-clip-text text-transparent break-words">
                     Muhammed Sultan
                 </h1>
-                <h2 class="text-lg text-cyan-400 font-medium mb-4 flex items-center justify-center md:justify-start gap-2" data-i18n="role">
+                <h2 class="text-xs sm:text-lg text-cyan-400 font-medium mb-2 sm:mb-4 flex items-center justify-start gap-2" data-i18n="role">
                     Endüstri Mühendisi
                 </h2>
                 
-                <p class="text-zinc-400 text-sm leading-relaxed max-w-3xl mb-6" data-i18n="bio">
+                <p class="text-zinc-400 text-[9px] sm:text-sm leading-relaxed max-w-3xl mb-3 sm:mb-6" data-i18n="bio">
                     6+ yıllık ağır çelik modelleme ve inşaat çizimi deneyimine sahip Endüstri Mühendisi. Süreç optimizasyonu, 3D yapı tasarımı ve yazılım otomasyonu ile verimli mühendislik çözümleri üretir.
                 </p>
 
-                <div class="flex flex-wrap gap-3 justify-center md:justify-start">
-                    <a href="mailto:msultan5974@gmail.com" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-zinc-950/50 border border-zinc-800 hover:border-cyan-500/50 hover:bg-zinc-800/80 transition-all text-xs text-zinc-300">
-                        <svg class="w-4 h-4 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-                        <span dir="ltr">msultan5974@gmail.com</span>
+                <div class="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-3 justify-start w-full">
+                    <a href="mailto:msultan5974@gmail.com" class="inline-flex items-center justify-start gap-1.5 sm:gap-2 px-2 py-1.5 sm:px-3 sm:py-1.5 rounded-lg bg-zinc-950/50 border border-zinc-800 hover:border-cyan-500/50 hover:bg-zinc-800/80 transition-all text-[9px] sm:text-xs text-zinc-300 w-full sm:w-auto">
+                        <svg class="w-3 h-3 sm:w-4 sm:h-4 text-zinc-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                        <span dir="ltr" class="truncate">msultan5974@gmail.com</span>
                     </a>
-                    <a href="tel:05011458474" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-zinc-950/50 border border-zinc-800 hover:border-cyan-500/50 hover:bg-zinc-800/80 transition-all text-xs text-zinc-300">
-                        <svg class="w-4 h-4 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                    <a href="tel:05011458474" class="inline-flex items-center justify-start gap-1.5 sm:gap-2 px-2 py-1.5 sm:px-3 sm:py-1.5 rounded-lg bg-zinc-950/50 border border-zinc-800 hover:border-cyan-500/50 hover:bg-zinc-800/80 transition-all text-[9px] sm:text-xs text-zinc-300 w-full sm:w-auto">
+                        <svg class="w-3 h-3 sm:w-4 sm:h-4 text-zinc-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
                         <span dir="ltr">0501 145 8474</span>
                     </a>
                 </div>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- Left Column: Details -->
-            <div class="lg:col-span-1 space-y-8">
+        <!-- YAN YANA SÜTUN SİSTEMİ (Mobilde de korunur) -->
+        <div class="flex flex-row gap-3 sm:gap-8 w-full overflow-hidden">
+            
+            <!-- Sol Sütun (1/3 Genişlik) -->
+            <div class="w-[35%] sm:w-1/3 shrink-0 space-y-4 sm:space-y-8">
                 
                 <!-- Personal Details -->
-                <div class="bg-zinc-900/40 backdrop-blur-sm border border-zinc-800/80 rounded-2xl p-6">
-                    <h3 class="text-xs uppercase tracking-widest text-zinc-500 font-semibold mb-5 flex items-center gap-2">
-                        <span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
-                        <span data-i18n="personal_info">Kişisel Bilgiler</span>
+                <div class="bg-zinc-900/40 backdrop-blur-sm border border-zinc-800/80 rounded-xl sm:rounded-2xl p-3 sm:p-6">
+                    <h3 class="text-[9px] sm:text-xs uppercase tracking-widest text-zinc-500 font-semibold mb-3 sm:mb-5 flex items-center gap-1.5 sm:gap-2">
+                        <span class="w-1 sm:w-1.5 h-1 sm:h-1.5 rounded-full bg-cyan-400 shrink-0"></span>
+                        <span data-i18n="personal_info" class="break-words">Kişisel Bilgiler</span>
                     </h3>
-                    <ul class="space-y-4 text-sm">
-                        <li class="flex justify-between border-b border-zinc-800/50 pb-2">
+                    <ul class="space-y-2 sm:space-y-4 text-[8px] sm:text-sm">
+                        <li class="flex flex-col 2xl:flex-row 2xl:justify-between border-b border-zinc-800/50 pb-1 sm:pb-2 gap-0.5">
                             <span class="text-zinc-500" data-i18n="dob_label">Doğum Tarihi</span>
-                            <span class="text-zinc-200">24-05-2002</span>
+                            <span class="text-zinc-200 font-medium">24-05-2002</span>
                         </li>
-                        <li class="flex justify-between border-b border-zinc-800/50 pb-2">
+                        <li class="flex flex-col 2xl:flex-row 2xl:justify-between border-b border-zinc-800/50 pb-1 sm:pb-2 gap-0.5">
                             <span class="text-zinc-500" data-i18n="pob_label">Doğum Yeri</span>
-                            <span class="text-zinc-200">HAMA</span>
+                            <span class="text-zinc-200 font-medium">HAMA</span>
                         </li>
-                        <li class="flex justify-between border-b border-zinc-800/50 pb-2">
+                        <li class="flex flex-col 2xl:flex-row 2xl:justify-between border-b border-zinc-800/50 pb-1 sm:pb-2 gap-0.5">
                             <span class="text-zinc-500" data-i18n="gender_label">Cinsiyet</span>
-                            <span class="text-zinc-200" data-i18n="gender_val">Erkek</span>
+                            <span class="text-zinc-200 font-medium" data-i18n="gender_val">Erkek</span>
                         </li>
-                        <li class="flex justify-between border-b border-zinc-800/50 pb-2">
+                        <li class="flex flex-col 2xl:flex-row 2xl:justify-between border-b border-zinc-800/50 pb-1 sm:pb-2 gap-0.5">
                             <span class="text-zinc-500" data-i18n="marital_label">Medeni Durum</span>
-                            <span class="text-zinc-200" data-i18n="marital_val">Bekar</span>
+                            <span class="text-zinc-200 font-medium" data-i18n="marital_val">Bekar</span>
                         </li>
-                        <li class="flex justify-between pb-1">
-                            <span class="text-zinc-500" data-i18n="license_label">Sürücü Ehliyeti</span>
-                            <span class="text-zinc-200">B</span>
+                        <li class="flex flex-col 2xl:flex-row 2xl:justify-between pb-0.5 gap-0.5">
+                            <span class="text-zinc-500" data-i18n="license_label">Ehliyet</span>
+                            <span class="text-zinc-200 font-medium">B</span>
                         </li>
                     </ul>
                 </div>
 
                 <!-- Skills -->
-                <div class="bg-zinc-900/40 backdrop-blur-sm border border-zinc-800/80 rounded-2xl p-6">
-                    <h3 class="text-xs uppercase tracking-widest text-zinc-500 font-semibold mb-5 flex items-center gap-2">
-                        <span class="w-1.5 h-1.5 rounded-full bg-teal-400"></span>
-                        <span data-i18n="skills_title">Beceriler & Yazılımlar</span>
+                <div class="bg-zinc-900/40 backdrop-blur-sm border border-zinc-800/80 rounded-xl sm:rounded-2xl p-3 sm:p-6">
+                    <h3 class="text-[9px] sm:text-xs uppercase tracking-widest text-zinc-500 font-semibold mb-3 sm:mb-5 flex items-center gap-1.5 sm:gap-2">
+                        <span class="w-1 sm:w-1.5 h-1 sm:h-1.5 rounded-full bg-teal-400 shrink-0"></span>
+                        <span data-i18n="skills_title" class="break-words">Beceriler</span>
                     </h3>
                     
-                    <div class="space-y-5">
+                    <div class="space-y-4 sm:space-y-5">
                         <!-- Data & Analysis -->
                         <div>
-                            <h4 class="text-[10px] uppercase text-zinc-500 mb-2 font-semibold" data-i18n="skill_data">Veri & Analiz</h4>
-                            <div class="space-y-2.5">
-                                <div class="flex items-center justify-between">
-                                    <span class="text-xs text-zinc-300">Excel</span>
-                                    <div class="flex gap-1"><div class="w-1.5 h-1.5 rounded-full bg-cyan-500"></div><div class="w-1.5 h-1.5 rounded-full bg-cyan-500"></div><div class="w-1.5 h-1.5 rounded-full bg-cyan-500"></div><div class="w-1.5 h-1.5 rounded-full bg-cyan-500"></div><div class="w-1.5 h-1.5 rounded-full bg-cyan-500"></div></div>
+                            <h4 class="text-[7.5px] sm:text-[10px] uppercase text-zinc-500 mb-1.5 sm:mb-2 font-semibold" data-i18n="skill_data">Veri & Analiz</h4>
+                            <div class="space-y-1.5 sm:space-y-2.5">
+                                <div class="flex items-center justify-between flex-wrap gap-1">
+                                    <span class="text-[8px] sm:text-xs text-zinc-300">Excel</span>
+                                    <div class="flex gap-0.5 sm:gap-1"><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-cyan-500"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-cyan-500"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-cyan-500"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-cyan-500"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-cyan-500"></div></div>
                                 </div>
-                                <div class="flex items-center justify-between">
-                                    <span class="text-xs text-zinc-300">Minitab</span>
-                                    <div class="flex gap-1"><div class="w-1.5 h-1.5 rounded-full bg-cyan-500"></div><div class="w-1.5 h-1.5 rounded-full bg-cyan-500"></div><div class="w-1.5 h-1.5 rounded-full bg-cyan-500"></div><div class="w-1.5 h-1.5 rounded-full bg-zinc-700"></div><div class="w-1.5 h-1.5 rounded-full bg-zinc-700"></div></div>
+                                <div class="flex items-center justify-between flex-wrap gap-1">
+                                    <span class="text-[8px] sm:text-xs text-zinc-300">Minitab</span>
+                                    <div class="flex gap-0.5 sm:gap-1"><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-cyan-500"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-cyan-500"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-cyan-500"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-zinc-700"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-zinc-700"></div></div>
                                 </div>
-                                <div class="flex items-center justify-between">
-                                    <span class="text-xs text-zinc-300">MATLAB</span>
-                                    <div class="flex gap-1"><div class="w-1.5 h-1.5 rounded-full bg-cyan-500"></div><div class="w-1.5 h-1.5 rounded-full bg-cyan-500"></div><div class="w-1.5 h-1.5 rounded-full bg-cyan-500"></div><div class="w-1.5 h-1.5 rounded-full bg-zinc-700"></div><div class="w-1.5 h-1.5 rounded-full bg-zinc-700"></div></div>
+                                <div class="flex items-center justify-between flex-wrap gap-1">
+                                    <span class="text-[8px] sm:text-xs text-zinc-300">MATLAB</span>
+                                    <div class="flex gap-0.5 sm:gap-1"><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-cyan-500"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-cyan-500"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-cyan-500"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-zinc-700"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-zinc-700"></div></div>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Engineering & Design Software -->
                         <div>
-                            <h4 class="text-[10px] uppercase text-zinc-500 mb-2 font-semibold" data-i18n="skill_eng">Mühendislik & Tasarım</h4>
-                            <div class="space-y-2.5">
-                                <div class="flex items-center justify-between">
-                                    <span class="text-xs text-zinc-300">Tekla Structures</span>
-                                    <div class="flex gap-1"><div class="w-1.5 h-1.5 rounded-full bg-teal-500"></div><div class="w-1.5 h-1.5 rounded-full bg-teal-500"></div><div class="w-1.5 h-1.5 rounded-full bg-teal-500"></div><div class="w-1.5 h-1.5 rounded-full bg-teal-500"></div><div class="w-1.5 h-1.5 rounded-full bg-zinc-700"></div></div>
+                            <h4 class="text-[7.5px] sm:text-[10px] uppercase text-zinc-500 mb-1.5 sm:mb-2 font-semibold" data-i18n="skill_eng">Müh. & Tasarım</h4>
+                            <div class="space-y-1.5 sm:space-y-2.5">
+                                <div class="flex items-center justify-between flex-wrap gap-1">
+                                    <span class="text-[8px] sm:text-xs text-zinc-300 truncate pe-1">Tekla Struct.</span>
+                                    <div class="flex gap-0.5 sm:gap-1 shrink-0"><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-teal-500"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-teal-500"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-teal-500"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-teal-500"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-zinc-700"></div></div>
                                 </div>
-                                <div class="flex items-center justify-between">
-                                    <span class="text-xs text-zinc-300">AutoCAD</span>
-                                    <div class="flex gap-1"><div class="w-1.5 h-1.5 rounded-full bg-teal-500"></div><div class="w-1.5 h-1.5 rounded-full bg-teal-500"></div><div class="w-1.5 h-1.5 rounded-full bg-teal-500"></div><div class="w-1.5 h-1.5 rounded-full bg-teal-500"></div><div class="w-1.5 h-1.5 rounded-full bg-zinc-700"></div></div>
+                                <div class="flex items-center justify-between flex-wrap gap-1">
+                                    <span class="text-[8px] sm:text-xs text-zinc-300 truncate pe-1">AutoCAD</span>
+                                    <div class="flex gap-0.5 sm:gap-1 shrink-0"><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-teal-500"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-teal-500"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-teal-500"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-teal-500"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-zinc-700"></div></div>
                                 </div>
-                                <div class="flex items-center justify-between">
-                                    <span class="text-xs text-zinc-300">SolidWorks</span>
-                                    <div class="flex gap-1"><div class="w-1.5 h-1.5 rounded-full bg-teal-500"></div><div class="w-1.5 h-1.5 rounded-full bg-teal-500"></div><div class="w-1.5 h-1.5 rounded-full bg-zinc-700"></div><div class="w-1.5 h-1.5 rounded-full bg-zinc-700"></div><div class="w-1.5 h-1.5 rounded-full bg-zinc-700"></div></div>
+                                <div class="flex items-center justify-between flex-wrap gap-1">
+                                    <span class="text-[8px] sm:text-xs text-zinc-300 truncate pe-1">SolidWorks</span>
+                                    <div class="flex gap-0.5 sm:gap-1 shrink-0"><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-teal-500"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-teal-500"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-zinc-700"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-zinc-700"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-zinc-700"></div></div>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Programming -->
                         <div>
-                            <h4 class="text-[10px] uppercase text-zinc-500 mb-2 font-semibold" data-i18n="skill_soft">Yazılım & Geliştirme</h4>
-                            <div class="space-y-2.5">
-                                <div class="flex items-center justify-between">
-                                    <span class="text-xs text-zinc-300">C#</span>
-                                    <div class="flex gap-1"><div class="w-1.5 h-1.5 rounded-full bg-indigo-500"></div><div class="w-1.5 h-1.5 rounded-full bg-indigo-500"></div><div class="w-1.5 h-1.5 rounded-full bg-indigo-500"></div><div class="w-1.5 h-1.5 rounded-full bg-zinc-700"></div><div class="w-1.5 h-1.5 rounded-full bg-zinc-700"></div></div>
+                            <h4 class="text-[7.5px] sm:text-[10px] uppercase text-zinc-500 mb-1.5 sm:mb-2 font-semibold" data-i18n="skill_soft">Yazılım</h4>
+                            <div class="space-y-1.5 sm:space-y-2.5">
+                                <div class="flex items-center justify-between flex-wrap gap-1">
+                                    <span class="text-[8px] sm:text-xs text-zinc-300">C#</span>
+                                    <div class="flex gap-0.5 sm:gap-1"><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-indigo-500"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-indigo-500"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-indigo-500"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-zinc-700"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-zinc-700"></div></div>
                                 </div>
-                                <div class="flex items-center justify-between">
-                                    <span class="text-xs text-zinc-300">C++</span>
-                                    <div class="flex gap-1"><div class="w-1.5 h-1.5 rounded-full bg-indigo-500"></div><div class="w-1.5 h-1.5 rounded-full bg-indigo-500"></div><div class="w-1.5 h-1.5 rounded-full bg-indigo-500"></div><div class="w-1.5 h-1.5 rounded-full bg-zinc-700"></div><div class="w-1.5 h-1.5 rounded-full bg-zinc-700"></div></div>
+                                <div class="flex items-center justify-between flex-wrap gap-1">
+                                    <span class="text-[8px] sm:text-xs text-zinc-300">C++</span>
+                                    <div class="flex gap-0.5 sm:gap-1"><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-indigo-500"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-indigo-500"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-indigo-500"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-zinc-700"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-zinc-700"></div></div>
                                 </div>
-                                <div class="flex items-center justify-between">
-                                    <span class="text-xs text-zinc-300">Python</span>
-                                    <div class="flex gap-1"><div class="w-1.5 h-1.5 rounded-full bg-indigo-500"></div><div class="w-1.5 h-1.5 rounded-full bg-indigo-500"></div><div class="w-1.5 h-1.5 rounded-full bg-zinc-700"></div><div class="w-1.5 h-1.5 rounded-full bg-zinc-700"></div><div class="w-1.5 h-1.5 rounded-full bg-zinc-700"></div></div>
+                                <div class="flex items-center justify-between flex-wrap gap-1">
+                                    <span class="text-[8px] sm:text-xs text-zinc-300">Python</span>
+                                    <div class="flex gap-0.5 sm:gap-1"><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-indigo-500"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-indigo-500"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-zinc-700"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-zinc-700"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-zinc-700"></div></div>
                                 </div>
-                                <div class="flex items-center justify-between">
-                                    <span class="text-xs text-zinc-300">Robotik Kodlama</span>
-                                    <div class="flex gap-1"><div class="w-1.5 h-1.5 rounded-full bg-indigo-500"></div><div class="w-1.5 h-1.5 rounded-full bg-indigo-500"></div><div class="w-1.5 h-1.5 rounded-full bg-indigo-500"></div><div class="w-1.5 h-1.5 rounded-full bg-zinc-700"></div><div class="w-1.5 h-1.5 rounded-full bg-zinc-700"></div></div>
+                                <div class="flex items-center justify-between flex-wrap gap-1">
+                                    <span class="text-[8px] sm:text-xs text-zinc-300 truncate pe-1">Robotik</span>
+                                    <div class="flex gap-0.5 sm:gap-1 shrink-0"><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-indigo-500"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-indigo-500"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-indigo-500"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-zinc-700"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-zinc-700"></div></div>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Creative & Office -->
                         <div>
-                            <h4 class="text-[10px] uppercase text-zinc-500 mb-2 font-semibold" data-i18n="skill_creative">Tasarım & Ofis</h4>
-                            <div class="space-y-2.5">
-                                <div class="flex items-center justify-between">
-                                    <span class="text-xs text-zinc-300">Word</span>
-                                    <div class="flex gap-1"><div class="w-1.5 h-1.5 rounded-full bg-zinc-400"></div><div class="w-1.5 h-1.5 rounded-full bg-zinc-400"></div><div class="w-1.5 h-1.5 rounded-full bg-zinc-400"></div><div class="w-1.5 h-1.5 rounded-full bg-zinc-400"></div><div class="w-1.5 h-1.5 rounded-full bg-zinc-700"></div></div>
+                            <h4 class="text-[7.5px] sm:text-[10px] uppercase text-zinc-500 mb-1.5 sm:mb-2 font-semibold" data-i18n="skill_creative">Ofis & Dizayn</h4>
+                            <div class="space-y-1.5 sm:space-y-2.5">
+                                <div class="flex items-center justify-between flex-wrap gap-1">
+                                    <span class="text-[8px] sm:text-xs text-zinc-300">Word</span>
+                                    <div class="flex gap-0.5 sm:gap-1"><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-zinc-400"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-zinc-400"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-zinc-400"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-zinc-400"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-zinc-700"></div></div>
                                 </div>
-                                <div class="flex items-center justify-between">
-                                    <span class="text-xs text-zinc-300">PowerPoint</span>
-                                    <div class="flex gap-1"><div class="w-1.5 h-1.5 rounded-full bg-zinc-400"></div><div class="w-1.5 h-1.5 rounded-full bg-zinc-400"></div><div class="w-1.5 h-1.5 rounded-full bg-zinc-400"></div><div class="w-1.5 h-1.5 rounded-full bg-zinc-400"></div><div class="w-1.5 h-1.5 rounded-full bg-zinc-400"></div></div>
+                                <div class="flex items-center justify-between flex-wrap gap-1">
+                                    <span class="text-[8px] sm:text-xs text-zinc-300">PowerPoint</span>
+                                    <div class="flex gap-0.5 sm:gap-1"><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-zinc-400"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-zinc-400"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-zinc-400"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-zinc-400"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-zinc-400"></div></div>
                                 </div>
-                                <div class="flex items-center justify-between">
-                                    <span class="text-xs text-zinc-300">Photoshop</span>
-                                    <div class="flex gap-1"><div class="w-1.5 h-1.5 rounded-full bg-pink-500"></div><div class="w-1.5 h-1.5 rounded-full bg-pink-500"></div><div class="w-1.5 h-1.5 rounded-full bg-pink-500"></div><div class="w-1.5 h-1.5 rounded-full bg-zinc-700"></div><div class="w-1.5 h-1.5 rounded-full bg-zinc-700"></div></div>
+                                <div class="flex items-center justify-between flex-wrap gap-1">
+                                    <span class="text-[8px] sm:text-xs text-zinc-300 truncate pe-1">Photoshop</span>
+                                    <div class="flex gap-0.5 sm:gap-1 shrink-0"><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-pink-500"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-pink-500"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-pink-500"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-zinc-700"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-zinc-700"></div></div>
                                 </div>
-                                <div class="flex items-center justify-between">
-                                    <span class="text-xs text-zinc-300">Clip Studio</span>
-                                    <div class="flex gap-1"><div class="w-1.5 h-1.5 rounded-full bg-pink-500"></div><div class="w-1.5 h-1.5 rounded-full bg-pink-500"></div><div class="w-1.5 h-1.5 rounded-full bg-pink-500"></div><div class="w-1.5 h-1.5 rounded-full bg-zinc-700"></div><div class="w-1.5 h-1.5 rounded-full bg-zinc-700"></div></div>
+                                <div class="flex items-center justify-between flex-wrap gap-1">
+                                    <span class="text-[8px] sm:text-xs text-zinc-300 truncate pe-1">Clip Studio</span>
+                                    <div class="flex gap-0.5 sm:gap-1 shrink-0"><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-pink-500"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-pink-500"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-pink-500"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-zinc-700"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-zinc-700"></div></div>
                                 </div>
-                                <div class="flex items-center justify-between">
-                                    <span class="text-xs text-zinc-300">Blender</span>
-                                    <div class="flex gap-1"><div class="w-1.5 h-1.5 rounded-full bg-pink-500"></div><div class="w-1.5 h-1.5 rounded-full bg-pink-500"></div><div class="w-1.5 h-1.5 rounded-full bg-pink-500"></div><div class="w-1.5 h-1.5 rounded-full bg-zinc-700"></div><div class="w-1.5 h-1.5 rounded-full bg-zinc-700"></div></div>
+                                <div class="flex items-center justify-between flex-wrap gap-1">
+                                    <span class="text-[8px] sm:text-xs text-zinc-300">Blender</span>
+                                    <div class="flex gap-0.5 sm:gap-1"><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-pink-500"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-pink-500"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-pink-500"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-zinc-700"></div><div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-zinc-700"></div></div>
                                 </div>
                             </div>
                         </div>
@@ -291,34 +293,34 @@
                 </div>
 
                 <!-- Languages -->
-                <div class="bg-zinc-900/40 backdrop-blur-sm border border-zinc-800/80 rounded-2xl p-6">
-                    <h3 class="text-xs uppercase tracking-widest text-zinc-500 font-semibold mb-5 flex items-center gap-2">
-                        <span class="w-1.5 h-1.5 rounded-full bg-indigo-400"></span>
+                <div class="bg-zinc-900/40 backdrop-blur-sm border border-zinc-800/80 rounded-xl sm:rounded-2xl p-3 sm:p-6">
+                    <h3 class="text-[9px] sm:text-xs uppercase tracking-widest text-zinc-500 font-semibold mb-3 sm:mb-5 flex items-center gap-1.5 sm:gap-2">
+                        <span class="w-1 sm:w-1.5 h-1 sm:h-1.5 rounded-full bg-indigo-400 shrink-0"></span>
                         <span data-i18n="lang_title">Diller</span>
                     </h3>
-                    <div class="space-y-3">
-                        <div class="flex items-center justify-between">
-                            <span class="text-sm text-zinc-300" data-i18n="lang_tr">Türkçe</span>
-                            <div class="flex gap-1"><div class="w-2 h-2 rounded bg-cyan-500"></div><div class="w-2 h-2 rounded bg-cyan-500"></div><div class="w-2 h-2 rounded bg-cyan-500"></div><div class="w-2 h-2 rounded bg-cyan-500"></div><div class="w-2 h-2 rounded bg-cyan-500"></div></div>
+                    <div class="space-y-2 sm:space-y-3">
+                        <div class="flex items-center justify-between flex-wrap gap-1">
+                            <span class="text-[8px] sm:text-sm text-zinc-300" data-i18n="lang_tr">Türkçe</span>
+                            <div class="flex gap-0.5 sm:gap-1"><div class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded bg-cyan-500"></div><div class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded bg-cyan-500"></div><div class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded bg-cyan-500"></div><div class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded bg-cyan-500"></div><div class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded bg-cyan-500"></div></div>
                         </div>
-                        <div class="flex items-center justify-between">
-                            <span class="text-sm text-zinc-300" data-i18n="lang_ar">Arapça</span>
-                            <div class="flex gap-1"><div class="w-2 h-2 rounded bg-cyan-500"></div><div class="w-2 h-2 rounded bg-cyan-500"></div><div class="w-2 h-2 rounded bg-cyan-500"></div><div class="w-2 h-2 rounded bg-cyan-500"></div><div class="w-2 h-2 rounded bg-cyan-500"></div></div>
+                        <div class="flex items-center justify-between flex-wrap gap-1">
+                            <span class="text-[8px] sm:text-sm text-zinc-300" data-i18n="lang_ar">Arapça</span>
+                            <div class="flex gap-0.5 sm:gap-1"><div class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded bg-cyan-500"></div><div class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded bg-cyan-500"></div><div class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded bg-cyan-500"></div><div class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded bg-cyan-500"></div><div class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded bg-cyan-500"></div></div>
                         </div>
-                        <div class="flex items-center justify-between">
-                            <span class="text-sm text-zinc-300" data-i18n="lang_en">İngilizce</span>
-                            <div class="flex gap-1"><div class="w-2 h-2 rounded bg-cyan-500"></div><div class="w-2 h-2 rounded bg-cyan-500"></div><div class="w-2 h-2 rounded bg-cyan-500"></div><div class="w-2 h-2 rounded bg-zinc-700"></div><div class="w-2 h-2 rounded bg-zinc-700"></div></div>
+                        <div class="flex items-center justify-between flex-wrap gap-1">
+                            <span class="text-[8px] sm:text-sm text-zinc-300" data-i18n="lang_en">İngilizce</span>
+                            <div class="flex gap-0.5 sm:gap-1"><div class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded bg-cyan-500"></div><div class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded bg-cyan-500"></div><div class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded bg-zinc-700"></div><div class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded bg-zinc-700"></div><div class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded bg-zinc-700"></div></div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Interests -->
-                <div class="bg-zinc-900/40 backdrop-blur-sm border border-zinc-800/80 rounded-2xl p-6">
-                    <h3 class="text-xs uppercase tracking-widest text-zinc-500 font-semibold mb-4 flex items-center gap-2">
-                        <span class="w-1.5 h-1.5 rounded-full bg-pink-400"></span>
+                <div class="bg-zinc-900/40 backdrop-blur-sm border border-zinc-800/80 rounded-xl sm:rounded-2xl p-3 sm:p-6">
+                    <h3 class="text-[9px] sm:text-xs uppercase tracking-widest text-zinc-500 font-semibold mb-2 sm:mb-4 flex items-center gap-1.5 sm:gap-2">
+                        <span class="w-1 sm:w-1.5 h-1 sm:h-1.5 rounded-full bg-pink-400 shrink-0"></span>
                         <span data-i18n="interests_title">İlgi Alanları</span>
                     </h3>
-                    <ul class="text-sm text-zinc-400 space-y-2 list-disc ps-4 marker:text-zinc-600">
+                    <ul class="text-[8px] sm:text-sm text-zinc-400 space-y-1 sm:space-y-2 list-disc ps-3 sm:ps-4 marker:text-zinc-600">
                         <li data-i18n="int_1">Seramik kursu</li>
                         <li data-i18n="int_2">Müzik dinleme</li>
                         <li data-i18n="int_3">Bitki ekmek</li>
@@ -327,27 +329,27 @@
                 </div>
             </div>
 
-            <!-- Right Column: Experience & Education -->
-            <div class="lg:col-span-2 space-y-8">
+            <!-- Sağ Sütun (2/3 Genişlik) -->
+            <div class="w-[65%] sm:w-2/3 shrink-0 space-y-5 sm:space-y-8">
                 
                 <!-- Experience -->
                 <section>
-                    <div class="flex items-center mb-6">
-                        <h2 class="text-2xl font-semibold tracking-tight text-zinc-100" data-i18n="exp_title">İş Deneyimi</h2>
-                        <div class="ms-4 h-px bg-gradient-to-r from-zinc-800 to-transparent flex-grow rtl:bg-gradient-to-l"></div>
+                    <div class="flex items-center mb-4 sm:mb-6">
+                        <h2 class="text-sm sm:text-2xl font-semibold tracking-tight text-zinc-100" data-i18n="exp_title">İş Deneyimi</h2>
+                        <div class="ms-2 sm:ms-4 h-px bg-gradient-to-r from-zinc-800 to-transparent flex-grow rtl:bg-gradient-to-l"></div>
                     </div>
 
-                    <div class="relative border-s border-zinc-800 ms-3 space-y-8 pb-4">
+                    <div class="relative border-s border-zinc-800 ms-1 sm:ms-3 space-y-5 sm:space-y-8 pb-2 sm:pb-4">
                         
                         <!-- Exp 1: AVM Grup -->
-                        <div class="relative ps-6 group">
-                            <span class="absolute w-3 h-3 bg-zinc-900 border-2 border-cyan-500 rounded-full -start-[6.5px] top-1.5 group-hover:scale-125 transition-transform shadow-[0_0_8px_rgba(6,182,212,0.6)]"></span>
-                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-baseline mb-1">
-                                <h3 class="text-lg font-medium text-zinc-200" data-i18n="exp1_role">Endüstri Mühendisi & Ağır Çelik Tasarım Uzmanı</h3>
-                                <span class="text-xs font-mono text-cyan-400 bg-cyan-400/10 px-2 py-0.5 rounded mt-1 sm:mt-0" data-i18n="exp1_date">Eki 2026 - Devam Ediyor</span>
+                        <div class="relative ps-3 sm:ps-6 group">
+                            <span class="absolute w-2 h-2 sm:w-3 sm:h-3 bg-zinc-900 border sm:border-2 border-cyan-500 rounded-full -start-[4.5px] sm:-start-[6.5px] top-1 sm:top-1.5 group-hover:scale-125 transition-transform shadow-[0_0_8px_rgba(6,182,212,0.6)]"></span>
+                            <div class="flex flex-col 2xl:flex-row 2xl:justify-between 2xl:items-baseline mb-0.5 sm:mb-1">
+                                <h3 class="text-[10px] sm:text-lg font-medium text-zinc-200" data-i18n="exp1_role">Endüstri Mühendisi & Ağır Çelik Tasarım Uzmanı</h3>
+                                <span class="text-[7px] sm:text-xs font-mono text-cyan-400 bg-cyan-400/10 px-1.5 py-0.5 sm:px-2 sm:py-0.5 rounded mt-0.5 2xl:mt-0 self-start 2xl:self-auto" data-i18n="exp1_date">Eki 2026 - Devam Ediyor</span>
                             </div>
-                            <h4 class="text-sm text-zinc-500 mb-3" data-i18n="exp1_company">AVM Grup</h4>
-                            <ul class="text-sm text-zinc-400 leading-relaxed list-disc ps-4 marker:text-cyan-500 space-y-1.5">
+                            <h4 class="text-[8px] sm:text-sm text-zinc-500 mb-1.5 sm:mb-3" data-i18n="exp1_company">AVM Grup</h4>
+                            <ul class="text-[8px] sm:text-sm text-zinc-400 leading-relaxed list-disc ps-3 sm:ps-4 marker:text-cyan-500 space-y-1 sm:space-y-1.5">
                                 <li data-i18n="exp1_b1">Ağır çelik yapıların 3D modellenmesi ve imalat (shop-drawing) çizimlerinin uçtan uca yönetimi.</li>
                                 <li data-i18n="exp1_b2">Endüstri mühendisliği prensipleriyle operasyonel iş akışlarının ve üretim süreçlerinin optimizasyonu.</li>
                                 <li data-i18n="exp1_b3">Tasarım maliyetlerini düşüren sahaya uygun mühendislik çözümleri.</li>
@@ -355,48 +357,48 @@
                         </div>
 
                         <!-- Exp 2: Freelance -->
-                        <div class="relative ps-6 group">
-                            <span class="absolute w-3 h-3 bg-zinc-900 border-2 border-zinc-400 rounded-full -start-[6.5px] top-1.5 group-hover:scale-125 transition-transform"></span>
-                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-baseline mb-1">
-                                <h3 class="text-lg font-medium text-zinc-200" data-i18n="exp2_role">Serbest Çalışan (Freelance)</h3>
-                                <span class="text-xs font-mono text-zinc-400 bg-zinc-800 px-2 py-0.5 rounded mt-1 sm:mt-0" data-i18n="exp2_date">2018 - Devam Ediyor</span>
+                        <div class="relative ps-3 sm:ps-6 group">
+                            <span class="absolute w-2 h-2 sm:w-3 sm:h-3 bg-zinc-900 border sm:border-2 border-zinc-400 rounded-full -start-[4.5px] sm:-start-[6.5px] top-1 sm:top-1.5 group-hover:scale-125 transition-transform"></span>
+                            <div class="flex flex-col 2xl:flex-row 2xl:justify-between 2xl:items-baseline mb-0.5 sm:mb-1">
+                                <h3 class="text-[10px] sm:text-lg font-medium text-zinc-200" data-i18n="exp2_role">Serbest Çalışan (Freelance)</h3>
+                                <span class="text-[7px] sm:text-xs font-mono text-zinc-400 bg-zinc-800 px-1.5 py-0.5 sm:px-2 sm:py-0.5 rounded mt-0.5 2xl:mt-0 self-start 2xl:self-auto" data-i18n="exp2_date">2018 - Devam Ediyor</span>
                             </div>
-                            <h4 class="text-sm text-zinc-500 mb-3" data-i18n="exp2_company">İnşaat Mühendisliği Çizimleri & Ağır Çelik Modelleme</h4>
-                            <ul class="text-sm text-zinc-400 leading-relaxed list-disc ps-4 marker:text-zinc-500 space-y-1.5">
+                            <h4 class="text-[8px] sm:text-sm text-zinc-500 mb-1.5 sm:mb-3" data-i18n="exp2_company">İnşaat Mühendisliği Çizimleri & Ağır Çelik Modelleme</h4>
+                            <ul class="text-[8px] sm:text-sm text-zinc-400 leading-relaxed list-disc ps-3 sm:ps-4 marker:text-zinc-500 space-y-1 sm:space-y-1.5">
                                 <li data-i18n="exp2_b1">Sıfır hata prensibiyle karmaşık 3D çelik konstrüksiyon modellerinin hazırlanması.</li>
                                 <li data-i18n="exp2_b2">Tasarım süreçlerini hızlandıran özel yazılım ve eklentilerin geliştirilmesi.</li>
                             </ul>
                             
                             <!-- Portfolio Link -->
-                            <a href="https://drive.google.com/file/d/10fHQ2x7F9hndjWoSjpTipSK_N8kPats6/view?usp=drivesdk" target="_blank" rel="noopener noreferrer" class="mt-4 inline-flex items-center gap-2 text-xs font-medium text-cyan-400 hover:text-cyan-300 bg-cyan-950/30 border border-cyan-900/50 px-3 py-1.5 rounded-lg transition-colors group/link">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-                                <span data-i18n="contact_portfolio">Çizim ve Modelleme Portfolyomu İnceleyin</span>
-                                <svg class="w-3 h-3 transform group-hover/link:translate-x-1 rtl:group-hover/link:-translate-x-1 rtl:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                            <a href="https://drive.google.com/file/d/10fHQ2x7F9hndjWoSjpTipSK_N8kPats6/view?usp=drivesdk" target="_blank" rel="noopener noreferrer" class="mt-2 sm:mt-4 inline-flex items-center gap-1 sm:gap-2 text-[7.5px] sm:text-xs font-medium text-cyan-400 hover:text-cyan-300 bg-cyan-950/30 border border-cyan-900/50 px-2 py-1 sm:px-3 sm:py-1.5 rounded-md sm:rounded-lg transition-colors group/link">
+                                <svg class="w-2.5 h-2.5 sm:w-4 sm:h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                                <span data-i18n="contact_portfolio" class="truncate">Portfolyomu İnceleyin</span>
+                                <svg class="w-2 h-2 sm:w-3 sm:h-3 shrink-0 transform group-hover/link:translate-x-1 rtl:group-hover/link:-translate-x-1 rtl:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                             </a>
                         </div>
 
                         <!-- Exp 3: Stajyer 1 -->
-                        <div class="relative ps-6 group">
-                            <span class="absolute w-3 h-3 bg-zinc-900 border-2 border-zinc-600 rounded-full -start-[6.5px] top-1.5 group-hover:scale-125 transition-transform"></span>
-                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-baseline mb-1">
-                                <h3 class="text-lg font-medium text-zinc-200" data-i18n="exp3_role">Endüstri Mühendisi Stajyeri</h3>
-                                <span class="text-xs font-mono text-zinc-400 bg-zinc-800 px-2 py-0.5 rounded mt-1 sm:mt-0" data-i18n="exp3_date">Haz 2023 - Ağu 2023</span>
+                        <div class="relative ps-3 sm:ps-6 group">
+                            <span class="absolute w-2 h-2 sm:w-3 sm:h-3 bg-zinc-900 border sm:border-2 border-zinc-600 rounded-full -start-[4.5px] sm:-start-[6.5px] top-1 sm:top-1.5 group-hover:scale-125 transition-transform"></span>
+                            <div class="flex flex-col 2xl:flex-row 2xl:justify-between 2xl:items-baseline mb-0.5 sm:mb-1">
+                                <h3 class="text-[10px] sm:text-lg font-medium text-zinc-200" data-i18n="exp3_role">Endüstri Mühendisi Stajyeri</h3>
+                                <span class="text-[7px] sm:text-xs font-mono text-zinc-400 bg-zinc-800 px-1.5 py-0.5 sm:px-2 sm:py-0.5 rounded mt-0.5 2xl:mt-0 self-start 2xl:self-auto" data-i18n="exp3_date">Haz 2023 - Ağu 2023</span>
                             </div>
-                            <h4 class="text-sm text-zinc-500 mb-3" data-i18n="exp3_company">Çelikerler, Bartın</h4>
-                            <ul class="text-sm text-zinc-400 leading-relaxed list-disc ps-4 marker:text-zinc-600 space-y-1.5">
+                            <h4 class="text-[8px] sm:text-sm text-zinc-500 mb-1.5 sm:mb-3" data-i18n="exp3_company">Çelikerler, Bartın</h4>
+                            <ul class="text-[8px] sm:text-sm text-zinc-400 leading-relaxed list-disc ps-3 sm:ps-4 marker:text-zinc-600 space-y-1 sm:space-y-1.5">
                                 <li data-i18n="exp3_b1">Veri analizi ve kapasite planlama ile üretim verimliliğinin artırılması.</li>
                             </ul>
                         </div>
 
                         <!-- Exp 4: Stajyer 2 -->
-                        <div class="relative ps-6 group">
-                            <span class="absolute w-3 h-3 bg-zinc-900 border-2 border-zinc-600 rounded-full -start-[6.5px] top-1.5 group-hover:scale-125 transition-transform"></span>
-                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-baseline mb-1">
-                                <h3 class="text-lg font-medium text-zinc-200" data-i18n="exp4_role">Endüstri Mühendisi Stajyeri (Gönüllü)</h3>
-                                <span class="text-xs font-mono text-zinc-400 bg-zinc-800 px-2 py-0.5 rounded mt-1 sm:mt-0" data-i18n="exp4_date">Haz 2022 - Ağu 2022</span>
+                        <div class="relative ps-3 sm:ps-6 group">
+                            <span class="absolute w-2 h-2 sm:w-3 sm:h-3 bg-zinc-900 border sm:border-2 border-zinc-600 rounded-full -start-[4.5px] sm:-start-[6.5px] top-1 sm:top-1.5 group-hover:scale-125 transition-transform"></span>
+                            <div class="flex flex-col 2xl:flex-row 2xl:justify-between 2xl:items-baseline mb-0.5 sm:mb-1">
+                                <h3 class="text-[10px] sm:text-lg font-medium text-zinc-200" data-i18n="exp4_role">Endüstri Müh. Stajyeri (Gönüllü)</h3>
+                                <span class="text-[7px] sm:text-xs font-mono text-zinc-400 bg-zinc-800 px-1.5 py-0.5 sm:px-2 sm:py-0.5 rounded mt-0.5 2xl:mt-0 self-start 2xl:self-auto" data-i18n="exp4_date">Haz 2022 - Ağu 2022</span>
                             </div>
-                            <h4 class="text-sm text-zinc-500 mb-3" data-i18n="exp3_company">Çelikerler, Bartın</h4>
-                            <ul class="text-sm text-zinc-400 leading-relaxed list-disc ps-4 marker:text-zinc-600 space-y-1.5">
+                            <h4 class="text-[8px] sm:text-sm text-zinc-500 mb-1.5 sm:mb-3" data-i18n="exp3_company">Çelikerler, Bartın</h4>
+                            <ul class="text-[8px] sm:text-sm text-zinc-400 leading-relaxed list-disc ps-3 sm:ps-4 marker:text-zinc-600 space-y-1 sm:space-y-1.5">
                                 <li data-i18n="exp4_b1">Maliyet analizi ve teknik resim süreçlerine destek.</li>
                             </ul>
                         </div>
@@ -405,31 +407,31 @@
 
                 <!-- Projects & Apps -->
                 <section>
-                    <div class="flex items-center mb-6">
-                        <h2 class="text-2xl font-semibold tracking-tight text-zinc-100" data-i18n="proj_title">Projeler & Uygulamalar</h2>
-                        <div class="ms-4 h-px bg-gradient-to-r from-zinc-800 to-transparent flex-grow rtl:bg-gradient-to-l"></div>
+                    <div class="flex items-center mb-4 sm:mb-6">
+                        <h2 class="text-sm sm:text-2xl font-semibold tracking-tight text-zinc-100" data-i18n="proj_title">Projeler & Uygulamalar</h2>
+                        <div class="ms-2 sm:ms-4 h-px bg-gradient-to-r from-zinc-800 to-transparent flex-grow rtl:bg-gradient-to-l"></div>
                     </div>
 
-                    <div class="relative border-s border-zinc-800 ms-3 space-y-8 pb-4">
+                    <div class="relative border-s border-zinc-800 ms-1 sm:ms-3 space-y-5 sm:space-y-8 pb-2 sm:pb-4">
                         
                         <!-- App Project -->
-                        <div class="relative ps-6 group">
-                            <span class="absolute w-3 h-3 bg-zinc-900 border-2 border-emerald-500 rounded-full -start-[6.5px] top-1.5 group-hover:scale-125 transition-transform shadow-[0_0_8px_rgba(16,185,129,0.6)]"></span>
-                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-baseline mb-1">
-                                <h3 class="text-lg font-medium text-zinc-200" data-i18n="proj1_role">My Alarm: Alarm Clock & Task</h3>
-                                <span class="text-xs font-mono text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded mt-1 sm:mt-0" data-i18n="proj1_date">Galahat Dev</span>
+                        <div class="relative ps-3 sm:ps-6 group">
+                            <span class="absolute w-2 h-2 sm:w-3 sm:h-3 bg-zinc-900 border sm:border-2 border-emerald-500 rounded-full -start-[4.5px] sm:-start-[6.5px] top-1 sm:top-1.5 group-hover:scale-125 transition-transform shadow-[0_0_8px_rgba(16,185,129,0.6)]"></span>
+                            <div class="flex flex-col 2xl:flex-row 2xl:justify-between 2xl:items-baseline mb-0.5 sm:mb-1">
+                                <h3 class="text-[10px] sm:text-lg font-medium text-zinc-200" data-i18n="proj1_role">My Alarm: Alarm Clock & Task</h3>
+                                <span class="text-[7px] sm:text-xs font-mono text-emerald-400 bg-emerald-400/10 px-1.5 py-0.5 sm:px-2 sm:py-0.5 rounded mt-0.5 2xl:mt-0 self-start 2xl:self-auto" data-i18n="proj1_date">Galahat Dev</span>
                             </div>
-                            <h4 class="text-sm text-zinc-500 mb-3" data-i18n="proj1_company">Bağımsız Android Uygulama Geliştiricisi</h4>
-                            <ul class="text-sm text-zinc-400 leading-relaxed list-disc ps-4 marker:text-emerald-500 space-y-1.5">
+                            <h4 class="text-[8px] sm:text-sm text-zinc-500 mb-1.5 sm:mb-3" data-i18n="proj1_company">Bağımsız Android Uygulama Geliştiricisi</h4>
+                            <ul class="text-[8px] sm:text-sm text-zinc-400 leading-relaxed list-disc ps-3 sm:ps-4 marker:text-emerald-500 space-y-1 sm:space-y-1.5">
                                 <li data-i18n="proj1_b1">Matematik/hafıza görevleri çözülmeden kapanmayan Android alarm uygulaması.</li>
                                 <li data-i18n="proj1_b2">UI/UX tasarımı, yazılım mimarisi ve Google Play yayın sürecinin yönetimi.</li>
                             </ul>
                             
                             <!-- App Details Link -->
-                            <a href="https://galahatdev-debug.github.io/My_Alarm_Features_And_App_Overview.html" target="_blank" rel="noopener noreferrer" class="mt-4 inline-flex items-center gap-2 text-xs font-medium text-emerald-400 hover:text-emerald-300 bg-emerald-950/30 border border-emerald-900/50 px-3 py-1.5 rounded-lg transition-colors group/link">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                <span data-i18n="proj1_link">Uygulama Detaylarını İncele</span>
-                                <svg class="w-3 h-3 transform group-hover/link:translate-x-1 rtl:group-hover/link:-translate-x-1 rtl:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                            <a href="https://galahatdev-debug.github.io/My_Alarm_Features_And_App_Overview.html" target="_blank" rel="noopener noreferrer" class="mt-2 sm:mt-4 inline-flex items-center gap-1 sm:gap-2 text-[7.5px] sm:text-xs font-medium text-emerald-400 hover:text-emerald-300 bg-emerald-950/30 border border-emerald-900/50 px-2 py-1 sm:px-3 sm:py-1.5 rounded-md sm:rounded-lg transition-colors group/link">
+                                <svg class="w-2.5 h-2.5 sm:w-4 sm:h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                <span data-i18n="proj1_link" class="truncate">Uygulama Detayları</span>
+                                <svg class="w-2 h-2 sm:w-3 sm:h-3 shrink-0 transform group-hover/link:translate-x-1 rtl:group-hover/link:-translate-x-1 rtl:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                             </a>
                         </div>
                     </div>
@@ -437,39 +439,38 @@
 
                 <!-- Education -->
                 <section>
-                    <div class="flex items-center mb-6">
-                        <h2 class="text-2xl font-semibold tracking-tight text-zinc-100" data-i18n="edu_title">Eğitim</h2>
-                        <div class="ms-4 h-px bg-gradient-to-r from-zinc-800 to-transparent flex-grow rtl:bg-gradient-to-l"></div>
+                    <div class="flex items-center mb-4 sm:mb-6">
+                        <h2 class="text-sm sm:text-2xl font-semibold tracking-tight text-zinc-100" data-i18n="edu_title">Eğitim</h2>
+                        <div class="ms-2 sm:ms-4 h-px bg-gradient-to-r from-zinc-800 to-transparent flex-grow rtl:bg-gradient-to-l"></div>
                     </div>
 
-                    <div class="relative border-s border-zinc-800 ms-3 space-y-8 pb-4">
+                    <div class="relative border-s border-zinc-800 ms-1 sm:ms-3 space-y-5 sm:space-y-8">
                         
                         <!-- Edu 1 -->
-                        <div class="relative ps-6 group">
-                            <span class="absolute w-3 h-3 bg-zinc-900 border-2 border-indigo-500 rounded-full -start-[6.5px] top-1.5 group-hover:scale-125 transition-transform shadow-[0_0_8px_rgba(99,102,241,0.6)]"></span>
-                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-baseline mb-1">
-                                <h3 class="text-lg font-medium text-zinc-200" data-i18n="edu1_role">Endüstri Mühendisliği Lisans</h3>
-                                <span class="text-xs font-mono text-indigo-400 bg-indigo-400/10 px-2 py-0.5 rounded mt-1 sm:mt-0" data-i18n="edu1_date">Eyl 2020 - Ara 2024</span>
+                        <div class="relative ps-3 sm:ps-6 group">
+                            <span class="absolute w-2 h-2 sm:w-3 sm:h-3 bg-zinc-900 border sm:border-2 border-indigo-500 rounded-full -start-[4.5px] sm:-start-[6.5px] top-1 sm:top-1.5 group-hover:scale-125 transition-transform shadow-[0_0_8px_rgba(99,102,241,0.6)]"></span>
+                            <div class="flex flex-col 2xl:flex-row 2xl:justify-between 2xl:items-baseline mb-0.5 sm:mb-1">
+                                <h3 class="text-[10px] sm:text-lg font-medium text-zinc-200" data-i18n="edu1_role">Endüstri Mühendisliği Lisans</h3>
+                                <span class="text-[7px] sm:text-xs font-mono text-indigo-400 bg-indigo-400/10 px-1.5 py-0.5 sm:px-2 sm:py-0.5 rounded mt-0.5 2xl:mt-0 self-start 2xl:self-auto" data-i18n="edu1_date">Eyl 2020 - Ara 2024</span>
                             </div>
-                            <h4 class="text-sm text-zinc-500 mb-3" data-i18n="edu1_company">KTO Karatay Üniversitesi, Konya</h4>
-                            <ul class="text-sm text-zinc-400 leading-relaxed list-disc ps-4 marker:text-indigo-500 space-y-1.5">
+                            <h4 class="text-[8px] sm:text-sm text-zinc-500 mb-1.5 sm:mb-3" data-i18n="edu1_company">KTO Karatay Üniversitesi, Konya</h4>
+                            <ul class="text-[8px] sm:text-sm text-zinc-400 leading-relaxed list-disc ps-3 sm:ps-4 marker:text-indigo-500 space-y-1 sm:space-y-1.5">
                                 <li data-i18n="edu1_b1">Tedarik zinciri yönetimi ve sistem analizine odaklı analitik araştırmalar.</li>
                             </ul>
                         </div>
 
                         <!-- Edu 2 -->
-                        <div class="relative ps-6 group">
-                            <span class="absolute w-3 h-3 bg-zinc-900 border-2 border-zinc-500 rounded-full -start-[6.5px] top-1.5 group-hover:scale-125 transition-transform"></span>
-                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-baseline mb-1">
-                                <h3 class="text-lg font-medium text-zinc-200" data-i18n="edu2_role">Ağ İşletmenliği Lise Diploması</h3>
-                                <span class="text-xs font-mono text-zinc-400 bg-zinc-800 px-2 py-0.5 rounded mt-1 sm:mt-0" data-i18n="edu2_date">Eyl 2016 - Tem 2020</span>
+                        <div class="relative ps-3 sm:ps-6 group">
+                            <span class="absolute w-2 h-2 sm:w-3 sm:h-3 bg-zinc-900 border sm:border-2 border-zinc-500 rounded-full -start-[4.5px] sm:-start-[6.5px] top-1 sm:top-1.5 group-hover:scale-125 transition-transform"></span>
+                            <div class="flex flex-col 2xl:flex-row 2xl:justify-between 2xl:items-baseline mb-0.5 sm:mb-1">
+                                <h3 class="text-[10px] sm:text-lg font-medium text-zinc-200" data-i18n="edu2_role">Ağ İşletmenliği Lise Diploması</h3>
+                                <span class="text-[7px] sm:text-xs font-mono text-zinc-400 bg-zinc-800 px-1.5 py-0.5 sm:px-2 sm:py-0.5 rounded mt-0.5 2xl:mt-0 self-start 2xl:self-auto" data-i18n="edu2_date">Eyl 2016 - Tem 2020</span>
                             </div>
-                            <h4 class="text-sm text-zinc-500 mb-3" data-i18n="edu2_company">Fatih Mesleki ve Teknik Anadolu Lisesi, Ankara</h4>
-                            <ul class="text-sm text-zinc-400 leading-relaxed list-disc ps-4 marker:text-zinc-500 space-y-1.5">
+                            <h4 class="text-[8px] sm:text-sm text-zinc-500 mb-1.5 sm:mb-3" data-i18n="edu2_company">Fatih Mesleki ve Teknik And. Lisesi, Ankara</h4>
+                            <ul class="text-[8px] sm:text-sm text-zinc-400 leading-relaxed list-disc ps-3 sm:ps-4 marker:text-zinc-500 space-y-1 sm:space-y-1.5">
                                 <li data-i18n="edu2_b1">Ağ mimarisi eğitimi ve CISCO Ağ Akademisi CCNA-4 sertifikasyonu.</li>
                             </ul>
                         </div>
-
                     </div>
                 </section>
             </div>
