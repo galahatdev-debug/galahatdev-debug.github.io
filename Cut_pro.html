@@ -1,0 +1,2674 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Galahat Dev — Çelik Profil Kesim Planı (Net mm - Çoklu Stok)</title>
+
+  <!-- Google Fonts: Syncopate (Marka), Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syncopate:wght@400;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Phosphor Icons CDN -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <!-- SheetJS & ExcelJS CDN (Hücre Stilleri, Renkler ve Çerçeveli Export için) -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            brand: ['"Syncopate"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'Consolas', 'monospace'],
+          },
+          colors: {
+            brandDark: '#09090b',
+            csharpNavy: '#102c57',
+            csharpNavyDark: '#0a1d3a',
+            csharpGreen: '#198754',
+          },
+          animation: {
+            'aurora-spin': 'aurora 18s linear infinite',
+            'aurora-reverse': 'auroraRev 22s linear infinite',
+          },
+          keyframes: {
+            aurora: {
+              '0%': { transform: 'rotate(0deg) scale(1) translateY(0px)' },
+              '50%': { transform: 'rotate(180deg) scale(1.15) translateY(-30px)' },
+              '100%': { transform: 'rotate(360deg) scale(1) translateY(0px)' }
+            },
+            auroraRev: {
+              '0%': { transform: 'rotate(360deg) scale(1.1) translateY(0px)' },
+              '50%': { transform: 'rotate(180deg) scale(0.9) translateY(40px)' },
+              '100%': { transform: 'rotate(0deg) scale(1.1) translateY(0px)' }
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Galahat Dev Stili: Subtle Depth Grid Deseni */
+    .bg-grid {
+      background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 0);
+      background-size: 28px 28px;
+    }
+
+    ::-webkit-scrollbar {
+      width: 7px;
+      height: 7px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #09090b;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #27272a;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #3f3f46;
+    }
+    .cut-pattern {
+      background-size: 8px 8px;
+      background-image: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.06) 0, rgba(255, 255, 255, 0.06) 1px, transparent 0, transparent 50%);
+    }
+
+    /* Sayı girdilerindeki okları gizleme */
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    input[type=number] {
+      -moz-appearance: textfield;
+      appearance: textfield;
+    }
+
+    /* Program / Dashboard Arayüzü: Sayfanın dışarı taşmasını ve genel scroll oluşmasını engelle */
+    html, body {
+      height: 100%;
+      overflow: hidden;
+    }
+
+    @media print {
+      body {
+        background: #fff !important;
+        color: #000 !important;
+        overflow: auto !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .print-area {
+        display: block !important;
+      }
+    }
+  </style>
+</head>
+<body class="bg-zinc-950 text-zinc-100 font-sans antialiased h-screen flex flex-col selection:bg-cyan-500 selection:text-white relative overflow-hidden">
+
+  <!-- DİNAMİK & HAREKETLİ GALAHAT DEV ARKA PLAN KATMANI -->
+  <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+    <!-- Izgara Deseni -->
+    <div class="absolute inset-0 bg-grid opacity-60"></div>
+    
+    <!-- Yüzen Aurora Işık Efektleri -->
+    <div class="absolute -top-40 -left-20 w-[550px] h-[550px] bg-gradient-to-br from-cyan-500/20 via-teal-500/10 to-transparent rounded-full blur-[110px] animate-aurora-spin"></div>
+    <div class="absolute top-1/3 -right-32 w-[600px] h-[600px] bg-gradient-to-bl from-indigo-500/15 via-teal-400/15 to-transparent rounded-full blur-[130px] animate-aurora-reverse"></div>
+    <div class="absolute -bottom-32 left-1/4 w-[500px] h-[500px] bg-gradient-to-tr from-cyan-600/15 via-emerald-500/10 to-transparent rounded-full blur-[120px] animate-aurora-spin"></div>
+
+    <!-- Etkileşimli Canvas Parçacık Ağı -->
+    <canvas id="bg-canvas" class="absolute inset-0 w-full h-full opacity-65"></canvas>
+  </div>
+
+  <!-- ÜST BAŞLIK ÇUBUĞU (GALAHAT DEV BRANDING HEADER) -->
+  <header class="bg-zinc-900/60 backdrop-blur-md border-b border-zinc-800/80 sticky top-0 z-40 shadow-lg shadow-black/40 shrink-0">
+    <div class="max-w-[1920px] mx-auto px-4 sm:px-6 py-2 flex flex-wrap items-center justify-between gap-3 relative z-10">
+      
+      <!-- Marka / Logo Alanı -->
+      <div class="flex items-center gap-4">
+        <a href="https://galahatdev-debug.github.io/" class="flex items-center space-x-3 group cursor-pointer" title="Galahat Dev Ana Sayfasına Dön">
+          <div class="w-10 h-10 rounded-2xl overflow-hidden shadow-lg shadow-cyan-950/40 group-hover:scale-105 group-hover:border-cyan-500/40 transition-all duration-300 border border-zinc-800/80 bg-zinc-900/80 backdrop-blur-md p-1.5 flex items-center justify-center">
+            <span class="font-brand font-bold text-xs text-cyan-400 group-hover:text-cyan-300 tracking-wider">GD</span>
+          </div>
+          <div class="flex items-baseline space-x-1.5">
+            <span class="font-brand font-normal text-base sm:text-lg tracking-[0.22em] text-zinc-100 group-hover:text-cyan-300 transition-colors uppercase">
+              Galahat
+            </span>
+            <span class="font-brand font-bold text-[11px] sm:text-xs tracking-[0.18em] text-cyan-400 transition-colors uppercase">
+              Dev
+            </span>
+          </div>
+        </a>
+
+        <div class="h-6 w-px bg-zinc-800 hidden sm:block"></div>
+
+        <div>
+          <h1 class="text-sm font-bold text-white tracking-tight flex items-center gap-2">
+            Çelik Profil Kesim Planı 
+            <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-300 border border-cyan-500/30">Net mm • Çoklu Stok</span>
+          </h1>
+          <p class="text-[11px] text-zinc-400">1D Optimizasyon Motoru, Parça Ek Yönetimi ve ClosedXML Uyumlu Raporlama</p>
+        </div>
+      </div>
+
+      <!-- Üst Hızlı Metrikler Ribbon -->
+      <div class="hidden xl:flex items-center gap-4 bg-zinc-900/80 backdrop-blur-md px-4 py-1.5 rounded-2xl border border-zinc-800/80 text-xs shadow-inner">
+        <div>
+          <span class="text-zinc-500 text-[10px] block uppercase font-mono tracking-wider">İşlenen Parça</span>
+          <span class="font-bold text-zinc-100 font-mono text-sm" id="ribbon-total-parts">0 adet</span>
+        </div>
+        <div class="w-px h-6 bg-zinc-800"></div>
+        <div>
+          <span class="text-zinc-500 text-[10px] block uppercase font-mono tracking-wider">İhtiyaç Boyu</span>
+          <span class="font-bold text-teal-300 font-mono text-sm" id="ribbon-net-cut">0 m</span>
+        </div>
+        <div class="w-px h-6 bg-zinc-800"></div>
+        <div>
+          <span class="text-zinc-500 text-[10px] block uppercase font-mono tracking-wider">Kullanılan Stok</span>
+          <span class="font-bold text-cyan-400 font-mono text-sm" id="ribbon-used-stocks">0 adet (0 m)</span>
+        </div>
+        <div class="w-px h-6 bg-zinc-800"></div>
+        <div>
+          <span class="text-zinc-500 text-[10px] block uppercase font-mono tracking-wider">Eldeki Stok</span>
+          <span class="font-bold text-zinc-300 font-mono text-sm" id="ribbon-available-stock">0 m</span>
+        </div>
+        <div class="w-px h-6 bg-zinc-800"></div>
+        <div>
+          <span class="text-zinc-500 text-[10px] block uppercase font-mono tracking-wider">Toplam Fire</span>
+          <span class="font-bold text-amber-400 font-mono text-sm" id="ribbon-total-waste">0 mm</span>
+        </div>
+        <div class="w-px h-6 bg-zinc-800"></div>
+        <div>
+          <span class="text-zinc-500 text-[10px] block uppercase font-mono tracking-wider">Genel Verim</span>
+          <span class="font-bold text-emerald-400 font-mono text-sm" id="ribbon-efficiency">%0.00</span>
+        </div>
+      </div>
+
+      <!-- Sağ Üst Eylem Grubu: Excel & Yazdır Simgeleri -->
+      <div class="flex items-center gap-2">
+        <!-- Excel İndir Simge Butonu -->
+        <button id="btn-excel-export" class="relative group p-2 rounded-xl bg-zinc-900/80 hover:bg-emerald-500/20 text-zinc-300 hover:text-emerald-400 border border-zinc-800/80 hover:border-emerald-500/40 backdrop-blur-md transition shadow-sm hover:shadow-[0_0_15px_rgba(16,185,129,0.2)]" title="Excel'e Aktar (.xlsx)">
+          <i class="ph-bold ph-file-xls text-lg"></i>
+          <!-- Tooltip -->
+          <span class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block px-2 py-1 text-[10px] font-mono font-medium text-white bg-zinc-900 border border-zinc-700 rounded-lg shadow-xl whitespace-nowrap z-50 pointer-events-none">
+            Excel'e Aktar (.xlsx)
+          </span>
+        </button>
+
+        <!-- Yazdır / PDF Simge Butonu -->
+        <button onclick="window.print()" class="relative group p-2 rounded-xl bg-zinc-900/80 hover:bg-cyan-500/20 text-zinc-300 hover:text-cyan-300 border border-zinc-800/80 hover:border-cyan-500/40 backdrop-blur-md transition shadow-sm hover:shadow-[0_0_15px_rgba(6,182,212,0.2)]" title="Yazdır / PDF Olarak Kaydet">
+          <i class="ph-bold ph-printer text-lg"></i>
+          <!-- Tooltip -->
+          <span class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block px-2 py-1 text-[10px] font-mono font-medium text-white bg-zinc-900 border border-zinc-700 rounded-lg shadow-xl whitespace-nowrap z-50 pointer-events-none">
+            Yazdır / PDF
+          </span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ANA ÇALIŞMA ALANI (Sabit Program Düzeni - Ekrana Tam Oturan Grid) -->
+  <main class="max-w-[1920px] mx-auto p-3 sm:p-3.5 w-full flex-1 h-[calc(100vh-60px)] min-h-0 grid grid-cols-1 lg:grid-cols-12 gap-3 relative z-10 overflow-hidden">
+
+    <!-- SOL SÜTUN: Kendi İçinde Kaydırılabilir Kompakt Kontrol Paneli -->
+    <div class="lg:col-span-3 xl:col-span-2 space-y-2.5 flex flex-col h-full min-h-0 overflow-y-auto pr-1">
+
+      <!-- 1. Kesilecek Pozlar & Veri Gir / Düzenle Kartı -->
+      <div class="group relative bg-zinc-900/50 backdrop-blur-md border border-zinc-800/80 hover:border-zinc-700/80 rounded-2xl p-2.5 shadow-xl transition-all duration-300 space-y-2">
+        <div class="flex items-center justify-between text-[11px]">
+          <span class="text-zinc-200 font-semibold flex items-center gap-1.5">
+            <i class="ph-bold ph-list-dashes text-cyan-400"></i> Kesilecek Pozlar
+          </span>
+          <span id="left-parts-count-badge" class="font-mono text-[10px] bg-cyan-500/10 text-cyan-300 px-2 py-0.5 rounded border border-cyan-500/30">0 Poz</span>
+        </div>
+
+        <button id="btn-open-modal" class="w-full py-2.5 px-2.5 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 hover:text-white border border-cyan-500/30 hover:border-cyan-500/50 font-bold text-xs flex items-center justify-center gap-2 transition duration-200 shadow-sm hover:shadow-[0_0_15px_rgba(6,182,212,0.15)]">
+          <i class="ph-bold ph-note-pencil text-base text-cyan-400"></i>
+          <span>VERİ GİR / DÜZENLE</span>
+        </button>
+      </div>
+
+      <!-- 1.5. Profil Seçimi Kartı (Eldeki Stok Üstünde) -->
+      <div id="card-profile-selector" class="bg-zinc-900/50 backdrop-blur-md border border-zinc-800/80 rounded-2xl p-2.5 shadow-xl space-y-1.5">
+        <div class="flex items-center justify-between pb-1 border-b border-zinc-800/70">
+          <span class="text-[11px] font-bold text-white flex items-center gap-1.5">
+            <i class="ph-bold ph-funnel text-cyan-400"></i> Çalışılacak Profil
+          </span>
+          <span id="profile-count-badge" class="text-[9px] font-mono bg-zinc-800 text-zinc-400 px-1.5 py-0.2 rounded border border-zinc-700/60">0 Profil</span>
+        </div>
+
+        <div>
+          <label for="select-active-profile" class="block text-[9px] text-zinc-400 mb-1 uppercase tracking-wide">Profil Türü Seçin</label>
+          <div class="relative">
+            <select id="select-active-profile" class="w-full bg-zinc-950/80 border border-zinc-700/80 rounded-xl px-2.5 py-1.5 text-xs font-mono text-cyan-300 focus:border-cyan-500 focus:outline-none appearance-none cursor-pointer pr-7">
+              <option value="" disabled selected>Veri bekleniyor...</option>
+            </select>
+            <i class="ph-bold ph-caret-down absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-500 pointer-events-none text-xs"></i>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between text-[10px] text-zinc-400 font-mono pt-0.5">
+          <span>Seçili profil parça:</span>
+          <span id="label-active-profile-parts" class="text-cyan-400 font-bold">0 adet</span>
+        </div>
+      </div>
+
+      <!-- 2. Eldeki Stok Profiller Kartı -->
+      <div class="bg-zinc-900/50 backdrop-blur-md border border-zinc-800/80 rounded-2xl p-2.5 shadow-xl">
+        <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-zinc-800/70">
+          <span class="text-[11px] font-bold text-white flex items-center gap-1.5">
+            <i class="ph-fill ph-stack text-cyan-400"></i> Eldeki Stok
+          </span>
+          <button id="btn-add-stock-row" class="text-[10px] text-cyan-400 hover:text-cyan-300 font-semibold flex items-center gap-0.5">
+            <i class="ph-bold ph-plus"></i> Satır
+          </button>
+        </div>
+
+        <div class="overflow-x-auto max-h-40 overflow-y-auto rounded-xl border border-zinc-800/80 bg-zinc-950/40">
+          <table class="w-full text-left text-xs font-mono" id="table-stocks-input">
+            <thead class="bg-zinc-950 text-zinc-400 text-[10px] uppercase sticky top-0">
+              <tr>
+                <th class="py-1 px-1.5">Boy (mm)</th>
+                <th class="py-1 px-1.5 text-center">Adet</th>
+                <th class="py-1 px-1 text-center w-5"></th>
+              </tr>
+            </thead>
+            <tbody id="stock-input-body" class="divide-y divide-zinc-800/50 text-zinc-200">
+              <!-- JS ile dolar -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 3. EK Kuralları Kartı -->
+      <div class="bg-zinc-900/50 backdrop-blur-md border border-zinc-800/80 rounded-2xl p-2.5 shadow-xl space-y-2">
+        <div class="flex items-center justify-between pb-1.5 border-b border-zinc-800/70">
+          <span class="text-[11px] font-bold text-white flex items-center gap-1.5">
+            <i class="ph-bold ph-link text-teal-400"></i> EK Kuralları
+          </span>
+        </div>
+
+        <label class="flex items-center gap-2 cursor-pointer bg-zinc-950/60 p-1.5 rounded-xl border border-zinc-800/80 select-none">
+          <input type="checkbox" id="check-allow-splice" checked class="w-3.5 h-3.5 accent-cyan-500 rounded cursor-pointer">
+          <span class="font-medium text-zinc-200 text-[11px]">EK izin ver</span>
+        </label>
+
+        <div class="grid grid-cols-2 gap-1.5 text-xs">
+          <div>
+            <label class="block text-[9px] text-zinc-400 mb-0.5 uppercase tracking-wide">Maks. EK</label>
+            <input type="number" id="input-max-splice" value="1" min="0" max="5" class="w-full bg-zinc-950/70 border border-zinc-700/80 rounded-lg px-2 py-1 text-white font-mono text-xs focus:border-cyan-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-[9px] text-zinc-400 mb-0.5 uppercase tracking-wide" title="İzin verilen en kısa ek segment boyu">Min. EK (mm)</label>
+            <input type="number" id="input-min-splice" value="500" step="50" class="w-full bg-zinc-950/70 border border-zinc-700/80 rounded-lg px-2 py-1 text-white font-mono text-xs focus:border-cyan-500 focus:outline-none">
+          </div>
+        </div>
+        <p class="text-[9px] text-zinc-500 font-mono leading-tight">
+          Farklı çubuklardaki artıklar (fireler) toplanarak açıkta kalan parçalar EK-1 & EK-2 ile kurtarılır.
+        </p>
+      </div>
+
+      <!-- 3.5. DEMET / PAKET KESİM (Üst Üste / Çoklu Çubuk Kesimi) KARTI -->
+      <div class="bg-zinc-900/50 backdrop-blur-md border border-zinc-800/80 hover:border-indigo-500/40 rounded-2xl p-2.5 shadow-xl space-y-2 transition">
+        <div class="flex items-center justify-between pb-1.5 border-b border-zinc-800/70">
+          <span class="text-[11px] font-bold text-white flex items-center gap-1.5">
+            <i class="ph-fill ph-layers text-indigo-400"></i> Paket / Demet Kesim
+          </span>
+          <span class="text-[9px] font-mono text-indigo-300 bg-indigo-500/10 px-1.5 py-0.5 rounded border border-indigo-500/30">Üst Üste</span>
+        </div>
+
+        <label class="flex items-center gap-2 cursor-pointer bg-zinc-950/60 p-1.5 rounded-xl border border-zinc-800/80 select-none">
+          <input type="checkbox" id="check-bundle-cut" class="w-3.5 h-3.5 accent-indigo-500 rounded cursor-pointer">
+          <span class="font-medium text-zinc-200 text-[11px]">Aynı boyları paketle (Tek Paso)</span>
+        </label>
+
+        <div id="bundle-options-panel" class="space-y-1.5 opacity-50 pointer-events-none transition-opacity duration-200">
+          <div class="grid grid-cols-2 gap-1.5 text-xs">
+            <div>
+              <label class="block text-[9px] text-zinc-400 mb-0.5 uppercase tracking-wide" title="Üst üste / yan yana konulacak azami profil sayısı">Maks. Paket</label>
+              <select id="select-bundle-size" class="w-full bg-zinc-950/80 border border-zinc-700/80 rounded-lg px-2 py-1 text-indigo-300 font-mono text-xs focus:border-indigo-500 focus:outline-none">
+                <option value="2">2 Çubuk</option>
+                <option value="3">3 Çubuk</option>
+                <option value="4" selected>4 Çubuk</option>
+                <option value="5">5 Çubuk</option>
+                <option value="6">6 Çubuk</option>
+                <option value="8">8 Çubuk</option>
+                <option value="10">10 Çubuk</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[9px] text-zinc-400 mb-0.5 uppercase tracking-wide" title="Paketleme için minimum aynı boy parça adedi">Min. Tekrar</label>
+              <input type="number" id="input-bundle-min-qty" value="2" min="2" max="100" class="w-full bg-zinc-950/70 border border-zinc-700/80 rounded-lg px-2 py-1 text-white font-mono text-xs focus:border-indigo-500 focus:outline-none">
+            </div>
+          </div>
+          <p class="text-[9px] text-zinc-500 font-mono leading-tight">
+            Aynı boy parçalar (örn: 5490 mm) ana çubuklara özdeş yerleştirilip tek seferde kesilir.
+          </p>
+        </div>
+      </div>
+
+      <!-- 4. HESAPLA Kartı (Ayrı ve Tek Başına Sekme/Kart) -->
+      <div class="bg-zinc-900/50 backdrop-blur-md border border-cyan-500/30 rounded-2xl p-2.5 shadow-xl hover:border-cyan-500/50 transition">
+        <button id="btn-calculate" class="w-full py-3 px-3 bg-[#102c57] hover:bg-[#163e7a] border border-cyan-400/50 text-white font-bold rounded-xl shadow-lg hover:shadow-cyan-500/20 transition flex items-center justify-center gap-2 text-xs uppercase tracking-wider">
+          <i class="ph-bold ph-lightning text-cyan-400 animate-pulse text-base"></i>
+          <span>HESAPLA</span>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- SAĞ SÜTUN: TabControl1 (Ekrana Tam Sığan ve Kendi İçinde Bağımsız Kayan Sekmeler) -->
+    <div class="lg:col-span-9 xl:col-span-10 flex flex-col space-y-2.5 h-full min-h-0 overflow-hidden">
+
+      <!-- Sekme Başlıkları (tabControl1 Butonları) -->
+      <div class="bg-zinc-900/60 backdrop-blur-md border border-zinc-800/80 rounded-2xl p-1.5 flex flex-wrap items-center justify-between gap-2 shadow-xl shrink-0">
+        <div class="flex items-center gap-1 overflow-x-auto" id="tab-nav-container">
+          <button data-tab="tab-kesim-plani" class="tab-btn active px-3.5 py-1.5 rounded-xl text-xs font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-sm flex items-center gap-1.5 transition">
+            <i class="ph-bold ph-table"></i>
+            <span>KESİM PLANI</span>
+          </button>
+          <button data-tab="tab-visual-bars" class="tab-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold text-zinc-400 hover:text-white hover:bg-zinc-800/60 transition flex items-center gap-1.5">
+            <i class="ph-bold ph-chart-bar-horizontal"></i>
+            <span>GÖRSEL YERLEŞİM</span>
+          </button>
+          <button data-tab="tab-ekli-parcalar" class="tab-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold text-zinc-400 hover:text-white hover:bg-zinc-800/60 transition flex items-center gap-1.5">
+            <i class="ph-bold ph-link"></i>
+            <span>EKLİ PARÇALAR</span>
+          </button>
+          <button data-tab="tab-profil-ozeti" class="tab-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold text-zinc-400 hover:text-white hover:bg-zinc-800/60 transition flex items-center gap-1.5">
+            <i class="ph-bold ph-chart-pie"></i>
+            <span>PROFİL ÖZETİ</span>
+          </button>
+          <button data-tab="tab-yapilmayanlar" id="btn-tab-yapilmayanlar" class="tab-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold text-zinc-400 hover:text-white hover:bg-zinc-800/60 transition flex items-center gap-1.5">
+            <i id="icon-tab-yapilmayanlar" class="ph-bold ph-warning-octagon"></i>
+            <span>YAPILMAYAN POZLAR</span>
+            <span id="badge-yapilmayan-sayisi" class="hidden px-2 py-0.5 bg-red-600 text-white font-bold text-[11px] rounded-full font-mono shadow-[0_0_12px_rgba(239,68,68,0.85)] border border-red-400 animate-pulse">0</span>
+          </button>
+          <button data-tab="tab-kaynak-liste" class="tab-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold text-zinc-400 hover:text-white hover:bg-zinc-800/60 transition flex items-center gap-1.5">
+            <i class="ph-bold ph-database"></i>
+            <span>KAYNAK LİSTE</span>
+          </button>
+        </div>
+
+        <!-- Arama / Filtreleme Çubuğu -->
+        <div class="relative">
+          <i class="ph-bold ph-magnifying-glass absolute left-3 top-2.5 text-zinc-500 text-xs"></i>
+          <input type="text" id="filter-grid-input" placeholder="Sonuçlarda ara..." class="bg-zinc-950/70 border border-zinc-800/80 text-xs text-white rounded-xl pl-8 pr-3 py-1.5 w-40 sm:w-48 focus:border-cyan-500 focus:outline-none">
+        </div>
+      </div>
+
+      <!-- SEKME İÇERİKLERİ (Kapsayıcıyı tam dolduran ve dikey taşmayan flex-1 min-h-0 blokları) -->
+
+      <!-- 1. SEKME: KESİM PLANI (dgvKesimPlani) -->
+      <div id="tab-kesim-plani" class="tab-content flex-1 min-h-0 bg-zinc-900/50 backdrop-blur-md border border-zinc-800/80 rounded-2xl shadow-2xl overflow-hidden flex flex-col">
+        <div class="overflow-x-auto flex-1 min-h-0 overflow-y-auto">
+          <table class="text-left text-xs border-collapse font-mono min-w-full" id="table-kesim-plani">
+            <thead class="bg-zinc-900/95 backdrop-blur text-zinc-200 font-sans text-[11px] font-bold sticky top-0 z-20 border-b border-zinc-800 select-none shadow-sm">
+              <tr>
+                <th class="py-3 px-3.5 whitespace-nowrap cursor-pointer hover:text-cyan-300 transition" onclick="sortKesimPlani('profilTuru')">
+                  <div class="flex items-center gap-1.5">
+                    <span>Profil türü</span>
+                    <span id="sort-icon-profilTuru" class="text-[10px] text-zinc-500">↕</span>
+                  </div>
+                </th>
+                <th class="py-3 px-3 whitespace-nowrap cursor-pointer hover:text-cyan-300 transition" onclick="sortKesimPlani('stokNo')">
+                  <div class="flex items-center gap-1.5">
+                    <span>Stok numarası</span>
+                    <span id="sort-icon-stokNo" class="text-[10px] text-zinc-500">↕</span>
+                  </div>
+                </th>
+                <th class="py-3 px-3 text-right whitespace-nowrap cursor-pointer hover:text-cyan-300 transition" onclick="sortKesimPlani('stokBoyu')">
+                  <div class="flex items-center justify-end gap-1.5">
+                    <span>Stok boyu (mm)</span>
+                    <span id="sort-icon-stokBoyu" class="text-[10px] text-zinc-500">↕</span>
+                  </div>
+                </th>
+                <th class="py-3 px-4 whitespace-nowrap">Kesimler</th>
+                <th class="py-3 px-3 text-right whitespace-nowrap cursor-pointer hover:text-cyan-300 transition" onclick="sortKesimPlani('kullanilan')">
+                  <div class="flex items-center justify-end gap-1.5">
+                    <span>Kullanılan toplam (mm)</span>
+                    <span id="sort-icon-kullanilan" class="text-[10px] text-zinc-500">↕</span>
+                  </div>
+                </th>
+                <th class="py-3 px-3 text-right whitespace-nowrap cursor-pointer hover:text-cyan-300 transition bg-amber-500/10 text-amber-300" onclick="sortKesimPlani('fire')">
+                  <div class="flex items-center justify-end gap-1.5">
+                    <span>Kalan / Fire (mm)</span>
+                    <span id="sort-icon-fire" class="text-[10px] text-amber-400 font-bold">↕</span>
+                  </div>
+                </th>
+                <th class="py-3 px-3 text-center whitespace-nowrap cursor-pointer hover:text-cyan-300 transition" onclick="sortKesimPlani('verim')">
+                  <div class="flex items-center justify-center gap-1.5">
+                    <span>Verim (%)</span>
+                    <span id="sort-icon-verim" class="text-[10px] text-zinc-500">↕</span>
+                  </div>
+                </th>
+              </tr>
+            </thead>
+            <tbody id="tbody-kesim-plani" class="divide-y divide-zinc-800/50 text-zinc-200">
+              <tr>
+                <td colspan="7" class="py-24 text-center text-zinc-500 font-sans">
+                  <i class="ph-bold ph-calculator text-5xl block mx-auto mb-3 text-zinc-600"></i>
+                  Hesaplama için sol taraftaki <b>"HESAPLA"</b> butonuna tıklayın.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="p-2.5 bg-zinc-950/80 border-t border-zinc-800/80 text-[11px] text-zinc-400 flex flex-wrap items-center justify-between font-mono shrink-0">
+          <span id="kesim-plani-footer-count">0 çubuk listelendi</span>
+          <div class="flex items-center gap-3 font-sans text-xs">
+            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span> %98+ Mükemmel</span>
+            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-cyan-400"></span> %90-%98 Normal</span>
+            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span> &lt;%90 Fireli</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. SEKME: GÖRSEL YERLEŞİM (İnteraktif Çubuk Barları) -->
+      <div id="tab-visual-bars" class="tab-content hidden flex-1 min-h-0 bg-zinc-900/50 backdrop-blur-md border border-zinc-800/80 rounded-2xl shadow-2xl p-4 flex flex-col space-y-3 overflow-hidden">
+        <div class="flex items-center justify-between pb-2 border-b border-zinc-800 shrink-0">
+          <div>
+            <h3 class="font-bold text-white text-xs">İnteraktif Stok Çubuk Dağılım Şeması</h3>
+            <p class="text-[11px] text-zinc-400">Her stok çubuğu üzerindeki kesimleri orantılı barlarla inceleyin.</p>
+          </div>
+          <span class="text-[10px] text-zinc-500 font-mono">Fareyle üzerine gelerek parça detaylarını görebilirsiniz.</span>
+        </div>
+
+        <div id="visual-bars-list" class="space-y-3 flex-1 min-h-0 overflow-y-auto pr-1">
+          <!-- Dinamik Çubuk Barları Buraya Gelecek -->
+        </div>
+      </div>
+
+      <!-- 3. SEKME: EKLİ PARÇALAR (dgvEkliParcalar) -->
+      <div id="tab-ekli-parcalar" class="tab-content hidden flex-1 min-h-0 bg-zinc-900/50 backdrop-blur-md border border-zinc-800/80 rounded-2xl shadow-2xl overflow-hidden flex flex-col">
+        <div class="p-3 bg-zinc-950/60 border-b border-zinc-800 flex items-center justify-between shrink-0">
+          <div>
+            <h3 class="text-xs font-bold text-white">EKLİ PARÇALAR</h3>
+            <p class="text-[10px] text-zinc-400">Her satır tek bir nihai parçayı gösterir. EK-1, EK-2, EK-3... kesim planındaki etiketlerle eşleşir.</p>
+          </div>
+          <span id="ekli-parcalar-badge" class="px-2.5 py-0.5 rounded-lg text-xs font-mono bg-teal-500/10 text-teal-300 border border-teal-500/30">0 Ekli Parça</span>
+        </div>
+        <div class="overflow-x-auto flex-1 min-h-0 overflow-y-auto">
+          <table class="w-full text-left text-xs border-collapse font-mono" id="table-ekli-parcalar">
+            <thead class="bg-zinc-900/90 text-zinc-200 font-sans text-[11px] font-bold sticky top-0 z-20 border-b border-zinc-800">
+              <tr>
+                <th class="py-3 px-3">Profil türü</th>
+                <th class="py-3 px-3">Poz / parça sırası</th>
+                <th class="py-3 px-3 text-right">Nihai boy (mm)</th>
+                <th class="py-3 px-3 text-center">Ek Sayısı</th>
+                <th class="py-3 px-4">Segment Dağılımı (Segment Boyu • Stok No)</th>
+                <th class="py-3 px-3 text-right">Toplam boy (mm)</th>
+                <th class="py-3 px-3 text-center">Kontrol durumu</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-ekli-parcalar" class="divide-y divide-zinc-800/50 text-zinc-200">
+              <!-- JS ile dolar -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 4. SEKME: PROFİL ÖZETİ (dgvProfilOzeti) -->
+      <div id="tab-profil-ozeti" class="tab-content hidden flex-1 min-h-0 bg-zinc-900/50 backdrop-blur-md border border-zinc-800/80 rounded-2xl shadow-2xl overflow-y-auto flex flex-col p-4 sm:p-5 space-y-4">
+        <div class="flex items-center justify-between shrink-0">
+          <div>
+            <h3 class="text-sm font-bold text-white flex items-center gap-2">
+              <i class="ph-bold ph-chart-pie text-cyan-400"></i> PROFİL VE KULLANIM ÖZETİ
+            </h3>
+            <p class="text-xs text-zinc-400">Tüm proje kesim ve stok kullanım metrajları tablosu.</p>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto rounded-xl border border-zinc-800 bg-zinc-950/40 shrink-0">
+          <table class="w-full text-left text-xs font-mono" id="table-profil-ozeti">
+            <thead class="bg-zinc-900/90 text-zinc-200 font-sans text-[10px] font-bold border-b border-zinc-800">
+              <tr>
+                <th class="py-2.5 px-2.5">Profil türü</th>
+                <th class="py-2.5 px-2.5 text-right">Nihai parça</th>
+                <th class="py-2.5 px-2.5 text-right">İhtiyaç boyu</th>
+                <th class="py-2.5 px-2.5 text-right">Eldeki stok boyu</th>
+                <th class="py-2.5 px-2.5 text-right">Kullanılan adet</th>
+                <th class="py-2.5 px-2.5 text-right">Kullanılan stok</th>
+                <th class="py-2.5 px-2.5 text-right">Net kesilen</th>
+                <th class="py-2.5 px-2.5 text-right">Toplam fire</th>
+                <th class="py-2.5 px-2.5 text-right">Fire (%)</th>
+                <th class="py-2.5 px-2.5 text-right">Verim (%)</th>
+                <th class="py-2.5 px-2.5 text-center">Ekli parça</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-profil-ozeti" class="divide-y divide-zinc-800/60 text-zinc-200">
+              <!-- JS ile dolar -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Özet Kartları (Galahat Dev Glassmorphism Kartları) -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 shrink-0">
+          <div class="bg-zinc-950/70 p-3.5 rounded-2xl border border-zinc-800/80 backdrop-blur-md">
+            <span class="text-xs text-zinc-400 font-mono uppercase tracking-wider">Toplam İhtiyaç Boyu</span>
+            <div class="text-xl font-bold font-mono text-white mt-1" id="sum-card-net">0 m</div>
+            <span class="text-[10px] text-zinc-500">Projeden çıkan parçaların net boy toplamı</span>
+          </div>
+          <div class="bg-zinc-950/70 p-3.5 rounded-2xl border border-zinc-800/80 backdrop-blur-md">
+            <span class="text-xs text-zinc-400 font-mono uppercase tracking-wider">Brüt Kullanılan Profil</span>
+            <div class="text-xl font-bold font-mono text-cyan-400 mt-1" id="sum-card-gross">0 m</div>
+            <span class="text-[10px] text-zinc-500">Tezgaha giren ana çubuklar</span>
+          </div>
+          <div class="bg-zinc-950/70 p-3.5 rounded-2xl border border-zinc-800/80 backdrop-blur-md">
+            <span class="text-xs text-zinc-400 font-mono uppercase tracking-wider">Toplam Fire Metrajı</span>
+            <div class="text-xl font-bold font-mono text-amber-400 mt-1" id="sum-card-waste">0 m</div>
+            <span class="text-[10px] text-zinc-500">Hurda ve artık parça toplamı</span>
+          </div>
+        </div>
+
+        <!-- Pasta Grafiği & Verim Analiz Kartı (Kalan Boşluğu Tam Dolduran Büyük Boyut) -->
+        <div class="bg-zinc-950/70 p-4 sm:p-6 rounded-2xl border border-zinc-800/80 flex-1 flex flex-col justify-between backdrop-blur-md min-h-[300px]">
+          <div class="flex items-center justify-between pb-3 border-b border-zinc-800/80 mb-3 shrink-0">
+            <div class="flex items-center gap-2">
+              <i class="ph-bold ph-chart-donut text-cyan-400 text-lg"></i>
+              <span class="text-sm font-bold text-white uppercase tracking-wider">Malzeme Kullanım ve Verim Dağılımı</span>
+            </div>
+            <span class="text-xs font-mono text-zinc-400" id="chart-total-label">Toplam Brüt: 0 m</span>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center flex-1 my-auto">
+            <!-- Sol: Büyütülmüş SVG Donut / Pasta Grafiği -->
+            <div class="lg:col-span-5 flex justify-center items-center relative py-2">
+              <div class="relative w-56 h-56 sm:w-64 sm:h-64 lg:w-72 lg:h-72 flex items-center justify-center">
+                <svg viewBox="0 0 100 100" class="w-full h-full -rotate-90 transform drop-shadow-[0_0_20px_rgba(45,212,191,0.2)]">
+                  <!-- Arka plan izi -->
+                  <circle cx="50" cy="50" r="38" stroke="#18181b" stroke-width="13" fill="none"></circle>
+                  <!-- Net Kesilen (Verim) Dilimi -->
+                  <circle id="pie-net-segment" cx="50" cy="50" r="38" stroke="#2dd4bf" stroke-width="13" fill="none"
+                          stroke-dasharray="0 238.76" stroke-linecap="butt" class="transition-all duration-700 ease-out"></circle>
+                  <!-- Fire Dilimi -->
+                  <circle id="pie-waste-segment" cx="50" cy="50" r="38" stroke="#f59e0b" stroke-width="13" fill="none"
+                          stroke-dasharray="0 238.76" stroke-dashoffset="0" stroke-linecap="butt" class="transition-all duration-700 ease-out"></circle>
+                </svg>
+                <!-- Merkezdeki Özet Veri -->
+                <div class="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
+                  <span class="text-[11px] sm:text-xs uppercase font-bold text-zinc-400 tracking-widest font-mono">Verim Oranı</span>
+                  <span class="text-3xl sm:text-4xl font-black font-mono text-teal-300 tracking-tight my-0.5" id="pie-center-efficiency">%0.0</span>
+                  <span class="text-[11px] text-zinc-500 font-mono" id="pie-center-sub">Net Kazanç</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Sağ: Genişletilmiş Açıklama Kartları ve Karşılaştırmalı Yüzdeler -->
+            <div class="lg:col-span-7 space-y-4 font-mono flex flex-col justify-center">
+              <!-- Net Kesilen Dilim Detayı -->
+              <div class="bg-zinc-900/80 px-4 py-3.5 rounded-2xl border border-teal-500/30 flex items-center justify-between shadow-lg shadow-teal-950/20">
+                <div class="flex items-center gap-3.5">
+                  <div class="w-4 h-4 rounded-lg bg-teal-400 shadow-md shadow-teal-400/40"></div>
+                  <div>
+                    <div class="text-sm font-bold font-sans text-zinc-100 flex items-center gap-2">
+                      Net Kesilen Parçalar
+                      <span class="text-[10px] px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-300 border border-teal-500/30">Üretim</span>
+                    </div>
+                    <div class="text-xs text-zinc-400 mt-0.5" id="pie-detail-net-mm">0 mm (0.00 m)</div>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <div class="text-xl font-black text-teal-300 font-mono" id="pie-pct-net">%0.00</div>
+                  <span class="text-[10px] text-zinc-500 font-sans block">Kullanım Payı</span>
+                </div>
+              </div>
+
+              <!-- Toplam Fire Dilim Detayı -->
+              <div class="bg-zinc-900/80 px-4 py-3.5 rounded-2xl border border-amber-500/30 flex items-center justify-between shadow-lg shadow-amber-950/20">
+                <div class="flex items-center gap-3.5">
+                  <div class="w-4 h-4 rounded-lg bg-amber-500 shadow-md shadow-amber-500/40"></div>
+                  <div>
+                    <div class="text-sm font-bold font-sans text-zinc-100 flex items-center gap-2">
+                      Kalan / Fire (Hurda)
+                      <span class="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/30">Kayıp</span>
+                    </div>
+                    <div class="text-xs text-zinc-400 mt-0.5" id="pie-detail-waste-mm">0 mm (0.00 m)</div>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <div class="text-xl font-black text-amber-400 font-mono" id="pie-pct-waste">%0.00</div>
+                  <span class="text-[10px] text-zinc-500 font-sans block">Fire Payı</span>
+                </div>
+              </div>
+
+              <!-- Minik Karşılaştırma Barı -->
+              <div class="pt-1">
+                <div class="flex justify-between text-[11px] text-zinc-400 mb-1.5 font-sans">
+                  <span>Net Kullanım Oranı Dağılımı</span>
+                  <span class="text-zinc-500 font-mono">100% Toplam Kütük</span>
+                </div>
+                <div class="w-full bg-zinc-900 h-3 rounded-full overflow-hidden flex border border-zinc-800 shadow-inner">
+                  <div id="mini-bar-net" style="width: 0%;" class="bg-teal-400 h-full transition-all duration-700"></div>
+                  <div id="mini-bar-waste" style="width: 0%;" class="bg-amber-500 h-full transition-all duration-700"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. SEKME: YAPILMAYAN POZLAR (dgvYapilmayanlar) -->
+      <div id="tab-yapilmayanlar" class="tab-content hidden flex-1 min-h-0 bg-zinc-900/50 backdrop-blur-md border border-zinc-800/80 rounded-2xl shadow-2xl overflow-hidden flex flex-col">
+        <div class="p-3 bg-rose-950/20 border-b border-rose-900/40 flex items-center justify-between shrink-0">
+          <div>
+            <h3 class="text-xs font-bold text-rose-300">KESİLEMEYEN / AÇIKTA KALAN POZLAR</h3>
+            <p class="text-[10px] text-rose-400/80">Eldeki stok boyu ve adedi yetersiz olduğu için kesim planına dahil edilemeyen parçalar.</p>
+          </div>
+        </div>
+        <div class="overflow-x-auto flex-1 min-h-0 overflow-y-auto">
+          <table class="w-full text-left text-xs border-collapse font-mono" id="table-yapilmayanlar">
+            <thead class="bg-[#782828] text-white font-sans text-[11px] font-bold sticky top-0 z-20">
+              <tr>
+                <th class="py-3 px-3">Eleman Poz</th>
+                <th class="py-3 px-3">Profil</th>
+                <th class="py-3 px-3 text-center">Kalan Adet</th>
+                <th class="py-3 px-3 text-right">Birim Uzunluk (mm)</th>
+                <th class="py-3 px-3 text-right">Toplam Eksik Boy (mm)</th>
+                <th class="py-3 px-3">Durum</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-yapilmayanlar" class="divide-y divide-zinc-800/50 text-zinc-200">
+              <!-- JS ile dolar -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 6. SEKME: KAYNAK LİSTE (dgvKaynakListe) -->
+      <div id="tab-kaynak-liste" class="tab-content hidden flex-1 min-h-0 bg-zinc-900/50 backdrop-blur-md border border-zinc-800/80 rounded-2xl shadow-2xl overflow-hidden flex flex-col">
+        <div class="p-3 bg-zinc-950/60 border-b border-zinc-800 flex items-center justify-between shrink-0">
+          <div>
+            <h3 class="text-xs font-bold text-white">KAYNAK LİSTE</h3>
+            <p class="text-[10px] text-zinc-400">Ayrıştırılmış ve gruplanmış ham parça listesi.</p>
+          </div>
+          <span id="kaynak-liste-badge" class="px-2.5 py-0.5 rounded-lg text-xs font-mono bg-cyan-500/10 text-cyan-300 border border-cyan-500/30">0 Poz Grubu</span>
+        </div>
+        <div class="overflow-x-auto flex-1 min-h-0 overflow-y-auto">
+          <table class="w-full text-left text-xs border-collapse font-mono" id="table-kaynak-liste">
+            <thead class="bg-zinc-900/90 text-zinc-200 font-sans text-[11px] font-bold sticky top-0 z-20 border-b border-zinc-800">
+              <tr>
+                <th class="py-3 px-4">Eleman Poz</th>
+                <th class="py-3 px-4">Profil</th>
+                <th class="py-3 px-4 text-center">Adet</th>
+                <th class="py-3 px-4 text-right">Uzunluk (mm)</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-kaynak-liste" class="divide-y divide-zinc-800/50 text-zinc-200">
+              <!-- JS ile dolar -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- KESİLECEK PARÇA LİSTESİ MODAL DİYALOG (Veri Gir Tuşuna Basınca Açılır) -->
+  <div id="modal-parts-editor" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden items-center justify-center p-4">
+    <div class="bg-zinc-900/90 border border-zinc-800 w-full max-w-3xl rounded-3xl shadow-2xl flex flex-col overflow-hidden max-h-[85vh] animate-in fade-in duration-200">
+      
+      <!-- Modal Başlık -->
+      <div class="px-6 py-4 border-b border-zinc-800/80 flex items-center justify-between bg-zinc-950/50">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+            <i class="ph-bold ph-table text-xl"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-white text-sm">Kesilecek Parça Listesi (Veri Girişi)</h3>
+            <p class="text-[11px] text-zinc-400">Excel'den yapıştırabilir veya Tekla Structures (.xsr / .rpt) dosyasını doğrudan seçebilirsiniz.</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <!-- Gizli File Input -->
+          <input type="file" id="input-file-tekla" accept=".xsr,.rpt,.txt,.csv,.tsv" class="hidden">
+          <!-- Tekla XSR Dosyası Seç Butonu -->
+          <button id="btn-upload-tekla" class="px-3 py-1.5 rounded-xl bg-cyan-500/15 hover:bg-cyan-500/25 border border-cyan-500/40 text-cyan-300 hover:text-white text-xs font-bold flex items-center gap-1.5 transition shadow-sm">
+            <i class="ph-bold ph-file-arrow-up text-base text-cyan-400"></i>
+            <span>Tekla .XSR Yükle</span>
+          </button>
+          <button id="btn-close-modal" class="text-zinc-400 hover:text-white p-1.5 rounded-xl hover:bg-zinc-800 transition">
+            <i class="ph-bold ph-x text-lg"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Modal Gövde: Textarea -->
+      <div class="p-5 flex-1 flex flex-col space-y-2.5 overflow-hidden">
+        <div class="flex items-center justify-between text-xs text-zinc-400">
+          <div class="flex items-center gap-2">
+            <span class="font-mono text-[11px] text-zinc-400">Hedef Sütunlar:</span>
+            <span class="px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-300 font-mono text-[10px] border border-cyan-500/20">Poz (PartPos)</span>
+            <span class="px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-300 font-mono text-[10px] border border-cyan-500/20">Profil</span>
+            <span class="px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-300 font-mono text-[10px] border border-cyan-500/20">Adet (No.)</span>
+            <span class="px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-300 font-mono text-[10px] border border-cyan-500/20">Uzunluk (Length - Net mm)</span>
+          </div>
+          <span id="modal-line-count" class="font-mono text-[11px] text-cyan-400">0 Poz Tespit Edildi</span>
+        </div>
+
+        <textarea id="raw-parts-textarea" class="w-full h-80 sm:h-96 bg-zinc-950 border border-zinc-800 rounded-2xl p-3.5 font-mono text-xs text-cyan-200 leading-relaxed focus:border-cyan-500 focus:outline-none resize-none shadow-inner selection:bg-cyan-500/30" spellcheck="false" placeholder="Excel tablosunu veya Tekla .xsr rapor içeriğini buraya yapıştırın veya 'Tekla .XSR Yükle' butonuna tıklayarak dosya seçin.&#10;&#10;Örnek Tekla Satırı:&#10;b/1075    CFCHS139.7*8  2     S235JR         1787       0.7        43.0"></textarea>
+        
+        <!-- Algılanan sütun eşleşmesi durum çubuğu -->
+        <div id="parse-status-bar" class="p-2 rounded-xl bg-zinc-950/80 border border-zinc-800/80 text-[11px] font-mono text-zinc-400 flex items-center justify-between">
+          <span id="parse-status-text">Veri bekleniyor... Excel'den yapıştırabilir veya Tekla .xsr dosyasını seçebilirsiniz.</span>
+          <span id="parse-sample-preview" class="text-teal-400 font-semibold truncate max-w-xs"></span>
+        </div>
+      </div>
+
+      <!-- Modal Alt Butonlar -->
+      <div class="px-6 py-3.5 bg-zinc-950/60 border-t border-zinc-800 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <button id="btn-clear-text" class="text-rose-400 hover:text-rose-300 text-xs font-semibold px-3 py-1.5 rounded-xl hover:bg-rose-500/10 transition">
+            Listeyi Temizle
+          </button>
+        </div>
+        <div class="flex items-center gap-2">
+          <button id="btn-cancel-modal" class="px-4 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs font-medium transition">
+            Kapat
+          </button>
+          <button id="btn-save-and-calc" class="px-5 py-2 rounded-xl bg-[#102c57] hover:bg-[#163e7a] border border-cyan-400/40 text-white font-bold text-xs flex items-center gap-2 transition shadow-md shadow-cyan-950/40">
+            <i class="ph-bold ph-check text-cyan-400"></i>
+            <span>Kaydet ve Hesapla</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Bildirim / Toast Dialog -->
+  <div id="toast-msg" class="fixed bottom-5 right-5 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none bg-zinc-900 border border-zinc-700 text-white px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 text-xs max-w-sm">
+    <i id="toast-icon" class="ph-bold ph-check-circle text-emerald-400 text-lg flex-shrink-0"></i>
+    <span id="toast-text" class="text-zinc-200 leading-snug">İşlem başarıyla gerçekleştirildi.</span>
+  </div>
+
+  <!-- JAVASCRIPT: Optimizasyon Algoritması, Excel Aktarma ve Canvas Animasyonu -->
+  <script>
+    // --- 1. DİNAMİK CANVAS PARÇACIK AĞI (Galahat Dev Constellation) ---
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let mouse = { x: null, y: null, radius: 140 };
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      initParticles();
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+    window.addEventListener('mousemove', (e) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    });
+    window.addEventListener('mouseout', () => {
+      mouse.x = null;
+      mouse.y = null;
+    });
+
+    class Particle {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 1.5 + 0.8;
+        this.speedX = (Math.random() - 0.5) * 0.45;
+        this.speedY = (Math.random() - 0.5) * 0.45;
+      }
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+
+        if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+        if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+
+        if (mouse.x !== null) {
+          let dx = mouse.x - this.x;
+          let dy = mouse.y - this.y;
+          let distance = Math.sqrt(dx * dx + dy * dy);
+          if (distance < mouse.radius) {
+            let force = (mouse.radius - distance) / mouse.radius;
+            this.x -= (dx / distance) * force * 1.5;
+            this.y -= (dy / distance) * force * 1.5;
+          }
+        }
+      }
+      draw() {
+        ctx.fillStyle = 'rgba(45, 212, 191, 0.45)';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    function initParticles() {
+      particles = [];
+      const particleCount = Math.floor((canvas.width * canvas.height) / 15000);
+      for (let i = 0; i < particleCount; i++) {
+        particles.push(new Particle());
+      }
+    }
+
+    function connectParticles() {
+      for (let a = 0; a < particles.length; a++) {
+        for (let b = a + 1; b < particles.length; b++) {
+          let dx = particles[a].x - particles[b].x;
+          let dy = particles[a].y - particles[b].y;
+          let distance = Math.sqrt(dx * dx + dy * dy);
+
+          if (distance < 115) {
+            let opacity = 1 - (distance / 115);
+            ctx.strokeStyle = `rgba(20, 184, 166, ${opacity * 0.16})`;
+            ctx.lineWidth = 0.7;
+            ctx.beginPath();
+            ctx.moveTo(particles[a].x, particles[a].y);
+            ctx.lineTo(particles[b].x, particles[b].y);
+            ctx.stroke();
+          }
+        }
+      }
+    }
+
+    function animateBg() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let i = 0; i < particles.length; i++) {
+        particles[i].update();
+        particles[i].draw();
+      }
+      connectParticles();
+      requestAnimationFrame(animateBg);
+    }
+
+    // --- 2. UYGULAMA DURUMU (State) ---
+    let eldekiStoklar = [
+      { boy: 12000, adet: 0 }
+    ];
+    let tumOkunanParcalar = []; // Dosyadaki tüm profillerin parçaları
+    let sonKaynakParcalar = [];  // Yalnızca seçili profile ait filtrelenmiş parçalar
+    let sonHesaplananCubuklar = [];
+    let minEkUzunlukGlobal = 1000;
+    let profilTuruGlobal = "-";
+    let seciliProfil = "";
+    let currentSortColumn = null;
+    let currentSortDirection = 'asc'; // 'asc' veya 'desc'
+
+    const cutColors = [
+      '#06b6d4', '#0d9488', '#10b981', '#f59e0b', 
+      '#ec4899', '#8b5cf6', '#6366f1', '#f97316',
+      '#14b8a6', '#3b82f6', '#d946ef', '#84cc16'
+    ];
+
+    // Farklı Paket / Demet Grupları İçin Özel Renk Temaları
+    const bundleThemes = [
+      { id: 1, name: 'Mor/İndigo', badgeBg: 'bg-indigo-500/20', badgeText: 'text-indigo-300', badgeBorder: 'border-indigo-500/40', barBorder: 'border-indigo-500/50', chipBg: 'bg-indigo-950/70', chipText: 'text-indigo-200', excelHex: 'FFEEF2FF', excelText: 'FF4338CA' },
+      { id: 2, name: 'Zümrüt Yeşil', badgeBg: 'bg-emerald-500/20', badgeText: 'text-emerald-300', badgeBorder: 'border-emerald-500/40', barBorder: 'border-emerald-500/50', chipBg: 'bg-emerald-950/70', chipText: 'text-emerald-200', excelHex: 'FFECFDF5', excelText: 'FF065F46' },
+      { id: 3, name: 'Sıcak Amber', badgeBg: 'bg-amber-500/20', badgeText: 'text-amber-300', badgeBorder: 'border-amber-500/40', barBorder: 'border-amber-500/50', chipBg: 'bg-amber-950/70', chipText: 'text-amber-200', excelHex: 'FFFFFBEB', excelText: 'FF92400E' },
+      { id: 4, name: 'Fuşya/Pembe', badgeBg: 'bg-fuchsia-500/20', badgeText: 'text-fuchsia-300', badgeBorder: 'border-fuchsia-500/40', barBorder: 'border-fuchsia-500/50', chipBg: 'bg-fuchsia-950/70', chipText: 'text-fuchsia-200', excelHex: 'FFFDF4FF', excelText: 'FF86198F' },
+      { id: 5, name: 'Mavi/Sky', badgeBg: 'bg-sky-500/20', badgeText: 'text-sky-300', badgeBorder: 'border-sky-500/40', barBorder: 'border-sky-500/50', chipBg: 'bg-sky-950/70', chipText: 'text-sky-200', excelHex: 'FFF0F9FF', excelText: 'FF075985' },
+      { id: 6, name: 'Gül/Rose', badgeBg: 'bg-rose-500/20', badgeText: 'text-rose-300', badgeBorder: 'border-rose-500/40', barBorder: 'border-rose-500/50', chipBg: 'bg-rose-950/70', chipText: 'text-rose-200', excelHex: 'FFFFF1F2', excelText: 'FF9F1239' }
+    ];
+
+    function getBundleTheme(bundleGrupIndex) {
+      if (!bundleGrupIndex) return bundleThemes[0];
+      return bundleThemes[(bundleGrupIndex - 1) % bundleThemes.length];
+    }
+
+    function showToast(message, type = 'success') {
+      const toast = document.getElementById('toast-msg');
+      const text = document.getElementById('toast-text');
+      const icon = document.getElementById('toast-icon');
+
+      text.innerText = message;
+      if (type === 'error') {
+        icon.className = 'ph-bold ph-warning-circle text-rose-400 text-lg flex-shrink-0';
+      } else if (type === 'warning') {
+        icon.className = 'ph-bold ph-warning text-amber-400 text-lg flex-shrink-0';
+      } else {
+        icon.className = 'ph-bold ph-check-circle text-emerald-400 text-lg flex-shrink-0';
+      }
+
+      toast.classList.remove('translate-y-24', 'opacity-0');
+      setTimeout(() => {
+        toast.classList.add('translate-y-24', 'opacity-0');
+      }, 3600);
+    }
+
+    // --- 3. STOK TABLOSU GİRİŞİ ---
+    function renderStockInputs() {
+      const tbody = document.getElementById('stock-input-body');
+      tbody.innerHTML = '';
+      eldekiStoklar.forEach((item, index) => {
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-zinc-800/40 transition';
+        tr.innerHTML = `
+          <td class="py-1 px-2">
+            <input type="number" value="${item.boy}" min="100" class="w-full bg-zinc-950/70 border border-zinc-700/80 rounded-lg px-2 py-0.5 text-white font-mono text-xs focus:border-cyan-500 focus:outline-none" onchange="updateStock(${index}, 'boy', this.value)">
+          </td>
+          <td class="py-1 px-2">
+            <input type="number" value="${item.adet}" min="0" class="w-full bg-zinc-950/70 border border-zinc-700/80 rounded-lg px-2 py-0.5 text-white font-mono text-xs focus:border-cyan-500 focus:outline-none" onchange="updateStock(${index}, 'adet', this.value)">
+          </td>
+          <td class="py-1 px-1 text-center">
+            <button onclick="deleteStockRow(${index})" class="text-zinc-500 hover:text-rose-400 p-0.5 transition" title="Satırı Sil">
+              <i class="ph-bold ph-x"></i>
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    window.updateStock = function(index, field, value) {
+      const val = parseInt(value) || 0;
+      eldekiStoklar[index][field] = val;
+    };
+
+    window.deleteStockRow = function(index) {
+      if (eldekiStoklar.length <= 1) {
+        showToast('En az bir stok satırı bulunmalıdır!', 'warning');
+        return;
+      }
+      eldekiStoklar.splice(index, 1);
+      renderStockInputs();
+    };
+
+    document.getElementById('btn-add-stock-row').addEventListener('click', () => {
+      eldekiStoklar.push({ boy: 12000, adet: 10 });
+      renderStockInputs();
+    });
+
+    // --- 4. AKILLI VE ESNEK METİN AYRIŞTIRICI: ParcalariOku ---
+    function parseNumberVal(val) {
+      if (typeof val === 'number') return val;
+      if (!val) return NaN;
+      let clean = String(val).trim().replace(/\s/g, '');
+      if (clean.includes('.') && clean.includes(',')) {
+        if (clean.lastIndexOf(',') > clean.lastIndexOf('.')) {
+          clean = clean.replace(/\./g, '').replace(',', '.');
+        } else {
+          clean = clean.replace(/,/g, '');
+        }
+      } else {
+        clean = clean.replace(',', '.');
+      }
+      return parseFloat(clean);
+    }
+
+    function satirParcala(satir) {
+      if (satir.includes('\t')) {
+        return satir.split('\t').map(c => c.trim());
+      }
+      if (satir.includes(';')) {
+        return satir.split(';').map(c => c.trim());
+      }
+      return satir.trim().split(/\s{2,}/).map(c => c.trim());
+    }
+
+    function sutunIndeksleriniBul(baslikSutunlari) {
+      let colPoz = -1;
+      let colProfil = -1;
+      let colAdet = -1;
+      let colUzunluk = -1;
+
+      const isTeklaHeader = baslikSutunlari.some(s => s && s.toLowerCase().includes('partpos'));
+
+      for (let c = 0; c < baslikSutunlari.length; c++) {
+        const raw = baslikSutunlari[c] || '';
+        const norm = raw.toLocaleLowerCase('tr-TR').replace(/[\s_\-\(\)\.\,\*\/]/g, '');
+        if (!norm) continue;
+
+        if (isTeklaHeader && (norm === 'no' || norm === 'no.')) {
+          colAdet = c;
+          continue;
+        }
+
+        if (!isTeklaHeader && (norm === 'no' || norm === 'sirano' || norm === 'sn' || norm === 'item')) {
+          continue;
+        }
+
+        if (colPoz === -1) {
+          if (norm.includes('partpos') || norm.includes('elemanpoz') || norm.includes('parcapoz') || norm === 'poz' || norm === 'mark' || norm === 'pose' || norm === 'pos') {
+            colPoz = c;
+            continue;
+          }
+        }
+
+        if (colProfil === -1) {
+          if (norm.includes('profil') || norm.includes('profile') || norm.includes('kesit') || norm.includes('section')) {
+            colProfil = c;
+            continue;
+          }
+        }
+
+        if (colAdet === -1) {
+          if ((norm === 'adet' || norm === 'qty' || norm === 'quantity' || norm === 'miktar' || norm === 'ad') && !norm.includes('agirlik') && !norm.includes('alan')) {
+            colAdet = c;
+            continue;
+          }
+        }
+
+        if (colUzunluk === -1) {
+          if ((norm.includes('uzunluk') || norm.includes('length') || norm.includes('boy') || norm === 'len') && !norm.includes('alan') && !norm.includes('toplam') && !norm.includes('agirlik')) {
+            colUzunluk = c;
+            continue;
+          }
+        }
+      }
+
+      return { colPoz, colProfil, colAdet, colUzunluk };
+    }
+
+    function parcalariOku(metin) {
+      const liste = [];
+      if (!metin || !metin.trim()) return liste;
+
+      let tumSatirlar = metin.split(/\r?\n/).filter(s => s.trim().length > 0);
+      if (tumSatirlar.length === 0) return liste;
+
+      tumSatirlar = tumSatirlar.filter(s => {
+        const tr = s.trim();
+        if (/^[-=_\*]{3,}$/.test(tr)) return false;
+        if (tr.toUpperCase().includes('TEKLA STRUCTURES')) return false;
+        if (tr.toUpperCase().startsWith('CONTRACT:')) return false;
+        if (tr.toUpperCase().startsWith('TOTAL FOR')) return false;
+        return true;
+      });
+
+      let colPoz = -1;
+      let colProfil = -1;
+      let colAdet = -1;
+      let colUzunluk = -1;
+      let baslangicSatiri = 0;
+
+      for (let r = 0; r < Math.min(8, tumSatirlar.length); r++) {
+        const sutunlar = satirParcala(tumSatirlar[r]);
+        const bulunanlar = sutunIndeksleriniBul(sutunlar);
+
+        if (bulunanlar.colPoz !== -1 && bulunanlar.colUzunluk !== -1) {
+          colPoz = bulunanlar.colPoz;
+          colProfil = bulunanlar.colProfil;
+          colAdet = bulunanlar.colAdet;
+          colUzunluk = bulunanlar.colUzunluk;
+          baslangicSatiri = r + 1;
+          break;
+        }
+      }
+
+      const pozSayaci = {};
+
+      for (let i = baslangicSatiri; i < tumSatirlar.length; i++) {
+        const hamSatir = tumSatirlar[i].trim();
+        if (!hamSatir || hamSatir.startsWith('---') || hamSatir.toLowerCase().includes('total for')) continue;
+
+        let sutunlar = satirParcala(tumSatirlar[i]);
+        if (sutunlar.length === 1 && hamSatir.includes(' ')) {
+          sutunlar = hamSatir.split(/\s+/).map(c => c.trim());
+        }
+        if (sutunlar.length === 0) continue;
+
+        let rowPoz = null;
+        let rowProfil = "CFCHS139.7*8";
+        let rowAdet = 1;
+        let rowUzunluk = null;
+
+        if (colPoz !== -1 && colUzunluk !== -1) {
+          rowPoz = sutunlar[colPoz] || "";
+          if (colProfil !== -1 && sutunlar[colProfil]) rowProfil = sutunlar[colProfil];
+          if (colAdet !== -1 && sutunlar[colAdet]) rowAdet = parseInt(sutunlar[colAdet], 10) || 1;
+          rowUzunluk = sutunlar[colUzunluk] || "";
+        } else {
+          for (let c = 0; c < sutunlar.length; c++) {
+            const val = sutunlar[c];
+            if (!val) continue;
+
+            if (!rowPoz && (val.includes('/') || /^[a-zA-Z]+\/?\d+/.test(val))) {
+              rowPoz = val;
+              continue;
+            }
+
+            if (!rowProfil && (val.includes('*') || val.toUpperCase().includes('CFCHS') || val.toUpperCase().includes('HEA') || val.toUpperCase().includes('IPE') || val.toUpperCase().includes('UNP'))) {
+              rowProfil = val;
+              continue;
+            }
+
+            const num = parseNumberVal(val);
+            if (!isNaN(num)) {
+              if (num >= 80 && !rowUzunluk) {
+                rowUzunluk = val;
+              } else if (num >= 1 && num <= 500 && Number.isInteger(num) && !rowAdet_set) {
+                rowAdet = parseInt(val, 10);
+                var rowAdet_set = true;
+              }
+            }
+          }
+        }
+
+        if (!rowPoz || !rowUzunluk) continue;
+
+        const pozLower = String(rowPoz).toLocaleLowerCase('tr-TR');
+        if (pozLower.includes('partpos') || pozLower.includes('eleman') || String(rowUzunluk).toLocaleLowerCase('tr-TR').includes('length')) {
+          continue;
+        }
+
+        const temizProfil = String(rowProfil).trim();
+        const profilUpper = temizProfil.toUpperCase();
+
+        if (profilUpper.startsWith('PL') || profilUpper.startsWith('NUT') || profilUpper.startsWith('BLT') || profilUpper.startsWith('WASHER')) {
+          continue;
+        }
+
+        const hamUzunluk = parseNumberVal(rowUzunluk);
+        if (!isNaN(hamUzunluk) && hamUzunluk > 0) {
+          const netUzunlukMm = Math.round(hamUzunluk);
+          const adet = (!isNaN(rowAdet) && rowAdet > 0) ? rowAdet : 1;
+          const temizPoz = String(rowPoz).trim();
+
+          if (!pozSayaci[temizPoz]) pozSayaci[temizPoz] = 0;
+
+          for (let k = 0; k < adet; k++) {
+            pozSayaci[temizPoz]++;
+            liste.push({
+              poz: temizPoz,
+              siraNo: pozSayaci[temizPoz],
+              profilTipi: temizProfil,
+              toplamUzunluk: netUzunlukMm,
+              kalanUzunluk: netUzunlukMm,
+              tamamlandi: false,
+              segmentler: []
+            });
+          }
+        }
+      }
+
+      return liste;
+    }
+
+    // --- 5. HESAPLAMA MOTORU (HesaplaVeDoldur) ---
+    function hesaplaVeDoldur() {
+      const stokHavuzu = [];
+      eldekiStoklar.forEach(s => {
+        if (s.boy > 0 && s.adet > 0) {
+          stokHavuzu.push({ boy: s.boy, adet: s.adet });
+        }
+      });
+
+      if (stokHavuzu.length === 0) {
+        showToast("Lütfen eldeki stok boylarını ve adetlerini girin!", "error");
+        return;
+      }
+
+      const ekIzinli = document.getElementById('check-allow-splice').checked;
+      let minEkUzunluk = parseInt(document.getElementById('input-min-splice').value) || 1000;
+      let maksEkSayisi = parseInt(document.getElementById('input-max-splice').value);
+      if (isNaN(maksEkSayisi) || maksEkSayisi < 0) maksEkSayisi = 1;
+      minEkUzunlukGlobal = minEkUzunluk;
+
+      // Paket / Demet Kesim Ayarları
+      const paketKesimAktif = document.getElementById('check-bundle-cut').checked;
+      const maksPaketSayisi = parseInt(document.getElementById('select-bundle-size').value) || 4;
+      const minTekrarAdedi = parseInt(document.getElementById('input-bundle-min-qty').value) || 2;
+
+      const rawText = document.getElementById('raw-parts-textarea').value;
+      tumOkunanParcalar = parcalariOku(rawText);
+
+      if (tumOkunanParcalar.length === 0) {
+        showToast("Kesilecek geçerli parça listesi bulunamadı.", "error");
+        return;
+      }
+
+      profilleriGuncelle(tumOkunanParcalar);
+
+      const profilSelect = document.getElementById('select-active-profile');
+      seciliProfil = profilSelect.value || (tumOkunanParcalar[0] ? tumOkunanParcalar[0].profilTipi : "");
+      
+      sonKaynakParcalar = tumOkunanParcalar
+        .filter(p => p.profilTipi === seciliProfil)
+        .map(p => ({
+          ...p,
+          kalanUzunluk: p.toplamUzunluk,
+          tamamlandi: false,
+          segmentler: []
+        }));
+
+      if (sonKaynakParcalar.length === 0) {
+        showToast(`"${seciliProfil}" profili için parça bulunamadı!`, "warning");
+        return;
+      }
+
+      const profilTuru = seciliProfil;
+      profilTuruGlobal = profilTuru;
+      sonHesaplananCubuklar = [];
+      let cubukSayaci = 1;
+
+      const kullanilabilirCubuklar = [];
+      stokHavuzu.sort((a, b) => b.boy - a.boy);
+      stokHavuzu.forEach(st => {
+        for (let i = 0; i < st.adet; i++) {
+          kullanilabilirCubuklar.push({
+            stokNo: `S${String(cubukSayaci++).padStart(3, '0')}`,
+            profilTuru: profilTuru,
+            stokBoyu: st.boy,
+            kalanUzunluk: st.boy,
+            kesimler: [],
+            paketGrupId: null,
+            paketAdet: 1
+          });
+        }
+      });
+
+      const parcalar = [...sonKaynakParcalar];
+      const aktifKullanilanCubuklar = [];
+
+      // =========================================================================
+      // AŞAMA 0: DEMET / PAKET KESİM (Seçilmişse ve uygun parçalar varsa)
+      // =========================================================================
+      if (paketKesimAktif) {
+        const boyFrekans = {};
+        parcalar.forEach(p => {
+          if (!boyFrekans[p.toplamUzunluk]) boyFrekans[p.toplamUzunluk] = [];
+          boyFrekans[p.toplamUzunluk].push(p);
+        });
+
+        const siraliBoylar = Object.keys(boyFrekans)
+          .map(Number)
+          .sort((a, b) => b - a);
+
+        let paketGrupSayaci = 1;
+
+        for (const boy of siraliBoylar) {
+          const ayniBoyParcalar = boyFrekans[boy].filter(p => !p.tamamlandi);
+          if (ayniBoyParcalar.length < minTekrarAdedi) continue;
+
+          const birCubugaSiganAdet = Math.floor(12000 / boy);
+          if (birCubugaSiganAdet <= 0) continue;
+
+          while (true) {
+            const kalanUygunParcalar = ayniBoyParcalar.filter(p => !p.tamamlandi);
+            if (kalanUygunParcalar.length < birCubugaSiganAdet * 2) break;
+
+            const maksimumMumkunPaket = Math.floor(kalanUygunParcalar.length / birCubugaSiganAdet);
+            const paketBoyutu = Math.min(maksimumMumkunPaket, maksPaketSayisi);
+
+            if (paketBoyutu < 2) break;
+
+            const bosCubuklar = kullanilabilirCubuklar.filter(c => !aktifKullanilanCubuklar.includes(c) && c.stokBoyu >= (boy * birCubugaSiganAdet));
+            if (bosCubuklar.length < paketBoyutu) break;
+
+            const grupId = `PKT-${paketGrupSayaci++}`;
+            const grupNo = paketGrupSayaci - 1;
+            const secilenCubuklar = bosCubuklar.slice(0, paketBoyutu);
+
+            for (let cIdx = 0; cIdx < paketBoyutu; cIdx++) {
+              const cubuk = secilenCubuklar[cIdx];
+              cubuk.paketGrupId = grupId;
+              cubuk.paketGrupNo = grupNo;
+              cubuk.paketAdet = paketBoyutu;
+
+              for (let k = 0; k < birCubugaSiganAdet; k++) {
+                const parcaIndex = ayniBoyParcalar.findIndex(p => !p.tamamlandi);
+                if (parcaIndex !== -1) {
+                  const p = ayniBoyParcalar[parcaIndex];
+                  cubuk.kesimler.push({
+                    poz: p.poz,
+                    siraNo: p.siraNo,
+                    kesilenBoy: p.toplamUzunluk,
+                    durum: "TAM",
+                    metin: `${p.poz} [${p.siraNo}] • ${p.toplamUzunluk} mm • TAM`
+                  });
+                  cubuk.kalanUzunluk -= p.toplamUzunluk;
+                  p.kalanUzunluk = 0;
+                  p.tamamlandi = true;
+                }
+              }
+              aktifKullanilanCubuklar.push(cubuk);
+            }
+          }
+        }
+      }
+
+      // =========================================================================
+      // AŞAMA 1: BEST-FIT DECREASING (Tek Parça Normal Yerleşim)
+      // =========================================================================
+      const siraliKalanParcalar = parcalar
+        .filter(p => !p.tamamlandi)
+        .sort((a, b) => b.toplamUzunluk - a.toplamUzunluk);
+
+      for (const parca of siraliKalanParcalar) {
+        if (parca.tamamlandi) continue;
+
+        let enIyiCubuk = null;
+        let minimumKalan = Infinity;
+
+        // 1.1: Aktif kullanılan çubuklardan (paket artıkları dahil) en az fire bırakana yerleştirmeyi dene
+        for (const c of aktifKullanilanCubuklar) {
+          if (c.kalanUzunluk >= parca.toplamUzunluk) {
+            const fark = c.kalanUzunluk - parca.toplamUzunluk;
+            if (fark < minimumKalan) {
+              minimumKalan = fark;
+              enIyiCubuk = c;
+            }
+          }
+        }
+
+        if (enIyiCubuk !== null) {
+          enIyiCubuk.kesimler.push({
+            poz: parca.poz,
+            siraNo: parca.siraNo,
+            kesilenBoy: parca.toplamUzunluk,
+            durum: "TAM",
+            metin: `${parca.poz} [${parca.siraNo}] • ${parca.toplamUzunluk} mm • TAM`
+          });
+          enIyiCubuk.kalanUzunluk -= parca.toplamUzunluk;
+          parca.kalanUzunluk = 0;
+          parca.tamamlandi = true;
+        } else {
+          // 1.2: Depodaki henüz kullanılmamış stoklardan en uygun olanı aç
+          const yeniCubuk = kullanilabilirCubuklar.find(c => !aktifKullanilanCubuklar.includes(c) && c.kalanUzunluk >= parca.toplamUzunluk);
+          if (yeniCubuk) {
+            yeniCubuk.kesimler.push({
+              poz: parca.poz,
+              siraNo: parca.siraNo,
+              kesilenBoy: parca.toplamUzunluk,
+              durum: "TAM",
+              metin: `${parca.poz} [${parca.siraNo}] • ${parca.toplamUzunluk} mm • TAM`
+            });
+            yeniCubuk.kalanUzunluk -= parca.toplamUzunluk;
+            parca.kalanUzunluk = 0;
+            parca.tamamlandi = true;
+            aktifKullanilanCubuklar.push(yeniCubuk);
+          }
+        }
+      }
+
+      // =========================================================================
+      // AŞAMA 2: EK YAPMA (Maks. EK Parametresine Göre Dinamik Çoklu Birleştirme)
+      // =========================================================================
+      const sigmayanlar = parcalar.filter(p => !p.tamamlandi).sort((a, b) => b.toplamUzunluk - a.toplamUzunluk);
+      
+      // Maksimum EK sayısı (N ek = N + 1 adet segment demektir)
+      const maxSegmentSayisi = maksEkSayisi + 1;
+
+      if (ekIzinli && maksEkSayisi > 0 && sigmayanlar.length > 0) {
+        for (const p of sigmayanlar) {
+          if (p.tamamlandi) continue;
+
+          // 1. ADIM: Mevcut kullanılan çubukların artıklarını topla (paket artıkları dahil, >= minEkUzunluk olanlar)
+          const uygunCubuklar = aktifKullanilanCubuklar
+            .filter(c => c.kalanUzunluk >= minEkUzunluk)
+            .sort((a, b) => b.kalanUzunluk - a.kalanUzunluk);
+
+          let secilenPlani = null;
+
+          // 1. Alt Adım: Sadece mevcut kullanılan çubukların artıklarıyla k sayıda birleştirme dene (2'den maxSegmentSayisi'na kadar)
+          for (let segCount = 2; segCount <= maxSegmentSayisi && !secilenPlani; segCount++) {
+            if (uygunCubuklar.length < segCount) continue;
+
+            // En büyük artığa sahip ilk segCount adet çubuğun toplamı kurtarıyor mu?
+            const adaylar = uygunCubuklar.slice(0, segCount);
+            const toplamArtik = adaylar.reduce((sum, c) => sum + c.kalanUzunluk, 0);
+
+            if (toplamArtik >= p.toplamUzunluk) {
+              // Parçayı bu çubuklara paylaştır
+              let kalanIhtiyac = p.toplamUzunluk;
+              const plan = [];
+              let basarisiz = false;
+
+              for (let sIdx = 0; sIdx < adaylar.length; sIdx++) {
+                const cubuk = adaylar[sIdx];
+                const kalanSegmentSayisi = adaylar.length - sIdx - 1;
+
+                if (kalanSegmentSayisi === 0) {
+                  // Son segment
+                  if (cubuk.kalanUzunluk >= kalanIhtiyac && kalanIhtiyac >= minEkUzunluk) {
+                    plan.push({ cubuk, uzunluk: kalanIhtiyac });
+                    kalanIhtiyac = 0;
+                  } else {
+                    basarisiz = true;
+                  }
+                } else {
+                  // Sonraki segmentlerin her birine en az minEkUzunluk kalacak şekilde al
+                  const minGerekenSonrakiler = kalanSegmentSayisi * minEkUzunluk;
+                  const buSegmentMaks = kalanIhtiyac - minGerekenSonrakiler;
+                  const alinacak = Math.min(cubuk.kalanUzunluk, buSegmentMaks);
+
+                  if (alinacak >= minEkUzunluk) {
+                    plan.push({ cubuk, uzunluk: alinacak });
+                    kalanIhtiyac -= alinacak;
+                  } else {
+                    basarisiz = true;
+                    break;
+                  }
+                }
+              }
+
+              if (!basarisiz && kalanIhtiyac === 0) {
+                secilenPlani = plan;
+                break;
+              }
+            }
+          }
+
+          // 2. Alt Adım: Eğer sadece mevcut çubukların artıkları yetmediyse, 
+          // mevcut 1..(maxSegmentSayisi-1) artık çubuğun yanına DEPO'dan yeni çubuk açarak birleştir
+          if (!secilenPlani && maxSegmentSayisi >= 2) {
+            for (let segCount = 2; segCount <= maxSegmentSayisi && !secilenPlani; segCount++) {
+              const kullanilacakArtikSayisi = segCount - 1;
+              if (uygunCubuklar.length < kullanilacakArtikSayisi) continue;
+
+              const artikAdaylari = uygunCubuklar.slice(0, kullanilacakArtikSayisi);
+              const artikToplam = artikAdaylari.reduce((sum, c) => sum + c.kalanUzunluk, 0);
+              const depodanGereken = p.toplamUzunluk - artikToplam;
+
+              if (depodanGereken >= minEkUzunluk) {
+                const depodakiBosCubuk = kullanilabilirCubuklar.find(c => !aktifKullanilanCubuklar.includes(c) && c.kalanUzunluk >= depodanGereken);
+                if (depodakiBosCubuk) {
+                  const plan = [];
+                  artikAdaylari.forEach(c => {
+                    plan.push({ cubuk: c, uzunluk: c.kalanUzunluk });
+                  });
+                  plan.push({ cubuk: depodakiBosCubuk, uzunluk: depodanGereken });
+                  secilenPlani = plan;
+                  aktifKullanilanCubuklar.push(depodakiBosCubuk);
+                  break;
+                }
+              }
+            }
+          }
+
+          // Plan uygulansın
+          if (secilenPlani) {
+            secilenPlani.forEach((adim, idx) => {
+              const segNo = idx + 1;
+              const etiket = `EK-${segNo}`;
+              adim.cubuk.kesimler.push({
+                poz: p.poz,
+                siraNo: p.siraNo,
+                kesilenBoy: adim.uzunluk,
+                durum: etiket,
+                metin: `${p.poz} [${p.siraNo}] • ${adim.uzunluk} mm • ${etiket}`
+              });
+              adim.cubuk.kalanUzunluk -= adim.uzunluk;
+              p.segmentler.push({
+                segmentNo: segNo,
+                uzunluk: adim.uzunluk,
+                stokNo: adim.cubuk.stokNo
+              });
+            });
+            p.kalanUzunluk = 0;
+            p.tamamlandi = true;
+          }
+        }
+      }
+
+      sonHesaplananCubuklar = aktifKullanilanCubuklar.filter(c => c.kesimler.length > 0);
+      for (let i = 0; i < sonHesaplananCubuklar.length; i++) {
+        sonHesaplananCubuklar[i].stokNo = `S${String(i + 1).padStart(3, '0')}`;
+        sonHesaplananCubuklar[i].kesimler.forEach(k => {
+          const matchingPart = sonKaynakParcalar.find(p => p.poz === k.poz && p.siraNo === k.siraNo);
+          if (matchingPart && matchingPart.segmentler.length > 0) {
+            const segMatch = k.durum.match(/^EK-(\d+)$/);
+            if (segMatch) {
+              const segIndex = parseInt(segMatch[1], 10);
+              const sObj = matchingPart.segmentler.find(s => s.segmentNo === segIndex);
+              if (sObj) sObj.stokNo = sonHesaplananCubuklar[i].stokNo;
+            }
+          }
+        });
+      }
+
+      currentSortColumn = null;
+      currentSortDirection = 'asc';
+      updateSortIcons();
+
+      tablolariDoldur(profilTuru, minEkUzunluk);
+
+      const paketliSayisi = sonHesaplananCubuklar.filter(c => c.paketGrupId).length;
+      const bitmeyenler = sonKaynakParcalar.filter(p => !p.tamamlandi);
+      if (bitmeyenler.length > 0) {
+        showToast(`"${profilTuru}" için eldeki stok yetersiz! ${bitmeyenler.length} adet parça sığdırılamadı.`, 'warning');
+      } else if (paketliSayisi > 0) {
+        showToast(`"${profilTuru}" hesaplandı! ${paketliSayisi} adet çubuk paket/üst üste kesim için eşleştirildi.`);
+      } else {
+        showToast(`"${profilTuru}" için hesaplama tamamlandı! ${sonHesaplananCubuklar.length} çubuk optimize edildi.`);
+      }
+    }
+
+    // --- PROFİL LİSTESİ GÜNCELLEME ---
+    function profilleriGuncelle(parcalar) {
+      const select = document.getElementById('select-active-profile');
+      const badge = document.getElementById('profile-count-badge');
+      const partsLabel = document.getElementById('label-active-profile-parts');
+
+      if (!parcalar || parcalar.length === 0) {
+        select.innerHTML = '<option value="" disabled selected>Veri bekleniyor...</option>';
+        badge.innerText = '0 Profil';
+        partsLabel.innerText = '0 adet';
+        return;
+      }
+
+      const profilMap = {};
+      parcalar.forEach(p => {
+        const prof = p.profilTipi || "Tanımsız";
+        const profUpper = prof.toUpperCase();
+        if (profUpper.startsWith('PL') || profUpper.startsWith('NUT') || profUpper.startsWith('BLT') || profUpper.startsWith('WASHER')) {
+          return;
+        }
+        if (!profilMap[prof]) {
+          profilMap[prof] = { pozSet: new Set(), totalAdet: 0 };
+        }
+        profilMap[prof].pozSet.add(p.poz);
+        profilMap[prof].totalAdet++;
+      });
+
+      const profilListesi = Object.keys(profilMap);
+
+      if (profilListesi.length === 0) {
+        select.innerHTML = '<option value="" disabled selected>Uygun çubuk profil bulunamadı</option>';
+        badge.innerText = '0 Profil';
+        partsLabel.innerText = '0 adet';
+        return;
+      }
+
+      badge.innerText = `${profilListesi.length} Profil`;
+
+      const oncekiSecim = select.value;
+      select.innerHTML = '';
+
+      profilListesi.forEach((prof) => {
+        const info = profilMap[prof];
+        const opt = document.createElement('option');
+        opt.value = prof;
+        opt.innerText = `${prof} (${info.pozSet.size} Poz / ${info.totalAdet} Adet)`;
+        select.appendChild(opt);
+      });
+
+      if (oncekiSecim && profilMap[oncekiSecim]) {
+        select.value = oncekiSecim;
+        seciliProfil = oncekiSecim;
+      } else {
+        select.value = profilListesi[0];
+        seciliProfil = profilListesi[0];
+      }
+
+      const seciliInfo = profilMap[seciliProfil];
+      partsLabel.innerText = seciliInfo ? `${seciliInfo.totalAdet} adet` : '0 adet';
+    }
+
+    // --- EXCEL TARZI SIRALAMA FONKSİYONU ---
+    window.sortKesimPlani = function(columnKey) {
+      if (!sonHesaplananCubuklar || sonHesaplananCubuklar.length === 0) return;
+
+      if (currentSortColumn === columnKey) {
+        currentSortDirection = currentSortDirection === 'asc' ? 'desc' : 'asc';
+      } else {
+        currentSortColumn = columnKey;
+        currentSortDirection = (columnKey === 'fire' || columnKey === 'verim') ? 'desc' : 'asc';
+      }
+
+      sonHesaplananCubuklar.sort((a, b) => {
+        let valA, valB;
+
+        switch (columnKey) {
+          case 'profilTuru':
+            valA = (a.profilTuru || '').toLowerCase();
+            valB = (b.profilTuru || '').toLowerCase();
+            return currentSortDirection === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+          case 'stokNo':
+            valA = parseInt(a.stokNo.replace(/\D/g, '')) || 0;
+            valB = parseInt(b.stokNo.replace(/\D/g, '')) || 0;
+            break;
+          case 'stokBoyu':
+            valA = a.stokBoyu;
+            valB = b.stokBoyu;
+            break;
+          case 'kullanilan':
+            valA = a.stokBoyu - a.kalanUzunluk;
+            valB = b.stokBoyu - b.kalanUzunluk;
+            break;
+          case 'fire':
+            valA = a.kalanUzunluk;
+            valB = b.kalanUzunluk;
+            break;
+          case 'verim':
+            valA = a.stokBoyu > 0 ? ((a.stokBoyu - a.kalanUzunluk) / a.stokBoyu) : 0;
+            valB = b.stokBoyu > 0 ? ((b.stokBoyu - b.kalanUzunluk) / b.stokBoyu) : 0;
+            break;
+          default:
+            return 0;
+        }
+
+        return currentSortDirection === 'asc' ? valA - valB : valB - valA;
+      });
+
+      updateSortIcons();
+      tablolariDoldur(profilTuruGlobal, minEkUzunlukGlobal);
+    };
+
+    function updateSortIcons() {
+      const keys = ['profilTuru', 'stokNo', 'stokBoyu', 'kullanilan', 'fire', 'verim'];
+      keys.forEach(k => {
+        const icon = document.getElementById(`sort-icon-${k}`);
+        if (!icon) return;
+        if (currentSortColumn === k) {
+          icon.innerHTML = currentSortDirection === 'asc' ? '▲' : '▼';
+          icon.className = 'text-[11px] text-cyan-400 font-bold';
+        } else {
+          icon.innerHTML = '↕';
+          icon.className = k === 'fire' ? 'text-[10px] text-amber-400/80' : 'text-[10px] text-zinc-500';
+        }
+      });
+    }
+
+    // --- 6. TABLOLARI DOLDUR ---
+    function tablolariDoldur(profilTuru, minEkUzunluk) {
+      let totalUsedGrossMm = 0;
+      let totalUsedNetMm = 0;
+      let totalWasteMm = 0;
+
+      // 1. KESİM PLANI
+      const tbodyKesim = document.getElementById('tbody-kesim-plani');
+      tbodyKesim.innerHTML = '';
+
+      sonHesaplananCubuklar.forEach((c) => {
+        const netKesilen = c.stokBoyu - c.kalanUzunluk;
+        const verim = c.stokBoyu > 0 ? ((netKesilen / c.stokBoyu) * 100).toFixed(2) : "0.00";
+
+        totalUsedGrossMm += c.stokBoyu;
+        totalUsedNetMm += netKesilen;
+        totalWasteMm += c.kalanUzunluk;
+
+        let badgeStyle = "text-emerald-400 bg-emerald-500/10 border-emerald-500/30";
+        if (parseFloat(verim) < 90) {
+          badgeStyle = "text-amber-400 bg-amber-500/10 border-amber-500/30";
+        } else if (parseFloat(verim) < 98) {
+          badgeStyle = "text-cyan-400 bg-cyan-500/10 border-cyan-500/30";
+        }
+
+        const bTheme = c.paketGrupId ? getBundleTheme(c.paketGrupNo) : null;
+
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-zinc-800/40 transition';
+        tr.innerHTML = `
+          <td class="py-2.5 px-3.5 text-cyan-400 font-semibold whitespace-nowrap">
+            ${c.profilTuru}
+            ${c.paketGrupId ? `<span class="ml-1.5 px-2 py-0.5 rounded text-[10px] font-mono ${bTheme.badgeBg} ${bTheme.badgeText} border ${bTheme.badgeBorder} font-bold" title="${c.paketAdet} çubuk üst üste konularak tek seferde kesilecek!"><i class="ph-bold ph-layers"></i> ${c.paketGrupId} (${c.paketAdet}'li Paket)</span>` : ''}
+          </td>
+          <td class="py-2.5 px-3 font-bold text-white whitespace-nowrap">${c.stokNo}</td>
+          <td class="py-2.5 px-3 text-right text-zinc-300 whitespace-nowrap">${c.stokBoyu.toLocaleString('tr-TR')}</td>
+          <td class="py-2.5 px-4 text-xs text-zinc-200 whitespace-nowrap font-mono">
+            <div class="inline-flex items-center gap-1.5 whitespace-nowrap select-all">
+              ${c.kesimler.map((k, idx) => `
+                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg ${k.durum === 'TAM' ? (c.paketGrupId ? `${bTheme.chipBg} ${bTheme.chipText} border ${bTheme.badgeBorder}` : 'bg-zinc-900/90 text-zinc-200 border border-zinc-700/80') : 'bg-amber-500/15 text-amber-300 border border-amber-500/30'}">
+                  <b class="text-white">${k.poz}</b>
+                  <span class="text-zinc-400">[${k.siraNo}]</span>
+                  <span class="text-cyan-400 font-semibold">• ${k.kesilenBoy} mm</span>
+                  <span class="text-[10px] uppercase font-bold ${k.durum === 'TAM' ? (c.paketGrupId ? bTheme.badgeText : 'text-teal-400') : 'text-amber-400'}">• ${k.durum}</span>
+                </span>
+                ${idx < c.kesimler.length - 1 ? '<span class="text-zinc-600 font-bold">|</span>' : ''}
+              `).join('')}
+            </div>
+          </td>
+          <td class="py-2.5 px-3 text-right font-semibold text-zinc-100 whitespace-nowrap">${netKesilen.toLocaleString('tr-TR')}</td>
+          <td class="py-2.5 px-3 text-right text-amber-400 font-medium whitespace-nowrap">${c.kalanUzunluk.toLocaleString('tr-TR')}</td>
+          <td class="py-2.5 px-3 text-center whitespace-nowrap">
+            <span class="px-2.5 py-1 rounded-lg text-[11px] font-bold border ${badgeStyle}">
+              %${verim}
+            </span>
+          </td>
+        `;
+        tbodyKesim.appendChild(tr);
+      });
+
+      document.getElementById('kesim-plani-footer-count').innerText = `${sonHesaplananCubuklar.length} profil çubuk planlandı`;
+
+      // 2. GÖRSEL YERLEŞİM
+      const visualContainer = document.getElementById('visual-bars-list');
+      visualContainer.innerHTML = '';
+
+      sonHesaplananCubuklar.forEach((bar) => {
+        const netKesilen = bar.stokBoyu - bar.kalanUzunluk;
+        const verim = ((netKesilen / bar.stokBoyu) * 100).toFixed(2);
+        const bTheme = bar.paketGrupId ? getBundleTheme(bar.paketGrupNo) : null;
+
+        let segmentsHtml = '';
+        bar.kesimler.forEach((k, idx) => {
+          const cutPct = ((k.kesilenBoy / bar.stokBoyu) * 100).toFixed(2);
+          const color = cutColors[idx % cutColors.length];
+          const isSplice = k.durum !== 'TAM';
+
+          segmentsHtml += `
+            <div style="width: ${cutPct}%; background-color: ${color};" 
+                 class="h-8 relative group flex items-center justify-center text-[10px] font-bold text-white border-r border-zinc-950 cursor-pointer hover:brightness-110 transition">
+              <span class="truncate px-1">${k.poz} ${isSplice ? `[${k.durum}]` : ''}</span>
+              <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:flex flex-col items-center z-30 pointer-events-none">
+                <div class="bg-zinc-900 border border-zinc-700 text-white text-[11px] font-mono py-1 px-2.5 rounded-xl shadow-2xl whitespace-nowrap">
+                  <div class="font-bold text-cyan-400">${k.metin}</div>
+                  <div class="text-zinc-400">Çubuk Payı: %${cutPct}</div>
+                </div>
+                <div class="w-2 h-2 bg-zinc-900 border-b border-r border-zinc-700 transform rotate-45 -mt-1"></div>
+              </div>
+            </div>
+          `;
+        });
+
+        const wastePct = ((bar.kalanUzunluk / bar.stokBoyu) * 100).toFixed(2);
+        if (bar.kalanUzunluk > 0) {
+          segmentsHtml += `
+            <div style="width: ${wastePct}%;" 
+                 class="h-8 bg-zinc-800/80 cut-pattern flex items-center justify-center text-[10px] font-mono text-amber-400 font-semibold group relative">
+              <span class="truncate px-1">Fire ${bar.kalanUzunluk}mm</span>
+              <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:flex flex-col items-center z-30 pointer-events-none">
+                <div class="bg-zinc-900 border border-zinc-700 text-amber-300 text-[11px] font-mono py-1 px-2.5 rounded-xl shadow-2xl whitespace-nowrap">
+                  Fire Kalan: ${bar.kalanUzunluk} mm (%${wastePct})
+                </div>
+              </div>
+            </div>
+          `;
+        }
+
+        const barCard = document.createElement('div');
+        barCard.className = `bg-zinc-950/70 p-3.5 rounded-2xl border ${bar.paketGrupId ? `${bTheme.barBorder} shadow-lg shadow-black/50` : 'border-zinc-800'} space-y-2`;
+        barCard.innerHTML = `
+          <div class="flex items-center justify-between text-xs font-mono">
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-white bg-zinc-800 px-2.5 py-0.5 rounded-lg border border-zinc-700">${bar.stokNo}</span>
+              <span class="text-zinc-400">${bar.profilTuru}</span>
+              ${bar.paketGrupId ? `<span class="px-2 py-0.5 rounded text-[10px] ${bTheme.badgeBg} ${bTheme.badgeText} border ${bTheme.badgeBorder} font-bold"><i class="ph-bold ph-layers"></i> ${bar.paketGrupId} (${bar.paketAdet}'li Üst Üste Paket Kesim)</span>` : ''}
+              <span class="text-zinc-500 text-[11px]">(${bar.stokBoyu} mm)</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-zinc-400">Kullanılan: <b class="text-white">${netKesilen} mm</b></span>
+              <span class="text-zinc-400">Fire: <b class="text-amber-400">${bar.kalanUzunluk} mm</b></span>
+              <span class="text-teal-300 font-bold">%${verim}</span>
+            </div>
+          </div>
+          <div class="w-full bg-zinc-900 rounded-xl overflow-hidden flex border border-zinc-800 shadow-inner">
+            ${segmentsHtml}
+          </div>
+        `;
+        visualContainer.appendChild(barCard);
+      });
+
+      // 3. EKLİ PARÇALAR
+      const tbodyEkli = document.getElementById('tbody-ekli-parcalar');
+      tbodyEkli.innerHTML = '';
+      const ekliOlanlar = sonKaynakParcalar.filter(p => p.segmentler && p.segmentler.length >= 2).sort((a, b) => a.poz.localeCompare(b.poz) || a.siraNo - b.siraNo);
+
+      ekliOlanlar.forEach(ep => {
+        const segToplami = ep.segmentler.reduce((sum, s) => sum + s.uzunluk, 0);
+        const ekAdedi = ep.segmentler.length - 1;
+        const segmentlerKuralaUygun = ep.segmentler.every(s => s.uzunluk >= minEkUzunluk);
+        const uygun = (segToplami === ep.toplamUzunluk && segmentlerKuralaUygun && ekAdedi <= (parseInt(document.getElementById('input-max-splice').value) || 1));
+        const kontrolMetni = uygun ? "UYGUN" : "HATA";
+        const kontrolClass = uygun ? "text-teal-300 bg-teal-500/10 border-teal-500/30" : "text-rose-400 bg-rose-500/10 border-rose-500/30";
+
+        const segmentsBadges = ep.segmentler.map(s => `
+          <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-zinc-900 border border-zinc-700/80 text-[11px]">
+            <span class="text-zinc-400 font-bold">EK-${s.segmentNo}:</span>
+            <span class="text-amber-300 font-semibold">${s.uzunluk.toLocaleString('tr-TR')} mm</span>
+            <span class="text-cyan-400">(${s.stokNo || '-'})</span>
+          </span>
+        `).join(' ');
+
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-zinc-800/40 transition';
+        tr.innerHTML = `
+          <td class="py-2.5 px-3 text-cyan-400">${ep.profilTipi}</td>
+          <td class="py-2.5 px-3 font-bold text-white">${ep.poz} [${ep.siraNo}]</td>
+          <td class="py-2.5 px-3 text-right text-zinc-200">${ep.toplamUzunluk.toLocaleString('tr-TR')}</td>
+          <td class="py-2.5 px-3 text-center">
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">${ekAdedi} EK (${ep.segmentler.length} Parça)</span>
+          </td>
+          <td class="py-2.5 px-4 font-mono">${segmentsBadges}</td>
+          <td class="py-2.5 px-3 text-right text-zinc-100 font-bold">${segToplami.toLocaleString('tr-TR')}</td>
+          <td class="py-2.5 px-3 text-center">
+            <span class="px-2.5 py-0.5 rounded-lg text-[10px] font-bold border ${kontrolClass}">${kontrolMetni}</span>
+          </td>
+        `;
+        tbodyEkli.appendChild(tr);
+      });
+      document.getElementById('ekli-parcalar-badge').innerText = `${ekliOlanlar.length} Ekli Parça`;
+
+      // 4. PROFİL ÖZETİ
+      const tbodyOzet = document.getElementById('tbody-profil-ozeti');
+      tbodyOzet.innerHTML = '';
+
+      const toplamParcaAdedi = sonKaynakParcalar.length;
+      const toplamIhtiyacBoyu = sonKaynakParcalar.reduce((acc, p) => acc + p.toplamUzunluk, 0);
+
+      let eldekiToplamStokBoyu = 0;
+      eldekiStoklar.forEach(s => {
+        if (s.boy > 0 && s.adet > 0) eldekiToplamStokBoyu += (s.boy * s.adet);
+      });
+
+      const harcananStokAdedi = sonHesaplananCubuklar.length;
+      const fireOrani = totalUsedGrossMm > 0 ? ((totalWasteMm / totalUsedGrossMm) * 100).toFixed(2) : "0.00";
+      const verimOrani = totalUsedGrossMm > 0 ? ((totalUsedNetMm / totalUsedGrossMm) * 100).toFixed(2) : "0.00";
+
+      const trOzet = document.createElement('tr');
+      trOzet.className = 'font-bold text-white';
+      trOzet.innerHTML = `
+        <td class="py-2.5 px-2.5 text-cyan-400">${profilTuru}</td>
+        <td class="py-2.5 px-2.5 text-right">${toplamParcaAdedi}</td>
+        <td class="py-2.5 px-2.5 text-right">${toplamIhtiyacBoyu.toLocaleString('tr-TR')}</td>
+        <td class="py-2.5 px-2.5 text-right text-zinc-400">${eldekiToplamStokBoyu.toLocaleString('tr-TR')}</td>
+        <td class="py-2.5 px-2.5 text-right text-cyan-400">${harcananStokAdedi}</td>
+        <td class="py-2.5 px-2.5 text-right">${totalUsedGrossMm.toLocaleString('tr-TR')}</td>
+        <td class="py-2.5 px-2.5 text-right text-teal-300">${totalUsedNetMm.toLocaleString('tr-TR')}</td>
+        <td class="py-2.5 px-2.5 text-right text-amber-400">${totalWasteMm.toLocaleString('tr-TR')}</td>
+        <td class="py-2.5 px-2.5 text-right text-amber-400">%${fireOrani}</td>
+        <td class="py-2.5 px-2.5 text-right text-teal-300">%${verimOrani}</td>
+        <td class="py-2.5 px-2.5 text-center text-amber-300">${ekliOlanlar.length}</td>
+      `;
+      tbodyOzet.appendChild(trOzet);
+
+      // Kart Metrikleri (İhtiyaç Boyu: Kesilen + Kesilemeyen Tüm Parçaların Toplamı)
+      document.getElementById('sum-card-net').innerText = `${(toplamIhtiyacBoyu / 1000).toFixed(2)} m`;
+      document.getElementById('sum-card-gross').innerText = `${(totalUsedGrossMm / 1000).toFixed(2)} m`;
+      document.getElementById('sum-card-waste').innerText = `${(totalWasteMm / 1000).toFixed(2)} m`;
+
+      // PASTA GRAFİĞİNİ GÜNCELLE
+      const circumference = 2 * Math.PI * 38;
+      const netPctVal = totalUsedGrossMm > 0 ? (totalUsedNetMm / totalUsedGrossMm) : 0;
+      const wastePctVal = totalUsedGrossMm > 0 ? (totalWasteMm / totalUsedGrossMm) : 0;
+
+      const netDash = (netPctVal * circumference).toFixed(2);
+      const wasteDash = (wastePctVal * circumference).toFixed(2);
+
+      const netCircle = document.getElementById('pie-net-segment');
+      const wasteCircle = document.getElementById('pie-waste-segment');
+
+      if (netCircle && wasteCircle) {
+        netCircle.setAttribute('stroke-dasharray', `${netDash} ${circumference}`);
+        wasteCircle.setAttribute('stroke-dasharray', `${wasteDash} ${circumference}`);
+        wasteCircle.setAttribute('stroke-dashoffset', `-${netDash}`);
+      }
+
+      document.getElementById('pie-center-efficiency').innerText = `%${verimOrani}`;
+      document.getElementById('chart-total-label').innerText = `Toplam Brüt: ${(totalUsedGrossMm / 1000).toFixed(2)} m (${totalUsedGrossMm.toLocaleString('tr-TR')} mm)`;
+      document.getElementById('pie-detail-net-mm').innerText = `${totalUsedNetMm.toLocaleString('tr-TR')} mm (${(totalUsedNetMm / 1000).toFixed(2)} m)`;
+      document.getElementById('pie-detail-waste-mm').innerText = `${totalWasteMm.toLocaleString('tr-TR')} mm (${(totalWasteMm / 1000).toFixed(2)} m)`;
+      document.getElementById('pie-pct-net').innerText = `%${verimOrani}`;
+      document.getElementById('pie-pct-waste').innerText = `%${fireOrani}`;
+
+      document.getElementById('mini-bar-net').style.width = `${verimOrani}%`;
+      document.getElementById('mini-bar-waste').style.width = `${fireOrani}%`;
+
+      // Üst Ribbon Metrikleri (İhtiyaç Boyu: Bütün Parçaların Net Toplamı)
+      document.getElementById('ribbon-total-parts').innerText = `${toplamParcaAdedi} adet`;
+      document.getElementById('ribbon-net-cut').innerText = `${(toplamIhtiyacBoyu / 1000).toFixed(2)} m`;
+      document.getElementById('ribbon-used-stocks').innerText = `${harcananStokAdedi} adet (${(totalUsedGrossMm / 1000).toFixed(2)} m)`;
+      document.getElementById('ribbon-available-stock').innerText = `${(eldekiToplamStokBoyu / 1000).toFixed(2)} m`;
+      document.getElementById('ribbon-total-waste').innerText = `${totalWasteMm.toLocaleString('tr-TR')} mm`;
+      document.getElementById('ribbon-efficiency').innerText = `%${verimOrani}`;
+
+      // 5. YAPILMAYAN POZLAR
+      const tbodyYapilmayanlar = document.getElementById('tbody-yapilmayanlar');
+      tbodyYapilmayanlar.innerHTML = '';
+      const yapilamayanParcalar = sonKaynakParcalar.filter(p => !p.tamamlandi);
+      const yapilmayanBadge = document.getElementById('badge-yapilmayan-sayisi');
+      const yapilmayanIcon = document.getElementById('icon-tab-yapilmayanlar');
+      const yapilmayanBtn = document.getElementById('btn-tab-yapilmayanlar');
+
+      if (yapilamayanParcalar.length > 0) {
+        yapilmayanBadge.innerText = yapilamayanParcalar.length;
+        yapilmayanBadge.classList.remove('hidden');
+        if (yapilmayanIcon) {
+          yapilmayanIcon.className = 'ph-bold ph-warning-octagon text-red-500 animate-pulse text-sm';
+        }
+        if (yapilmayanBtn && !yapilmayanBtn.classList.contains('active')) {
+          yapilmayanBtn.classList.add('text-red-400');
+        }
+
+        const gruplar = {};
+        yapilamayanParcalar.forEach(p => {
+          const key = `${p.poz}_${p.profilTipi}_${p.toplamUzunluk}`;
+          if (!gruplar[key]) gruplar[key] = { poz: p.poz, profil: p.profilTipi, len: p.toplamUzunluk, count: 0 };
+          gruplar[key].count++;
+        });
+
+        Object.values(gruplar).forEach(g => {
+          const eksikBoy = g.count * g.len;
+          const tr = document.createElement('tr');
+          tr.className = 'hover:bg-rose-950/20 text-rose-300';
+          tr.innerHTML = `
+            <td class="py-2.5 px-3 font-bold">${g.poz}</td>
+            <td class="py-2.5 px-3">${g.profil}</td>
+            <td class="py-2.5 px-3 text-center font-bold">${g.count}</td>
+            <td class="py-2.5 px-3 text-right">${g.len.toLocaleString('tr-TR')}</td>
+            <td class="py-2.5 px-3 text-right font-bold">${eksikBoy.toLocaleString('tr-TR')}</td>
+            <td class="py-2.5 px-3 text-rose-400">Stok Yetersiz - Kesilemedi</td>
+          `;
+          tbodyYapilmayanlar.appendChild(tr);
+        });
+      } else {
+        yapilmayanBadge.classList.add('hidden');
+        if (yapilmayanIcon) {
+          yapilmayanIcon.className = 'ph-bold ph-warning-octagon';
+        }
+        if (yapilmayanBtn) {
+          yapilmayanBtn.classList.remove('text-red-400');
+        }
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td colspan="6" class="py-14 text-center text-teal-300 font-sans">
+            <i class="ph-bold ph-check-circle text-3xl block mx-auto mb-1 text-teal-400"></i>
+            Tüm parçalar eldeki stoklara başarıyla yerleştirildi. Açıkta kalan parça yoktur.
+          </td>
+        `;
+        tbodyYapilmayanlar.appendChild(tr);
+      }
+
+      // 6. KAYNAK LİSTE
+      const tbodyKaynak = document.getElementById('tbody-kaynak-liste');
+      tbodyKaynak.innerHTML = '';
+      const kaynakGruplar = {};
+      sonKaynakParcalar.forEach(p => {
+        const key = `${p.poz}_${p.profilTipi}_${p.toplamUzunluk}`;
+        if (!kaynakGruplar[key]) kaynakGruplar[key] = { poz: p.poz, prof: p.profilTipi, len: p.toplamUzunluk, count: 0 };
+        kaynakGruplar[key].count++;
+      });
+
+      const gruplarArray = Object.values(kaynakGruplar);
+      gruplarArray.forEach(g => {
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-zinc-800/40 transition';
+        tr.innerHTML = `
+          <td class="py-2 px-4 font-bold text-white">${g.poz}</td>
+          <td class="py-2 px-4 text-cyan-400">${g.prof}</td>
+          <td class="py-2 px-4 text-center font-bold text-amber-400">${g.count}</td>
+          <td class="py-2 px-4 text-right font-mono">${g.len.toLocaleString('tr-TR')} mm</td>
+        `;
+        tbodyKaynak.appendChild(tr);
+      });
+      document.getElementById('kaynak-liste-badge').innerText = `${gruplarArray.length} Poz Grubu`;
+    }
+
+    // --- 7. EXCEL'E AKTAR: 6 Sayfalı ClosedXML Çıktısı ---
+    async function excelAktar() {
+      if (sonHesaplananCubuklar.length === 0) {
+        showToast("Önce hesaplama yapmalısınız!", "warning");
+        return;
+      }
+
+      showToast("Excel raporu hazırlanıyor...", "success");
+
+      // ExcelJS ile profesyonel hücre stilleri ve birebir renk eşleştirmesi
+      const wb = new ExcelJS.Workbook();
+      wb.creator = "Galahat Dev";
+      wb.created = new Date();
+
+      // Stil ve Renk Paleti (Ekran görüntüsü ve ClosedXML ile birebir)
+      const borderThin = {
+        top: { style: 'thin', color: { argb: 'FFD4D4D8' } },
+        left: { style: 'thin', color: { argb: 'FFD4D4D8' } },
+        bottom: { style: 'thin', color: { argb: 'FFD4D4D8' } },
+        right: { style: 'thin', color: { argb: 'FFD4D4D8' } }
+      };
+
+      const borderSubtle = {
+        top: { style: 'thin', color: { argb: 'FFE2E8F0' } },
+        left: { style: 'thin', color: { argb: 'FFE2E8F0' } },
+        bottom: { style: 'thin', color: { argb: 'FFE2E8F0' } },
+        right: { style: 'thin', color: { argb: 'FFE2E8F0' } }
+      };
+
+      const fillNavyHeader = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FF102C57' } // Koyu Kurumsal Lacivert
+      };
+
+      const fillZebraLight = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FFF2F7FC' } // Açık buzul mavi zebra satırı
+      };
+
+      const fillWhite = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FFFFFFFF' }
+      };
+
+      const fillRedHeader = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FF782828' } // Yapılmayanlar Bordo Kırmızı
+      };
+
+      const fontTitle = { name: 'Calibri', size: 15, bold: true, color: { argb: 'FF102C57' } };
+      const fontHeader = { name: 'Calibri', size: 10, bold: true, color: { argb: 'FFFFFFFF' } };
+      const fontData = { name: 'Calibri', size: 9.5, color: { argb: 'FF1E293B' } };
+      const fontDataBold = { name: 'Calibri', size: 9.5, bold: true, color: { argb: 'FF0F172A' } };
+      const fontNote = { name: 'Calibri', size: 9, italic: false, color: { argb: 'FF64748B' } };
+
+      const aktifProfilAdi = (seciliProfil || profilTuruGlobal || "").trim();
+      const anaBaslikMetni = aktifProfilAdi ? `${aktifProfilAdi} ÇELİK PROFİL KESİM PLANI` : `ÇELİK PROFİL KESİM PLANI`;
+
+      // En yaygın stok boyu tespiti
+      const ilkStokBoyu = sonHesaplananCubuklar[0] ? sonHesaplananCubuklar[0].stokBoyu : 12000;
+      const stokBoyuFormatli = (ilkStokBoyu / 1000).toLocaleString('tr-TR', { minimumFractionDigits: 3, maximumFractionDigits: 3 });
+      const altAciklamaMetni = `${stokBoyuFormatli} mm stok • Kesim payı 0 mm • [n] aynı pozun parça sırasıdır.`;
+
+      // ==========================================
+      // 1. SAYFA: KESİM PLANI
+      // ==========================================
+      const wsKesim = wb.addWorksheet("KESİM PLANI", {
+        views: [{ showGridLines: true }]
+      });
+
+      // Kolon genişlikleri
+      wsKesim.columns = [
+        { key: 'profilTuru', width: 22 },
+        { key: 'stokNo', width: 14 },
+        { key: 'stokBoyu', width: 16 },
+        { key: 'kesimler', width: 72 },
+        { key: 'kullanilan', width: 22 },
+        { key: 'fire', width: 18 },
+        { key: 'verim', width: 16 }
+      ];
+
+      // Başlık Satırları (Profil Adı Solunda Olacak Şekilde)
+      wsKesim.mergeCells('A1:G1');
+      const row1 = wsKesim.getCell('A1');
+      row1.value = anaBaslikMetni;
+      row1.font = fontTitle;
+      row1.alignment = { vertical: 'middle', horizontal: 'left' };
+      wsKesim.getRow(1).height = 30;
+
+      wsKesim.mergeCells('A3:G3');
+      const row3 = wsKesim.getCell('A3');
+      row3.value = altAciklamaMetni;
+      row3.font = fontNote;
+      row3.alignment = { vertical: 'middle', horizontal: 'left' };
+      wsKesim.getRow(3).height = 18;
+
+      // Tablo Başlıkları (5. Satır)
+      const headersKesim = [
+        "Profil türü",
+        "Stok numarası",
+        "Stok boyu (mm)",
+        "Kesimler",
+        "Kullanılan toplam (mm)",
+        "Kalan / Fire (mm)",
+        "Verim (%)"
+      ];
+      const hRowKesim = wsKesim.getRow(5);
+      hRowKesim.values = headersKesim;
+      hRowKesim.height = 28;
+
+      for (let c = 1; c <= 7; c++) {
+        const cell = hRowKesim.getCell(c);
+        cell.font = fontHeader;
+        cell.fill = fillNavyHeader;
+        cell.alignment = { 
+          vertical: 'middle', 
+          horizontal: (c === 3 || c === 5 || c === 6) ? 'right' : (c === 2 || c === 7) ? 'center' : 'left' 
+        };
+        cell.border = borderThin;
+      }
+
+      // Veri Satırları (Görseldeki Gibi Zarif Zebra Şerit Deseniyle)
+      sonHesaplananCubuklar.forEach((item, index) => {
+        const netKesilen = item.stokBoyu - item.kalanUzunluk;
+        const verim = item.stokBoyu > 0 ? (netKesilen / item.stokBoyu) : 0;
+        const kesimMetni = item.kesimler.map(k => k.metin).join(' | ');
+        const bTheme = item.paketGrupId ? getBundleTheme(item.paketGrupNo) : null;
+        const profilHucresiMetni = item.paketGrupId ? `${item.profilTuru} [${item.paketGrupId} - ${item.paketAdet}'li Paket Kesim]` : item.profilTuru;
+
+        const r = wsKesim.addRow([
+          profilHucresiMetni,
+          item.stokNo,
+          item.stokBoyu,
+          kesimMetni,
+          netKesilen,
+          item.kalanUzunluk,
+          verim
+        ]);
+        r.height = 22;
+
+        const rowFill = (index % 2 === 1) ? fillZebraLight : fillWhite;
+
+        // 1. Profil türü (Her paketin kendine ait pastel ayırt edici rengi)
+        const c1 = r.getCell(1);
+        c1.font = fontDataBold;
+        c1.fill = item.paketGrupId ? { type: 'pattern', pattern: 'solid', fgColor: { argb: bTheme.excelHex } } : rowFill;
+        c1.alignment = { vertical: 'middle', horizontal: 'left' };
+        c1.border = borderSubtle;
+        if (item.paketGrupId) {
+          c1.font = { name: 'Calibri', size: 9.5, bold: true, color: { argb: bTheme.excelText } };
+        }
+        const c2 = r.getCell(2);
+        c2.font = fontDataBold;
+        c2.fill = rowFill;
+        c2.alignment = { vertical: 'middle', horizontal: 'center' };
+        c2.border = borderSubtle;
+
+        // 3. Stok boyu
+        const c3 = r.getCell(3);
+        c3.numFmt = '#,##0.00';
+        c3.font = fontData;
+        c3.fill = rowFill;
+        c3.alignment = { vertical: 'middle', horizontal: 'right' };
+        c3.border = borderSubtle;
+
+        // 4. Kesimler
+        const c4 = r.getCell(4);
+        c4.font = fontData;
+        c4.fill = rowFill;
+        c4.alignment = { vertical: 'middle', horizontal: 'left' };
+        c4.border = borderSubtle;
+
+        // 5. Kullanılan toplam
+        const c5 = r.getCell(5);
+        c5.numFmt = '#,##0.00';
+        c5.font = fontDataBold;
+        c5.fill = rowFill;
+        c5.alignment = { vertical: 'middle', horizontal: 'right' };
+        c5.border = borderSubtle;
+
+        // 6. Kalan / Fire
+        const c6 = r.getCell(6);
+        c6.numFmt = '#,##0.00';
+        c6.font = (item.kalanUzunluk > 0) ? { name: 'Calibri', size: 9.5, bold: true, color: { argb: 'FFB45309' } } : fontData;
+        c6.fill = (item.kalanUzunluk > 0) ? { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFFBEB' } } : rowFill;
+        c6.alignment = { vertical: 'middle', horizontal: 'right' };
+        c6.border = borderSubtle;
+
+        // 7. Verim
+        const c7 = r.getCell(7);
+        c7.numFmt = '0.00%';
+        c7.font = fontDataBold;
+        c7.fill = rowFill;
+        c7.alignment = { vertical: 'middle', horizontal: 'center' };
+        c7.border = borderSubtle;
+      });
+
+      // ==========================================
+      // 2. SAYFA: EKLİ PARÇALAR
+      // ==========================================
+      const wsEkli = wb.addWorksheet("EKLİ PARÇALAR", { views: [{ showGridLines: true }] });
+      wsEkli.columns = [
+        { width: 20 }, { width: 22 }, { width: 16 }, { width: 14 },
+        { width: 60 }, { width: 18 }, { width: 16 }
+      ];
+
+      wsEkli.mergeCells('A1:G1');
+      const ekliTitle = wsEkli.getCell('A1');
+      ekliTitle.value = aktifProfilAdi ? `${aktifProfilAdi} EKLİ PARÇALAR` : `EKLİ PARÇALAR`;
+      ekliTitle.font = fontTitle;
+
+      wsEkli.mergeCells('A3:G3');
+      const ekliSub = wsEkli.getCell('A3');
+      ekliSub.value = "Her satır tek bir nihai parçayı gösterir. EK-1, EK-2, EK-3... kesim planındaki etiketlerle eşleşir.";
+      ekliSub.font = fontNote;
+
+      const headersEkli = [
+        "Profil türü", "Poz / parça sırası", "Nihai boy (mm)", "Ek Adedi",
+        "Segment Dağılımı (Segment Boyu • Stok)", "Toplam boy (mm)", "Kontrol durumu"
+      ];
+      const hRowEkli = wsEkli.getRow(5);
+      hRowEkli.values = headersEkli;
+      hRowEkli.height = 26;
+
+      for (let c = 1; c <= 7; c++) {
+        const cell = hRowEkli.getCell(c);
+        cell.font = fontHeader;
+        cell.fill = fillNavyHeader;
+        cell.alignment = { vertical: 'middle', horizontal: 'center' };
+        cell.border = borderThin;
+      }
+
+      const ekliOlanlar = sonKaynakParcalar.filter(p => p.segmentler && p.segmentler.length >= 2);
+      ekliOlanlar.forEach((ep, index) => {
+        const segToplami = ep.segmentler.reduce((sum, s) => sum + s.uzunluk, 0);
+        const ekAdedi = ep.segmentler.length - 1;
+        const segmentlerKuralaUygun = ep.segmentler.every(s => s.uzunluk >= minEkUzunlukGlobal);
+        const uygun = (segToplami === ep.toplamUzunluk && segmentlerKuralaUygun && ekAdedi <= (parseInt(document.getElementById('input-max-splice').value) || 1));
+        const segmentMetni = ep.segmentler.map(s => `EK-${s.segmentNo}: ${s.uzunluk} mm (${s.stokNo || '-'})`).join(' | ');
+
+        const r = wsEkli.addRow([
+          ep.profilTipi,
+          `${ep.poz} [${ep.siraNo}]`,
+          ep.toplamUzunluk,
+          `${ekAdedi} EK`,
+          segmentMetni,
+          segToplami,
+          uygun ? "UYGUN" : "HATA"
+        ]);
+        r.height = 20;
+
+        const rowFill = (index % 2 === 1) ? fillZebraLight : fillWhite;
+
+        for (let col = 1; col <= 7; col++) {
+          const cCell = r.getCell(col);
+          cCell.font = fontData;
+          cCell.fill = rowFill;
+          cCell.border = borderSubtle;
+          cCell.alignment = { 
+            vertical: 'middle', 
+            horizontal: (col === 3 || col === 6) ? 'right' : (col === 5) ? 'left' : 'center' 
+          };
+          if (col === 3 || col === 6) cCell.numFmt = '#,##0.00';
+          if (col === 7) {
+            cCell.font = fontDataBold;
+            cCell.font.color = uygun ? { argb: 'FF059669' } : { argb: 'FFDC2626' };
+          }
+        }
+      });
+
+      // ==========================================
+      // 3. SAYFA: PROFİL ÖZETİ
+      // ==========================================
+      const wsOzet = wb.addWorksheet("PROFİL ÖZETİ", { views: [{ showGridLines: true }] });
+      wsOzet.columns = [
+        { width: 22 }, { width: 18 }, { width: 18 }, { width: 20 },
+        { width: 20 }, { width: 22 }, { width: 20 }, { width: 18 },
+        { width: 16 }, { width: 18 }, { width: 18 }
+      ];
+
+      wsOzet.mergeCells('A1:K1');
+      const ozetTitle = wsOzet.getCell('A1');
+      ozetTitle.value = aktifProfilAdi ? `${aktifProfilAdi} PROFİL VE KULLANIM ÖZETİ` : `PROFİL VE KULLANIM ÖZETİ`;
+      ozetTitle.font = fontTitle;
+
+      const headersOzet = [
+        "Profil türü", "Nihai parça", "İhtiyaç boyu (mm)", "Eldeki stok boyu (mm)",
+        "Kullanılan adet", "Kullanılan stok (mm)", "Net kesilen (mm)", "Toplam fire (mm)",
+        "Fire (%)", "Verim (%)", "Ekli parça"
+      ];
+      const hRowOzet = wsOzet.getRow(5);
+      hRowOzet.values = headersOzet;
+      hRowOzet.height = 26;
+
+      for (let c = 1; c <= 11; c++) {
+        const cell = hRowOzet.getCell(c);
+        cell.font = fontHeader;
+        cell.fill = fillNavyHeader;
+        cell.alignment = { vertical: 'middle', horizontal: 'center' };
+        cell.border = borderThin;
+      }
+
+      const toplamParcaAdedi = sonKaynakParcalar.length;
+      const toplamIhtiyacBoyu = sonKaynakParcalar.reduce((acc, p) => acc + p.toplamUzunluk, 0);
+      let eldekiToplamStokBoyu = 0;
+      eldekiStoklar.forEach(s => {
+        if (s.boy > 0 && s.adet > 0) eldekiToplamStokBoyu += (s.boy * s.adet);
+      });
+      const harcananStokAdedi = sonHesaplananCubuklar.length;
+      const totalUsedGrossMm = sonHesaplananCubuklar.reduce((acc, c) => acc + c.stokBoyu, 0);
+      const totalWasteMm = sonHesaplananCubuklar.reduce((acc, c) => acc + c.kalanUzunluk, 0);
+      const totalUsedNetMm = totalUsedGrossMm - totalWasteMm;
+      const fireOrani = totalUsedGrossMm > 0 ? (totalWasteMm / totalUsedGrossMm) : 0;
+      const verimOrani = totalUsedGrossMm > 0 ? (totalUsedNetMm / totalUsedGrossMm) : 0;
+
+      const rOzet = wsOzet.addRow([
+        profilTuruGlobal,
+        toplamParcaAdedi,
+        toplamIhtiyacBoyu,
+        eldekiToplamStokBoyu,
+        harcananStokAdedi,
+        totalUsedGrossMm,
+        totalUsedNetMm,
+        totalWasteMm,
+        fireOrani,
+        verimOrani,
+        ekliOlanlar.length
+      ]);
+      rOzet.height = 24;
+
+      for (let col = 1; col <= 11; col++) {
+        const cCell = rOzet.getCell(col);
+        cCell.font = fontDataBold;
+        cCell.border = borderThin;
+        cCell.alignment = { vertical: 'middle', horizontal: (col === 1) ? 'left' : (col === 9 || col === 10 || col === 11) ? 'center' : 'right' };
+        if (col >= 2 && col <= 8) cCell.numFmt = '#,##0.00';
+        if (col === 9 || col === 10) cCell.numFmt = '0.00%';
+      }
+
+      // ==========================================
+      // 4. SAYFA: YAPILMAYAN POZLAR
+      // ==========================================
+      const wsYap = wb.addWorksheet("YAPILMAYAN POZLAR", { views: [{ showGridLines: true }] });
+      wsYap.columns = [
+        { width: 18 }, { width: 22 }, { width: 16 }, { width: 20 },
+        { width: 24 }, { width: 26 }
+      ];
+
+      wsYap.mergeCells('A1:F1');
+      const yapTitle = wsYap.getCell('A1');
+      yapTitle.value = aktifProfilAdi ? `${aktifProfilAdi} KESİLEMEYEN / AÇIKTA KALAN POZLAR` : `KESİLEMEYEN / AÇIKTA KALAN POZLAR`;
+      yapTitle.font = { name: 'Calibri', size: 14, bold: true, color: { argb: 'FFB91C1C' } };
+
+      wsYap.mergeCells('A3:F3');
+      const yapSub = wsYap.getCell('A3');
+      yapSub.value = "Eldeki stok boyu ve adedi yetersiz olduğu için kesim planına dahil edilemeyen parçalar.";
+      yapSub.font = fontNote;
+
+      const headersYap = [
+        "Eleman Poz", "Profil", "Kalan Adet", "Birim Uzunluk (mm)", "Toplam Eksik Boy (mm)", "Durum"
+      ];
+      const hRowYap = wsYap.getRow(5);
+      hRowYap.values = headersYap;
+      hRowYap.height = 26;
+
+      for (let c = 1; c <= 6; c++) {
+        const cell = hRowYap.getCell(c);
+        cell.font = fontHeader;
+        cell.fill = fillRedHeader; // Özel Koyu Kırmızı Başlık
+        cell.alignment = { vertical: 'middle', horizontal: 'center' };
+        cell.border = borderThin;
+      }
+
+      const yapilamayanParcalar = sonKaynakParcalar.filter(p => !p.tamamlandi);
+      if (yapilamayanParcalar.length > 0) {
+        const gruplar = {};
+        yapilamayanParcalar.forEach(p => {
+          const key = `${p.poz}_${p.profilTipi}_${p.toplamUzunluk}`;
+          if (!gruplar[key]) gruplar[key] = { poz: p.poz, profil: p.profilTipi, len: p.toplamUzunluk, count: 0 };
+          gruplar[key].count++;
+        });
+        Object.values(gruplar).forEach(g => {
+          const r = wsYap.addRow([
+            g.poz,
+            g.profil,
+            g.count,
+            g.len,
+            g.count * g.len,
+            "Stok Yetersiz - Kesilemedi"
+          ]);
+          r.height = 20;
+          for (let col = 1; col <= 6; col++) {
+            const cCell = r.getCell(col);
+            cCell.font = { name: 'Calibri', size: 9.5, bold: true, color: { argb: 'FF991B1B' } };
+            cCell.border = borderThin;
+            cCell.alignment = { vertical: 'middle', horizontal: (col === 3 || col === 4 || col === 5) ? 'right' : 'left' };
+            if (col >= 3 && col <= 5) cCell.numFmt = '#,##0.00';
+          }
+        });
+      } else {
+        wsYap.mergeCells('A6:F6');
+        const emptyCell = wsYap.getCell('A6');
+        emptyCell.value = "Tüm parçalar eldeki stoklara başarıyla yerleştirildi. Açıkta kalan parça yoktur.";
+        emptyCell.font = { name: 'Calibri', size: 10, italic: true, color: { argb: 'FF059669' } };
+        emptyCell.alignment = { vertical: 'middle', horizontal: 'center' };
+        wsYap.getRow(6).height = 24;
+      }
+
+      // ==========================================
+      // 5. SAYFA: KAYNAK LİSTE
+      // ==========================================
+      const wsKaynak = wb.addWorksheet("KAYNAK LİSTE", { views: [{ showGridLines: true }] });
+      wsKaynak.columns = [{ width: 20 }, { width: 22 }, { width: 16 }, { width: 18 }];
+
+      wsKaynak.mergeCells('A1:D1');
+      const kayTitle = wsKaynak.getCell('A1');
+      kayTitle.value = aktifProfilAdi ? `${aktifProfilAdi} KAYNAK LİSTE (AYRIŞTIRILMIŞ POZLAR)` : `KAYNAK LİSTE (AYRIŞTIRILMIŞ POZLAR)`;
+      kayTitle.font = fontTitle;
+
+      const headersKaynak = ["Eleman Poz", "Profil", "Adet", "Uzunluk (mm)"];
+      const hRowKaynak = wsKaynak.getRow(5);
+      hRowKaynak.values = headersKaynak;
+      hRowKaynak.height = 26;
+
+      for (let c = 1; c <= 4; c++) {
+        const cell = hRowKaynak.getCell(c);
+        cell.font = fontHeader;
+        cell.fill = fillNavyHeader;
+        cell.alignment = { vertical: 'middle', horizontal: 'center' };
+        cell.border = borderThin;
+      }
+
+      const kaynakGruplar = {};
+      sonKaynakParcalar.forEach(p => {
+        const key = `${p.poz}_${p.profilTipi}_${p.toplamUzunluk}`;
+        if (!kaynakGruplar[key]) kaynakGruplar[key] = { poz: p.poz, prof: p.profilTipi, len: p.toplamUzunluk, count: 0 };
+        kaynakGruplar[key].count++;
+      });
+      Object.values(kaynakGruplar).forEach((g, index) => {
+        const r = wsKaynak.addRow([g.poz, g.prof, g.count, g.len]);
+        r.height = 20;
+        const rowFill = (index % 2 === 1) ? fillZebraLight : fillWhite;
+        for (let col = 1; col <= 4; col++) {
+          const cCell = r.getCell(col);
+          cCell.font = fontData;
+          cCell.fill = rowFill;
+          cCell.border = borderSubtle;
+          cCell.alignment = { vertical: 'middle', horizontal: (col === 3 || col === 4) ? 'right' : 'left' };
+          if (col >= 3) cCell.numFmt = '#,##0.00';
+        }
+      });
+
+      // ==========================================
+      // 6. SAYFA: NOTLAR
+      // ==========================================
+      const wsNotlar = wb.addWorksheet("NOTLAR", { views: [{ showGridLines: true }] });
+      wsNotlar.columns = [{ width: 24 }, { width: 70 }];
+
+      wsNotlar.mergeCells('A1:B1');
+      const notlarTitle = wsNotlar.getCell('A1');
+      notlarTitle.value = "NOTLAR VE KONTROLLER";
+      notlarTitle.font = fontTitle;
+
+      const hRowNotlar = wsNotlar.getRow(5);
+      hRowNotlar.values = ["Konu / kontrol", "Açıklama"];
+      hRowNotlar.height = 26;
+
+      for (let c = 1; c <= 2; c++) {
+        const cell = hRowNotlar.getCell(c);
+        cell.font = fontHeader;
+        cell.fill = fillNavyHeader;
+        cell.alignment = { vertical: 'middle', horizontal: 'left' };
+        cell.border = borderThin;
+      }
+
+      const notlarListesi = [
+        ["Ölçü Hassasiyeti", "Tüm hesaplamalar tamsayı net milimetre (mm) cinsindendir."],
+        ["Kesim payı", "0 mm. Testere / lazer kesim kaybı ve kaynak çekmesi bu hesapta sıfır alınmıştır."],
+        ["Eldeki Stok", "Depoda bulunan tüm profillerin toplam metrajıdır."],
+        ["Kullanılan Stok Boyu", "Kesim işlemi için tezgaha bağlanan çubukların brüt toplamıdır."],
+        ["Net Kesilen Boy", "Projeden çıkan parçaların net boy toplamıdır."],
+        ["Ek kuralı", "Yalnızca zorunlu durumlarda minimum ek boyunu sağlayan parçalar bölünür."]
+      ];
+
+      notlarListesi.forEach((n, index) => {
+        const r = wsNotlar.addRow(n);
+        r.height = 20;
+        const rowFill = (index % 2 === 1) ? fillZebraLight : fillWhite;
+        r.getCell(1).font = fontDataBold;
+        r.getCell(1).fill = rowFill;
+        r.getCell(1).border = borderSubtle;
+        r.getCell(2).font = fontData;
+        r.getCell(2).fill = rowFill;
+        r.getCell(2).border = borderSubtle;
+      });
+
+      // Dosya Adını Dinamik Oluşturma: [Profil Adı] KESİM PLANI.xlsx
+      let temizProfilAdi = (seciliProfil || profilTuruGlobal || "GENEL").replace(/[\\/:*?"<>|]/g, '_').trim();
+      if (!temizProfilAdi || temizProfilAdi === "-") temizProfilAdi = "PROFİL";
+      const dosyaAdi = `${temizProfilAdi} KESİM PLANI.xlsx`;
+
+      // Tarayıcıdan doğrudan blob olarak indir
+      const buffer = await wb.xlsx.writeBuffer();
+      const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = downloadUrl;
+      a.download = dosyaAdi;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(downloadUrl);
+
+      showToast(`Rapor başarıyla indirildi: ${dosyaAdi}`);
+    }
+
+    // --- 8. ETKİLEŞİMLER VE EVENT LISTENERS ---
+    window.onload = function() {
+      resizeCanvas();
+      animateBg();
+      renderStockInputs();
+
+      const modal = document.getElementById('modal-parts-editor');
+      const textarea = document.getElementById('raw-parts-textarea');
+      const openBtn = document.getElementById('btn-open-modal');
+      const closeBtn = document.getElementById('btn-close-modal');
+      const cancelBtn = document.getElementById('btn-cancel-modal');
+      const saveCalcBtn = document.getElementById('btn-save-and-calc');
+      const teklaUploadBtn = document.getElementById('btn-upload-tekla');
+      const teklaFileInput = document.getElementById('input-file-tekla');
+
+      // Paket Kesim Switch Etkileşimi
+      const checkBundleCut = document.getElementById('check-bundle-cut');
+      const bundleOptionsPanel = document.getElementById('bundle-options-panel');
+      if (checkBundleCut && bundleOptionsPanel) {
+        checkBundleCut.addEventListener('change', () => {
+          if (checkBundleCut.checked) {
+            bundleOptionsPanel.classList.remove('opacity-50', 'pointer-events-none');
+          } else {
+            bundleOptionsPanel.classList.add('opacity-50', 'pointer-events-none');
+          }
+        });
+      }
+
+      textarea.value = '';
+
+      if (teklaUploadBtn && teklaFileInput) {
+        teklaUploadBtn.addEventListener('click', () => {
+          teklaFileInput.value = '';
+          teklaFileInput.click();
+        });
+
+        teklaFileInput.addEventListener('change', (e) => {
+          const file = e.target.files[0];
+          if (!file) return;
+
+          const reader = new FileReader();
+          reader.onload = function(evt) {
+            const fileContent = evt.target.result;
+            textarea.value = fileContent;
+            updateStatsFromText();
+            showToast(`"${file.name}" dosyası başarıyla yüklendi ve ayrıştırıldı!`);
+          };
+          reader.onerror = function() {
+            showToast("Dosya okunurken bir hata oluştu!", "error");
+          };
+          reader.readAsText(file, "UTF-8");
+        });
+      }
+
+      function updateStatsFromText() {
+        const text = textarea.value;
+        const parsed = parcalariOku(text);
+        const totalAdet = parsed.length;
+        const uniquePozlar = new Set(parsed.map(p => p.poz)).size;
+
+        const badge = document.getElementById('left-parts-count-badge');
+        const modalLineBadge = document.getElementById('modal-line-count');
+        const statusBar = document.getElementById('parse-status-text');
+        const samplePreview = document.getElementById('parse-sample-preview');
+
+        if (badge) badge.innerText = `${uniquePozlar} Poz (${totalAdet} Adet)`;
+        if (modalLineBadge) modalLineBadge.innerText = `${uniquePozlar} Poz / ${totalAdet} Parça Algılandı`;
+
+        if (totalAdet > 0) {
+          const first = parsed[0];
+          statusBar.innerHTML = `<span class="text-emerald-400 font-bold">✓ Başarılı:</span> ${uniquePozlar} farklı pozdan toplam ${totalAdet} adet parça okundu.`;
+          samplePreview.innerText = `Örn: ${first.poz} • ${first.profilTipi} • Net: ${first.toplamUzunluk} mm`;
+          profilleriGuncelle(parsed);
+        } else {
+          statusBar.innerText = text.trim() ? "Uyarı: Tablo formatı eşleşmedi. Poz ve Uzunluk(mm) sütunlarının bulunduğundan emin olun." : "Veri bekleniyor... Excel'den kopyalayıp yapıştırabilirsiniz.";
+          samplePreview.innerText = "";
+          profilleriGuncelle([]);
+        }
+      }
+      textarea.addEventListener('input', updateStatsFromText);
+      updateStatsFromText();
+
+      const profileSelectEl = document.getElementById('select-active-profile');
+      if (profileSelectEl) {
+        profileSelectEl.addEventListener('change', () => {
+          seciliProfil = profileSelectEl.value;
+          const parcalar = parcalariOku(textarea.value);
+          const filtrelenmis = parcalar.filter(p => p.profilTipi === seciliProfil);
+          document.getElementById('label-active-profile-parts').innerText = `${filtrelenmis.length} adet`;
+          
+          if (filtrelenmis.length > 0 && eldekiStoklar.some(s => s.adet > 0)) {
+            hesaplaVeDoldur();
+          } else {
+            showToast(`"${seciliProfil}" seçildi. Hesaplamak için 'HESAPLA' butonuna tıklayın.`);
+          }
+        });
+      }
+
+      function openModal() {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        textarea.focus();
+      }
+      function closeModal() {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+
+      openBtn.addEventListener('click', openModal);
+      closeBtn.addEventListener('click', closeModal);
+      cancelBtn.addEventListener('click', closeModal);
+
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+      });
+
+      saveCalcBtn.addEventListener('click', () => {
+        closeModal();
+        hesaplaVeDoldur();
+      });
+
+      const tabBtns = document.querySelectorAll('.tab-btn');
+      tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          tabBtns.forEach(b => {
+            b.classList.remove('active', 'bg-cyan-500/20', 'text-cyan-300', 'border', 'border-cyan-500/40', 'shadow-sm');
+            b.classList.add('text-zinc-400');
+          });
+          btn.classList.add('active', 'bg-cyan-500/20', 'text-cyan-300', 'border', 'border-cyan-500/40', 'shadow-sm');
+          btn.classList.remove('text-zinc-400');
+
+          const target = btn.getAttribute('data-tab');
+          document.querySelectorAll('.tab-content').forEach(tc => tc.classList.add('hidden'));
+          const el = document.getElementById(target);
+          if (el) el.classList.remove('hidden');
+        });
+      });
+
+      document.getElementById('filter-grid-input').addEventListener('input', function(e) {
+        const q = e.target.value.toLowerCase();
+        const activeTab = document.querySelector('.tab-content:not(.hidden)');
+        if (activeTab) {
+          const rows = activeTab.querySelectorAll('tbody tr, #visual-bars-list > div');
+          rows.forEach(r => {
+            r.style.display = r.innerText.toLowerCase().includes(q) ? '' : 'none';
+          });
+        }
+      });
+
+      document.getElementById('btn-calculate').addEventListener('click', hesaplaVeDoldur);
+      document.getElementById('btn-excel-export').addEventListener('click', excelAktar);
+
+      document.getElementById('btn-clear-text').addEventListener('click', () => {
+        textarea.value = '';
+        updateStatsFromText();
+      });
+    };
+  </script>
+</body>
+</html>
