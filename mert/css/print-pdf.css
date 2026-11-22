@@ -1,0 +1,194 @@
+/* =========================================================
+   CLEAN TWO-PAGE A4 PDF EXPORT SHEETS (210mm x 297mm each)
+   ========================================================= */
+#a4-pdf-wrapper {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 210mm;
+    background: #ffffff;
+    color: #0f172a;
+    z-index: 99998;
+    box-sizing: border-box;
+}
+
+#pdf-loading-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    background: rgba(9, 9, 11, 0.9);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    color: #f4f4f5;
+    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+}
+
+.a4-sheet {
+    width: 210mm;
+    height: 295.5mm;
+    padding: 13mm 15mm;
+    background: #ffffff;
+    color: #0f172a;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    overflow: hidden;
+}
+
+.a4-sheet[dir="rtl"] {
+    font-family: 'Cairo', sans-serif;
+    letter-spacing: 0;
+    word-spacing: 0.08em;
+}
+
+.a4-header {
+    background: #595959;
+    color: #ffffff;
+    margin: -13mm -15mm 11px -15mm;
+    padding: 11mm 15mm 10mm 15mm;
+    border-bottom: 3px solid #0284c7;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+}
+
+.a4-sec-title {
+    font-size: 10pt;
+    font-weight: 800;
+    color: #0369a1;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    border-bottom: 1.5px solid #cbd5e1;
+    padding-bottom: 3px;
+    margin-bottom: 8px;
+}
+
+.a4-sheet[dir="rtl"] .a4-sec-title {
+    text-transform: none;
+    letter-spacing: 0;
+}
+
+.a4-sheet[dir="rtl"] [dir="ltr"] {
+    letter-spacing: normal;
+    word-spacing: normal;
+}
+
+.a4-metric {
+    font-weight: 700;
+    color: #0369a1;
+    background: #e0f2fe;
+    padding: 0 4px;
+    border-radius: 3px;
+    white-space: nowrap;
+}
+
+/* =========================================================
+   PRINT / PDF EXPORT STYLES
+   ========================================================= */
+@media print {
+    @page {
+        size: A4;
+        margin: 12mm 14mm;
+    }
+
+    body {
+        background: #ffffff !important;
+        color: #0f172a !important;
+        font-size: 9.5pt !important;
+        line-height: 1.45 !important;
+    }
+
+    #particle-canvas,
+    .ambient-glow,
+    #lang-modal,
+    #sticky-header,
+    #toast,
+    #pdf-loading-overlay,
+    #a4-pdf-wrapper,
+    .no-print {
+        display: none !important;
+    }
+
+    main {
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        max-width: 100% !important;
+    }
+
+    .glass-card {
+        background: #ffffff !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        border: 1px solid #cbd5e1 !important;
+        box-shadow: none !important;
+        color: #0f172a !important;
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+
+    .hero-card {
+        margin-bottom: 14px !important;
+        padding: 16px !important;
+    }
+
+    .text-white,
+    .text-zinc-100,
+    .text-zinc-200 {
+        color: #0f172a !important;
+    }
+
+    .text-zinc-300,
+    .text-zinc-400 {
+        color: #334155 !important;
+    }
+
+    .text-sky-400,
+    .metric-highlight {
+        color: #0369a1 !important;
+        background: #f0f9ff !important;
+        border-color: #bae6fd !important;
+    }
+
+    .grid-layout {
+        display: grid !important;
+        grid-template-columns: 32% 66% !important;
+        gap: 2% !important;
+    }
+
+    .sticky-sidebar {
+        position: static !important;
+    }
+
+    .timeline-line {
+        background: #cbd5e1 !important;
+    }
+
+    .timeline-dot {
+        background: #0284c7 !important;
+        border-color: #0284c7 !important;
+        box-shadow: none !important;
+    }
+
+    .skill-dot.active {
+        background-color: #0284c7 !important;
+        box-shadow: none !important;
+    }
+
+    .skill-dot.inactive {
+        background-color: #e2e8f0 !important;
+    }
+
+    .badge-pill {
+        background: #f1f5f9 !important;
+        border: 1px solid #cbd5e1 !important;
+        color: #1e293b !important;
+    }
+}
